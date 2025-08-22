@@ -20,7 +20,7 @@ app.use(express.json());
 // 🔹 Credenciales Mercado Pago
 const MP_CLIENT_ID = process.env.MP_CLIENT_ID;
 const MP_CLIENT_SECRET = process.env.MP_CLIENT_SECRET;
-const MP_REDIRECT_URI = process.env.MP_REDIRECT_URI || "https://tusitio.com/oauth/callback";
+const MP_REDIRECT_URI = process.env.MP_REDIRECT_URI || "https://adminvinosapp-production.up.railway.app/oauth/callback";
 
 // 🔹 Ruta para generar el link de login de Mercado Pago
 app.post("/mp/login", (req, res) => {
@@ -74,7 +74,7 @@ app.get("/oauth/callback", async (req, res) => {
 
     console.log(`✅ Tokens guardados para UID ${state}`);
 
-    res.redirect("https://tusitio.com/admin?status=success");
+   res.redirect("https://adminvinosapp-production.up.railway.app/admin?status=success");
   } catch (err) {
     console.error("❌ Error en OAuth callback:", err);
     res.status(500).send("Error en la autenticación con Mercado Pago");
