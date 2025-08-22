@@ -1,4 +1,5 @@
 import 'package:app_bootsup/Modulo/authService.dart';
+import 'package:app_bootsup/Vista/vistaAdmin/MercadoPago.dart';
 import 'package:app_bootsup/Vista/vistaAdmin/temaoscuro.dart';
 import 'package:app_bootsup/Widgets/boton.dart';
 import 'package:app_bootsup/Widgets/navegator.dart';
@@ -98,10 +99,12 @@ class _PerfilState extends State<PerfilPage> {
                   ),
                   FullWidthMenuTile(
                     option: MenuOption(
-                      title: 'Compras',
+                      title: 'Mercado Pago',
                       description: 'Configurar Mercado Pago',
                       icon: Iconsax.shopping_cart,
-                      onTap: () {},
+                      onTap: () {
+                        navegarConSlideDerecha(context, MercadoPagoButton());
+                      },
                     ),
                   ),
                   FullWidthMenuTile(
