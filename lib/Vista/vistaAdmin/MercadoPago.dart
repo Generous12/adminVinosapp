@@ -79,7 +79,7 @@ class _WebViewMercadoPagoState extends State<WebViewMercadoPago> {
           onNavigationRequest: (navReq) {
             // Captura la redirección de tu backend
             if (navReq.url.contains("/admin?status=success")) {
-              Navigator.pop(context); // Cierra el WebView
+              Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text("✅ Mercado Pago vinculado con éxito"),
