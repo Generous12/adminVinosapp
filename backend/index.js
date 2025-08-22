@@ -8,7 +8,7 @@ import admin from "firebase-admin";
 // 🔹 Inicializar Firebase Admin SDK
 if (!admin.apps.length) {
   admin.initializeApp({
-    credential: admin.credential.applicationDefault(), // O usa serviceAccountKey.json
+    credential: admin.credential.applicationDefault(),
   });
 }
 const db = admin.firestore();
@@ -17,26 +17,30 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 🔹 Credenciales de tu app Mercado Pago (usa ENV en producción)
+// 🔹 Credenciales Mercado Pago
 const MP_CLIENT_ID = process.env.MP_CLIENT_ID;
 const MP_CLIENT_SECRET = process.env.MP_CLIENT_SECRET;
 const MP_REDIRECT_URI = process.env.MP_REDIRECT_URI || "https://tusitio.com/oauth/callback";
 
-// Ruta para generar el link de login de Mercado Pago
-app.get("/mp/login", (req, res) => {
+// 🔹 Ruta para generar el link de login de Mercado Pago
+app.post("/mp/login", (req, res) => {
+  const { uid } = req.body; // <-- UID DEL USUARIO LOGUEADO
+  if (!uid) return res.status(400).json({ error: "UID requerido" });
+
   const redirectUrl = `https://auth.mercadopago.com/authorization?client_id=${MP_CLIENT_ID}&response_type=code&platform_id=mp&redirect_uri=${encodeURIComponent(
     MP_REDIRECT_URI
-  )}`;
+  )}&state=${uid}`; // <-- Pasamos UID en state
+
   res.json({ url: redirectUrl });
 });
 
-// Callback de Mercado Pago (aquí vuelve el admin luego de autorizar)
+// 🔹 Callback Mercado Pago
 app.get("/oauth/callback", async (req, res) => {
   try {
-    const { code, state } = req.query;
-    if (!code) return res.status(400).send("Código de autorización no recibido");
+    const { code, state } = req.query; // state = UID
+    if (!code || !state) return res.status(400).send("Faltan parámetros");
 
-    // Intercambiar el code por access_token y refresh_token
+    // Intercambiar el code por tokens
     const tokenResponse = await fetch("https://api.mercadopago.com/oauth/token", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -57,8 +61,9 @@ app.get("/oauth/callback", async (req, res) => {
 
     const { access_token, refresh_token, user_id, expires_in, token_type, scope } = tokenData;
 
-    // 🔹 Guardar en Firestore en la colección empresaVinos
-    await db.collection("empresaVinos").doc(user_id.toString()).set({
+    // 🔹 Guardar tokens en Firestore, documento con el UID
+    await db.collection("empresaVinos").doc(state).set({
+      mp_user_id: user_id,
       access_token,
       refresh_token,
       expires_in,
@@ -67,9 +72,8 @@ app.get("/oauth/callback", async (req, res) => {
       vinculadoEn: admin.firestore.FieldValue.serverTimestamp(),
     });
 
-    console.log(`✅ Tokens guardados en empresaVinos/${user_id}`);
+    console.log(`✅ Tokens guardados para UID ${state}`);
 
-    // Redirigir a tu panel de admins
     res.redirect("https://tusitio.com/admin?status=success");
   } catch (err) {
     console.error("❌ Error en OAuth callback:", err);

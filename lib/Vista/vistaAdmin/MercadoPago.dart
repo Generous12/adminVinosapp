@@ -1,15 +1,48 @@
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class MercadoPagoButton extends StatelessWidget {
+class MercadoPagoButton extends StatefulWidget {
   const MercadoPagoButton({super.key});
 
+  @override
+  State<MercadoPagoButton> createState() => _MercadoPagoButtonState();
+}
+
+class _MercadoPagoButtonState extends State<MercadoPagoButton> {
+  bool _isLinked = false;
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfLinked();
+  }
+
+  /// 🔹 Verifica en Firestore si ya está vinculado
+  Future<void> _checkIfLinked() async {
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    final doc = await FirebaseFirestore.instance
+        .collection('empresaVinos')
+        .doc(uid)
+        .get();
+    setState(() {
+      _isLinked = doc.exists;
+      _loading = false;
+    });
+  }
+
+  /// 🔹 Pide al backend el link OAuth con el UID
   Future<String> _getLoginUrl() async {
-    // 🔹 Tu backend genera el link con /mp/login
-    final response = await http.get(
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+
+    final response = await http.post(
       Uri.parse("https://adminvinosapp-production.up.railway.app/mp/login"),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({"uid": uid}),
     );
 
     if (response.statusCode == 200) {
@@ -20,82 +53,47 @@ class MercadoPagoButton extends StatelessWidget {
     }
   }
 
-  void _openWebView(BuildContext context) async {
+  /// 🔹 Abre el flujo en un navegador externo
+  Future<void> _openExternalBrowser() async {
     final loginUrl = await _getLoginUrl();
+    final uri = Uri.parse(loginUrl);
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => WebViewMercadoPago(url: loginUrl),
-      ),
-    );
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+      // 🔹 Tras volver, revisamos si ya está vinculado
+      await Future.delayed(const Duration(seconds: 3));
+      _checkIfLinked();
+    } else {
+      throw Exception("No se pudo abrir el navegador");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_loading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return ElevatedButton.icon(
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: _isLinked ? Colors.green : Colors.deepPurple,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
         elevation: 6,
       ),
-      icon: const Icon(Icons.link, color: Colors.white),
-      label: const Text(
-        "Vincular con Mercado Pago",
-        style: TextStyle(
+      icon: Icon(
+        _isLinked ? Icons.check_circle : Icons.link,
+        color: Colors.white,
+      ),
+      label: Text(
+        _isLinked ? "Vinculado" : "Vincular con Mercado Pago",
+        style: const TextStyle(
           fontSize: 16,
           color: Colors.white,
           fontWeight: FontWeight.bold,
         ),
       ),
-      onPressed: () => _openWebView(context),
+      onPressed: _isLinked ? null : _openExternalBrowser,
     );
-  }
-}
-
-class WebViewMercadoPago extends StatefulWidget {
-  final String url;
-  const WebViewMercadoPago({super.key, required this.url});
-
-  @override
-  State<WebViewMercadoPago> createState() => _WebViewMercadoPagoState();
-}
-
-class _WebViewMercadoPagoState extends State<WebViewMercadoPago> {
-  late final WebViewController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onPageFinished: (url) {
-            debugPrint("✅ Cargada: $url");
-          },
-          onNavigationRequest: (navReq) {
-            // Captura la redirección de tu backend
-            if (navReq.url.contains("/admin?status=success")) {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text("✅ Mercado Pago vinculado con éxito"),
-                ),
-              );
-              return NavigationDecision.prevent;
-            }
-            return NavigationDecision.navigate;
-          },
-        ),
-      )
-      ..loadRequest(Uri.parse(widget.url));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(body: WebViewWidget(controller: _controller));
   }
 }
