@@ -1,0 +1,174 @@
+import 'package:app_bootsup/Vista/autenticacion/SinConexion.dart';
+import 'package:app_bootsup/Vista/autenticacion/SplashScreen.dart';
+import 'package:app_bootsup/Vista/vistaAdmin/mainScreen.dart';
+import 'package:app_bootsup/Widgets/themeprovider.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:provider/provider.dart';
+import 'firebase_options.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Color.fromARGB(255, 0, 0, 0),
+      statusBarIconBrightness: Brightness.light,
+    ),
+  );
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+  runApp(
+    MultiProvider(
+      providers: [ChangeNotifierProvider(create: (_) => ThemeProvider())],
+      child: const MyApp(),
+    ),
+  );
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+
+  bool _isConnected = true;
+  bool _isLoggedIn = false;
+  bool _verificacionCompleta = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkConnectivity();
+      _listenToAuthChanges();
+
+      Connectivity().onConnectivityChanged.listen(_updateConnectionStatus);
+    });
+  }
+
+  Future<void> _checkConnectivity() async {
+    try {
+      final result = await Connectivity().checkConnectivity();
+      _updateConnectionStatus(result);
+    } catch (e) {
+      debugPrint("❌ Error al verificar la conexión: $e");
+      _updateConnectionStatus(ConnectivityResult.none);
+    }
+  }
+
+  void _updateConnectionStatus(ConnectivityResult result) {
+    final bool isNowConnected =
+        result == ConnectivityResult.mobile ||
+        result == ConnectivityResult.wifi;
+
+    if (_isConnected != isNowConnected) {
+      _isConnected = isNowConnected;
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!_isConnected) {
+          _navigatorKey.currentState?.pushReplacement(
+            PageRouteBuilder(
+              pageBuilder: (_, __, ___) => NoInternetScreen(),
+              transitionsBuilder: (_, animation, __, child) =>
+                  FadeTransition(opacity: animation, child: child),
+              transitionDuration: const Duration(milliseconds: 500),
+            ),
+          );
+        } else {
+          _navigatorKey.currentState?.pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (_) => _isLoggedIn
+                  ? MainScreenVinos(user: FirebaseAuth.instance.currentUser)
+                  : const SplashScreen(),
+            ),
+            (route) => false,
+          );
+        }
+      });
+    }
+  }
+
+  void _listenToAuthChanges() {
+    FirebaseAuth.instance.authStateChanges().listen((user) {
+      if (user == null) {
+        _isLoggedIn = false;
+      } else if (user.emailVerified) {
+        _isLoggedIn = true;
+      }
+
+      if (mounted) {
+        setState(() {
+          _verificacionCompleta = true;
+        });
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final themeProvider = context.watch<ThemeProvider>();
+    return MaterialApp(
+      navigatorKey: _navigatorKey,
+      debugShowCheckedModeBanner: false,
+      themeMode: themeProvider.themeMode,
+      theme: ThemeData(
+        useMaterial3: true,
+        fontFamily: 'Afacad',
+        brightness: Brightness.light,
+        colorScheme: const ColorScheme.light(
+          primary: Color(0xFFA30000),
+          onPrimary: Color(0xFFFAFAFA),
+          background: Color(0xFFFAFAFA),
+          onBackground: Colors.black,
+        ),
+        scaffoldBackgroundColor: Color(0xFFFAFAFA),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFFFAFAFA),
+          foregroundColor: Colors.black,
+          elevation: 0,
+        ),
+        bottomAppBarTheme: BottomAppBarThemeData(color: Color(0xFFFAFAFA)),
+        iconTheme: const IconThemeData(color: Colors.black),
+        textTheme: const TextTheme(bodyMedium: TextStyle(color: Colors.black)),
+      ),
+      darkTheme: ThemeData(
+        useMaterial3: true,
+        fontFamily: 'Afacad',
+        brightness: Brightness.dark,
+        colorScheme: const ColorScheme.dark(
+          primary: Color(0xFFA30000),
+          onPrimary: Colors.black,
+          background: Color(0xFF121212),
+          onBackground: Colors.white,
+        ),
+        scaffoldBackgroundColor: Color(0xFF121212),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF121212),
+          foregroundColor: Colors.white,
+          elevation: 0,
+        ),
+        bottomAppBarTheme: BottomAppBarThemeData(color: Color(0xFF121212)),
+        iconTheme: const IconThemeData(color: Colors.white),
+        textTheme: const TextTheme(bodyMedium: TextStyle(color: Colors.white)),
+      ),
+      home: !_verificacionCompleta
+          ? const SplashScreen()
+          : _isLoggedIn
+          ? MainScreenVinos(
+              user: FirebaseAuth.instance.currentUser,
+            ) //Quitar Vinos
+          : const SplashScreen(),
+    );
+  }
+}
