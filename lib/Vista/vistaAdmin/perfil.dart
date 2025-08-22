@@ -99,7 +99,7 @@ class _PerfilState extends State<PerfilPage> {
                   FullWidthMenuTile(
                     option: MenuOption(
                       title: 'Compras',
-                      description: 'Ver tus compras realizadas.',
+                      description: 'Configurar Mercado Pago',
                       icon: Iconsax.shopping_cart,
                       onTap: () {},
                     ),
