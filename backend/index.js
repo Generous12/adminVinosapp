@@ -97,7 +97,7 @@ app.post("/crear-preferencia", async (req, res) => {
       },
       auto_return: "approved",
       payment_methods: {
-        installments: 1, // Número de cuotas
+        installments: 1,
       },
       notification_url:
         "https://adminvinosapp-production.up.railway.app/webhook",
