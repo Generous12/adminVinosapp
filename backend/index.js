@@ -1,85 +1,159 @@
-// index.js — Backend producción SOLO para vincular Mercado Pago (OAuth)
-
 import express from "express";
 import cors from "cors";
-import fetch from "node-fetch";
-import admin from "firebase-admin";
+import mercadopagoPkg from "mercadopago";
+import crypto from "crypto";
 
-// 🔹 Inicializar Firebase Admin SDK
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.applicationDefault(),
-  });
+const { MercadoPagoConfig, Preference, Payment } = mercadopagoPkg;
+
+// 🔹 Credenciales Mercado Pago (producción) desde variables de entorno
+const MP_CLIENT_ID = process.env.MP_CLIENT_ID;
+const MP_CLIENT_SECRET = process.env.MP_CLIENT_SECRET;
+const MP_REDIRECT_URI =
+  process.env.MP_REDIRECT_URI ||
+  "https://adminvinosapp-production.up.railway.app/webhook";
+
+const ACCESS_TOKEN = process.env.MP_ACCESS_TOKEN?.trim();
+if (!ACCESS_TOKEN) {
+  console.error("❌ ERROR: La variable MP_ACCESS_TOKEN no está definida o es vacía.");
+  process.exit(1);
 }
-const db = admin.firestore();
+
+console.log("✅ MP_ACCESS_TOKEN cargado correctamente");
+
+const client = new MercadoPagoConfig({ accessToken: ACCESS_TOKEN });
+const preferenceClient = new Preference(client);
+const paymentClient = new Payment(client);
 
 const app = express();
 app.use(cors());
-app.use(express.json());
-
-// 🔹 Credenciales Mercado Pago
-const MP_CLIENT_ID = process.env.MP_CLIENT_ID;
-const MP_CLIENT_SECRET = process.env.MP_CLIENT_SECRET;
-const MP_REDIRECT_URI = process.env.MP_REDIRECT_URI || "https://adminvinosapp-production.up.railway.app/oauth/callback";
-
-// 🔹 Ruta para generar el link de login de Mercado Pago
-app.post("/mp/login", (req, res) => {
-  const { uid } = req.body; // <-- UID DEL USUARIO LOGUEADO
-  if (!uid) return res.status(400).json({ error: "UID requerido" });
-
-  const redirectUrl = `https://auth.mercadopago.com/authorization?client_id=${MP_CLIENT_ID}&response_type=code&platform_id=mp&redirect_uri=${encodeURIComponent(
-    MP_REDIRECT_URI
-  )}&state=${uid}`; // <-- Pasamos UID en state
-
-  res.json({ url: redirectUrl });
-});
-
-// 🔹 Callback Mercado Pago
-app.get("/oauth/callback", async (req, res) => {
+  
+app.post("/webhook", express.raw({ type: "*/*" }), (req, res) => {
   try {
-    const { code, state } = req.query; // state = UID
-    if (!code || !state) return res.status(400).send("Faltan parámetros");
+    const signature = req.headers["x-signature"];
+    const requestId = req.headers["x-request-id"];
+    const url = new URL(req.protocol + "://" + req.get("host") + req.originalUrl);
+    const dataId = url.searchParams.get("data.id");
+    const secret = process.env.MP_WEBHOOK_SECRET;
 
-    // Intercambiar el code por tokens
-    const tokenResponse = await fetch("https://api.mercadopago.com/oauth/token", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        client_id: MP_CLIENT_ID,
-        client_secret: MP_CLIENT_SECRET,
-        grant_type: "authorization_code",
-        code,
-        redirect_uri: MP_REDIRECT_URI,
-      }),
-    });
+    console.log("🔔 Webhook recibido. Headers:", req.headers);
+    console.log("🔔 Query:", url.searchParams.toString());
+    console.log("🔔 Body:", req.body.toString());
 
-    const tokenData = await tokenResponse.json();
-    if (tokenData.error) {
-      console.error("❌ Error en token exchange:", tokenData);
-      return res.status(400).json({ error: tokenData });
+    // ✅ SIEMPRE RESPONDER 200
+    res.sendStatus(200);
+
+    // 🔒 Solo validamos si hay datos suficientes
+    if (!signature || !requestId || !dataId || !secret) {
+      console.warn("⚠️ No se pudo validar firma (headers faltantes).");
+      return;
     }
 
-    const { access_token, refresh_token, user_id, expires_in, token_type, scope } = tokenData;
+    const ts = signature.split(",").find((s) => s.includes("ts"))?.split("=")[1];
+    const v1 = signature.split(",").find((s) => s.includes("v1"))?.split("=")[1];
+    if (!ts || !v1) {
+      console.warn("⚠️ No se encontraron ts o v1 en signature");
+      return;
+    }
 
-    // 🔹 Guardar tokens en Firestore, documento con el UID
-    await db.collection("empresaVinos").doc(state).set({
-      mp_user_id: user_id,
-      access_token,
-      refresh_token,
-      expires_in,
-      token_type,
-      scope,
-      vinculadoEn: admin.firestore.FieldValue.serverTimestamp(),
+    const manifest = `id:${dataId};request-id:${requestId};ts:${ts};`;
+    const computedHmac = crypto
+      .createHmac("sha256", secret)
+      .update(manifest)
+      .digest("hex");
+
+    if (computedHmac !== v1) {
+      console.warn("⚠️ Firma inválida");
+      return;
+    }
+
+    // ✅ Si hay datos correctos, procesar evento
+    const event = JSON.parse(req.body.toString());
+    if (event.type === "payment") {
+      console.log(`✅ Pago confirmado: ${event.data.id}`);
+      // Guardar en tu DB
+    }
+  } catch (error) {
+    console.error("❌ Error procesando webhook:", error);
+  }
+});
+
+
+// 🔹 AHORA ponemos express.json() para el resto de endpoints
+app.use(express.json());
+
+// 🔹 Crear preferencia
+app.post("/crear-preferencia", async (req, res) => {
+  try {
+    const { items } = req.body;
+    if (!items || !Array.isArray(items) || items.length === 0)
+      return res.status(400).json({ error: "Items inválidos o vacíos" });
+
+    const preferenceData = {
+      items,
+      back_urls: {
+        success: "https://tusitio.com/success",
+        failure: "https://tusitio.com/failure",
+        pending: "https://tusitio.com/pending",
+      },
+      auto_return: "approved",
+      payment_methods: {
+        installments: 1, // Número de cuotas
+      },
+      notification_url:
+        "https://adminvinosapp-production.up.railway.app/webhook",
+    };
+
+    console.log("📦 Items enviados a Mercado Pago:", items);
+
+    const response = await preferenceClient.create({ body: preferenceData });
+
+    console.log("✅ Preferencia creada:", response.init_point);
+
+    res.json({
+      init_point: response.init_point,
+      preference_id: response.id,
     });
+  } catch (error) {
+    console.error("Error creando la preferencia:", error.response?.data || error);
+    res.status(500).json({
+      error: "Error creando la preferencia",
+      detalle: error.response?.data?.message || error.message || error,
+    });
+  }
+});
 
-    console.log(`✅ Tokens guardados para UID ${state}`);
+// 🔹 Verificar pago
+app.get("/verificar/:id", async (req, res) => {
+  const { id } = req.params;
+  if (!id) return res.status(400).json({ error: "ID requerido" });
 
-   res.redirect("https://adminvinosapp-production.up.railway.app/admin?status=success");
+  try {
+    try {
+      const payment = await paymentClient.get({ id });
+      return res.json({
+        tipo: "payment",
+        id: payment.id,
+        status: payment.status,
+        status_detail: payment.status_detail,
+      });
+    } catch {
+      const preference = await preferenceClient.get({ id });
+      return res.json({
+        tipo: "preference",
+        id: preference.id,
+        status: preference.status,
+        init_point: preference.init_point,
+        items: preference.items,
+      });
+    }
   } catch (err) {
-    console.error("❌ Error en OAuth callback:", err);
-    res.status(500).send("Error en la autenticación con Mercado Pago");
+    console.error("Error verificando ID:", err);
+    res.status(500).json({
+      error: "No se pudo verificar el ID",
+      detalle: err.message,
+    });
   }
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Servidor OAuth escuchando en puerto ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Servidor escuchando en puerto ${PORT}`));
