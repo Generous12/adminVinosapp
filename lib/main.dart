@@ -1,6 +1,6 @@
-import 'package:app_bootsup/Vista/autenticacion/SinConexion.dart';
-import 'package:app_bootsup/Vista/autenticacion/SplashScreen.dart';
-import 'package:app_bootsup/Vista/vistaAdmin/mainScreen.dart';
+import 'package:app_bootsup/Vistadmin/autenticacion/SinConexion.dart';
+import 'package:app_bootsup/Vistadmin/autenticacion/SplashScreen.dart';
+import 'package:app_bootsup/Vistadmin/vistaAdmin/mainScreen.dart';
 import 'package:app_bootsup/Widgets/themeprovider.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';

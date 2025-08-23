@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'package:app_bootsup/Vista/autenticacion/SplashScreen.dart';
+import 'package:app_bootsup/Vistadmin/autenticacion/SplashScreen.dart';
 import 'package:app_bootsup/Widgets/alertas.dart';
 import 'package:app_bootsup/Widgets/bottombar.dart';
 import 'package:app_bootsup/Widgets/themeprovider.dart';
@@ -13,6 +13,51 @@ import 'package:provider/provider.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<String?> getUserMembership() async {
+    try {
+      final User? user = _auth.currentUser;
+      if (user == null) {
+        print("⚠️ No hay usuario autenticado");
+        return null;
+      }
+
+      DocumentSnapshot<Map<String, dynamic>> userDoc = await _firestore
+          .collection('users')
+          .doc(user.uid)
+          .get();
+
+      if (!userDoc.exists) {
+        print("⚠️ El documento del usuario no existe");
+        return null;
+      }
+
+      final data = userDoc.data();
+      final String? membresia = data?['membresia'];
+
+      if (membresia == "Administrador" || membresia == "Cliente") {
+        return membresia;
+      } else {
+        print("⚠️ Membresía no válida: $membresia");
+        return null;
+      }
+    } catch (e) {
+      print("❌ Error al obtener membresía: $e");
+      return null;
+    }
+  }
+
+  /// Método para verificar acceso según membresía
+  Future<bool> validarAcceso({required bool soloAdmin}) async {
+    final membership = await getUserMembership();
+    if (soloAdmin) {
+      return membership == "Administrador";
+    } else {
+      return membership == "Administrador" || membership == "Cliente";
+    }
+  }
+
   Future<User?> checkSignInStatus(BuildContext context) async {
     final user = _auth.currentUser;
     if (user == null) {

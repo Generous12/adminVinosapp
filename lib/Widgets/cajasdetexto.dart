@@ -1,3 +1,4 @@
+import 'package:app_bootsup/Widgets/boton.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -188,4 +189,185 @@ Widget buildDetalleFila(BuildContext context, String titulo, String valor) {
       ],
     ),
   );
+}
+
+String mesAbreviado(int mes) {
+  const meses = [
+    "ene",
+    "feb",
+    "mar",
+    "abr",
+    "may",
+    "jun",
+    "jul",
+    "ago",
+    "sep",
+    "oct",
+    "nov",
+    "dic",
+  ];
+  return meses[mes - 1];
+}
+
+class EditableCard extends StatelessWidget {
+  final TextEditingController controller;
+  final Future<void> Function() onSave;
+  final bool isNumeric; // Nuevo parámetro
+  final int? maxLength; // Nuevo parámetro
+  final String label;
+  final String hintText;
+
+  const EditableCard({
+    super.key,
+    required this.controller,
+    required this.onSave,
+    this.isNumeric = false,
+    this.maxLength,
+    this.label = "Nuevo nombre de usuario",
+    this.hintText = "Ingresar nombre de usuario",
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16.0),
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      decoration: BoxDecoration(
+        color: isDark ? Colors.grey[900] : Colors.white,
+        borderRadius: BorderRadius.circular(16.0),
+        boxShadow: [
+          if (!isDark)
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: const [
+              Icon(Iconsax.edit_2, color: Colors.amber, size: 22),
+              SizedBox(width: 8.0),
+              Text(
+                "Editar información",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16.0),
+          CustomTextField(
+            controller: controller,
+            label: label,
+            hintText: hintText,
+            isNumeric: isNumeric,
+            maxLength: maxLength,
+          ),
+          const SizedBox(height: 20.0),
+          LoadingOverlayButton(text: 'Guardar', onPressedLogic: onSave),
+        ],
+      ),
+    );
+  }
+}
+
+Widget buildSectionHeader(BuildContext context, String title) {
+  final theme = Theme.of(context);
+
+  return Padding(
+    padding: const EdgeInsets.fromLTRB(20, 15, 20, 12),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: theme.textTheme.bodyLarge?.color,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Container(
+          width: 40,
+          height: 3,
+          decoration: BoxDecoration(
+            color: theme.colorScheme.primary, // usa el color principal del tema
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+class InfoCard extends StatelessWidget {
+  final String label;
+  final String value;
+  final bool isEditable;
+
+  const InfoCard({
+    super.key,
+    required this.label,
+    required this.value,
+    this.isEditable = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16.0),
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      decoration: BoxDecoration(
+        color: isDark ? Colors.grey[900] : Colors.white,
+        borderRadius: BorderRadius.circular(16.0),
+        boxShadow: [
+          if (!isDark)
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: isDark ? Colors.grey[400] : Colors.grey[700],
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  value.isNotEmpty ? value : 'No especificado',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: isDark ? Colors.white : Colors.black87,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

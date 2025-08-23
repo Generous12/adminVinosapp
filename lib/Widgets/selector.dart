@@ -1,6 +1,8 @@
 import 'package:app_bootsup/Modulo/inventarioService.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:timeline_tile/timeline_tile.dart';
+import 'dart:ui' as ui;
 
 class CategoriaSelector extends StatefulWidget {
   final Function(String) onCategoriaSelected;
@@ -472,5 +474,271 @@ class _ChatFiltroSelectorState extends State<ChatFiltroSelector> {
         },
       ),
     );
+  }
+}
+
+class CategoriaSelectorVinos extends StatefulWidget {
+  final Function(String) onCategoriaSelected;
+
+  const CategoriaSelectorVinos({super.key, required this.onCategoriaSelected});
+
+  @override
+  State<CategoriaSelectorVinos> createState() => _CategoriaSelectorStateV();
+}
+
+class _CategoriaSelectorStateV extends State<CategoriaSelectorVinos> {
+  String? selectedCategoria;
+
+  final List<Map<String, dynamic>> categorias = [
+    {'label': 'General', 'icon': Icons.category},
+    {'label': 'Vino Tinto', 'icon': Icons.wine_bar},
+    {'label': 'Vino Blanco', 'icon': Icons.wine_bar},
+    {'label': 'Pisco Quebranta', 'icon': Icons.local_bar},
+    {'label': 'Pisco Acholado', 'icon': Icons.local_bar},
+    {'label': 'Pisco Italia', 'icon': Icons.local_bar},
+    {'label': 'Pisco Mosto Verde', 'icon': Icons.local_bar},
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    selectedCategoria = 'General';
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.onCategoriaSelected(selectedCategoria!);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return SizedBox(
+      height: 40,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        itemCount: categorias.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        itemBuilder: (context, index) {
+          final categoria = categorias[index]['label'];
+          final icon = categorias[index]['icon'];
+          final isSelected = selectedCategoria == categoria;
+
+          final backgroundColor = isSelected
+              ? (isDark ? const Color(0xFFA30000) : Colors.black)
+              : (isDark ? Colors.grey.shade900 : const Color(0xFFFAFAFA));
+          final textColor = isSelected
+              ? (isDark ? Colors.black : Colors.white)
+              : (isDark ? Colors.white70 : Colors.black);
+
+          return GestureDetector(
+            onTap: () async {
+              setState(() {
+                selectedCategoria = categoria;
+              });
+
+              if (categoria == 'General') {
+                await InventarioService().listarProductos();
+              } else {
+                await InventarioService().listarProductosPorCategoria(
+                  categoria,
+                );
+              }
+
+              widget.onCategoriaSelected(categoria);
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: backgroundColor,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: isDark
+                      ? Colors.white12
+                      : Colors.black.withOpacity(0.3),
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(icon, size: 18, color: textColor),
+                  const SizedBox(width: 6),
+                  Text(
+                    categoria,
+                    style: TextStyle(
+                      color: textColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class CantidadSelectorHorizontal extends StatelessWidget {
+  final int cantidadSeleccionada;
+  final ValueChanged<int> onSeleccionar;
+
+  const CantidadSelectorHorizontal({
+    super.key,
+    required this.cantidadSeleccionada,
+    required this.onSeleccionar,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+      decoration: BoxDecoration(
+        color: theme.scaffoldBackgroundColor,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: List.generate(10, (index) {
+            final numero = index + 1;
+            final bool seleccionado = cantidadSeleccionada == numero;
+
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              child: InkWell(
+                onTap: () => onSeleccionar(numero),
+                borderRadius: BorderRadius.circular(24),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: seleccionado
+                        ? colorScheme.primary
+                        : colorScheme.surface,
+                    border: Border.all(
+                      color: seleccionado
+                          ? colorScheme.primary.withOpacity(0.8)
+                          : colorScheme.outlineVariant,
+                    ),
+                    shape: BoxShape.circle,
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    '$numero',
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: seleccionado
+                          ? colorScheme.onPrimary
+                          : colorScheme.onSurface,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }),
+        ),
+      ),
+    );
+  }
+}
+
+class SeguimientoEnvio extends StatelessWidget {
+  final String estado;
+
+  SeguimientoEnvio({required this.estado});
+
+  final List<String> estados = [
+    'No atendido',
+    'Recibidos',
+    'Preparación',
+    'Enviado',
+  ];
+
+  final List<IconData> iconos = [
+    Icons.inbox,
+    Icons.download_done,
+    Icons.kitchen,
+    Icons.local_shipping,
+  ];
+
+  int _estadoToIndex(String estado) {
+    return estados.indexWhere((e) => e.toLowerCase() == estado.toLowerCase());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final index = _estadoToIndex(estado);
+    return SizedBox(
+      height: 90,
+      child: Row(
+        children: List.generate(estados.length * 2 - 1, (i) {
+          final isTile = i.isEven;
+          final idx = i ~/ 2;
+
+          if (isTile) {
+            final isActive = idx <= index;
+            return Expanded(
+              flex: 1,
+              child: TimelineTile(
+                axis: TimelineAxis.horizontal,
+                alignment: TimelineAlign.center,
+                isFirst: idx == 0,
+                isLast: idx == estados.length - 1,
+                beforeLineStyle: LineStyle(
+                  color: isActive
+                      ? const ui.Color(0xFFA30000) //aqui era orange
+                      : Colors.grey.shade300,
+                  thickness: 4,
+                ),
+                afterLineStyle: LineStyle(
+                  color: idx < index
+                      ? const Color(0xFFA30000) //aqui era orange
+                      : Colors.grey.shade300,
+                  thickness: 4,
+                ),
+                indicatorStyle: IndicatorStyle(
+                  width: 30,
+                  height: 30,
+                  indicatorXY: 0.5,
+                  color: isActive
+                      ? const ui.Color(0xFFA30000) //aqui era orange
+                      : Colors.grey.shade300,
+                  iconStyle: IconStyle(
+                    iconData: iconos[idx],
+                    color: Colors.white,
+                  ),
+                ),
+                startChild: idx == 0 ? Container() : null,
+                endChild: idx == estados.length - 1 ? Container() : null,
+              ),
+            );
+          } else {
+            return const SizedBox(width: 4);
+          }
+        }),
+      ),
+    );
+  }
+}
+
+//estado
+Color colorEstado(String estado) {
+  switch (estado) {
+    case 'Recibidos':
+      return const Color.fromARGB(255, 0, 145, 255);
+    case 'Preparación':
+      return Colors.orange;
+    case 'Enviado':
+      return Colors.green;
+    default:
+      return Colors.grey;
   }
 }

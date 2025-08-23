@@ -41,57 +41,49 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBOlTA9RYYoydP_km_i68UU5WUk2q7dRV0',
-    appId: '1:31698346779:web:9e29061db41680f9f269be',
-    messagingSenderId: '31698346779',
-    projectId: 'bootsup-3d44d',
-    authDomain: 'bootsup-3d44d.firebaseapp.com',
-    databaseURL: 'https://bootsup-3d44d-default-rtdb.firebaseio.com',
-    storageBucket: 'bootsup-3d44d.appspot.com',
-    measurementId: 'G-D7YWTLZBD4',
+    apiKey: 'AIzaSyCwfmPBoHm2N81jIEE1JMkjykKuUQivn4Q',
+    appId: '1:10919153149:web:8e8bf6f35cc802c6a7dd94',
+    messagingSenderId: '10919153149',
+    projectId: 'vinos-63de0',
+    authDomain: 'vinos-63de0.firebaseapp.com',
+    storageBucket: 'vinos-63de0.firebasestorage.app',
+    measurementId: 'G-N0RG2QH31B',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyA9o53w6zKq8PhNE-rRf8ZhxRvjRc8v5KE',
-    appId: '1:31698346779:android:d2d8d7ae53d8db48f269be',
-    messagingSenderId: '31698346779',
-    projectId: 'bootsup-3d44d',
-    databaseURL: 'https://bootsup-3d44d-default-rtdb.firebaseio.com',
-    storageBucket: 'bootsup-3d44d.appspot.com',
+    apiKey: 'AIzaSyBlB6eJN0GTRiQOr6RrE0ccAapFpTD97s4',
+    appId: '1:10919153149:android:17c2a373a19b3a00a7dd94',
+    messagingSenderId: '10919153149',
+    projectId: 'vinos-63de0',
+    storageBucket: 'vinos-63de0.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyD38uS8jMVdLVmhKWZ58RvnN8IJOVYcahk',
-    appId: '1:31698346779:ios:6e8a8dd075f2697ff269be',
-    messagingSenderId: '31698346779',
-    projectId: 'bootsup-3d44d',
-    databaseURL: 'https://bootsup-3d44d-default-rtdb.firebaseio.com',
-    storageBucket: 'bootsup-3d44d.appspot.com',
-    androidClientId: '31698346779-1lqkbo27osf6rot2grl5vtmtbpoerosr.apps.googleusercontent.com',
-    iosClientId: '31698346779-kk9e2ias71si9eb0t845dejihjjurpuu.apps.googleusercontent.com',
+    apiKey: 'AIzaSyAVJamK910QHcO7v7rj1fkbMGpwmIvih8A',
+    appId: '1:10919153149:ios:5c497b045939f827a7dd94',
+    messagingSenderId: '10919153149',
+    projectId: 'vinos-63de0',
+    storageBucket: 'vinos-63de0.firebasestorage.app',
     iosBundleId: 'com.example.appBootsup',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyD38uS8jMVdLVmhKWZ58RvnN8IJOVYcahk',
-    appId: '1:31698346779:ios:6e8a8dd075f2697ff269be',
-    messagingSenderId: '31698346779',
-    projectId: 'bootsup-3d44d',
-    databaseURL: 'https://bootsup-3d44d-default-rtdb.firebaseio.com',
-    storageBucket: 'bootsup-3d44d.appspot.com',
-    androidClientId: '31698346779-1lqkbo27osf6rot2grl5vtmtbpoerosr.apps.googleusercontent.com',
-    iosClientId: '31698346779-kk9e2ias71si9eb0t845dejihjjurpuu.apps.googleusercontent.com',
+    apiKey: 'AIzaSyAVJamK910QHcO7v7rj1fkbMGpwmIvih8A',
+    appId: '1:10919153149:ios:5c497b045939f827a7dd94',
+    messagingSenderId: '10919153149',
+    projectId: 'vinos-63de0',
+    storageBucket: 'vinos-63de0.firebasestorage.app',
     iosBundleId: 'com.example.appBootsup',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyBZAMSIuVxz_aQ2C_10d74BhyYKf_WONDQ',
-    appId: '1:31698346779:web:269e2ecc0fc27e10f269be',
-    messagingSenderId: '31698346779',
-    projectId: 'bootsup-3d44d',
-    authDomain: 'bootsup-3d44d.firebaseapp.com',
-    databaseURL: 'https://bootsup-3d44d-default-rtdb.firebaseio.com',
-    storageBucket: 'bootsup-3d44d.appspot.com',
-    measurementId: 'G-P58PQX5G33',
+    apiKey: 'AIzaSyCwfmPBoHm2N81jIEE1JMkjykKuUQivn4Q',
+    appId: '1:10919153149:web:755df14f8c47eedaa7dd94',
+    messagingSenderId: '10919153149',
+    projectId: 'vinos-63de0',
+    authDomain: 'vinos-63de0.firebaseapp.com',
+    storageBucket: 'vinos-63de0.firebasestorage.app',
+    measurementId: 'G-VYQJL91RDT',
   );
+
 }
