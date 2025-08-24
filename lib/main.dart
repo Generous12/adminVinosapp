@@ -89,7 +89,9 @@ class _MyAppState extends State<MyApp> {
           _navigatorKey.currentState?.pushAndRemoveUntil(
             MaterialPageRoute(
               builder: (_) => _isLoggedIn
-                  ? MainScreenVinos(user: FirebaseAuth.instance.currentUser)
+                  ? MainScreenVinosAdmin(
+                      user: FirebaseAuth.instance.currentUser,
+                    )
                   : const SplashScreen(),
             ),
             (route) => false,
@@ -165,7 +167,7 @@ class _MyAppState extends State<MyApp> {
       home: !_verificacionCompleta
           ? const SplashScreen()
           : _isLoggedIn
-          ? MainScreenVinos(
+          ? MainScreenVinosAdmin(
               user: FirebaseAuth.instance.currentUser,
             ) //Quitar Vinos
           : const SplashScreen(),

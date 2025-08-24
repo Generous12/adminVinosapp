@@ -3,7 +3,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:app_bootsup/Modulo/crritoServiceV.dart';
-import 'package:app_bootsup/Vistadmin/vistaAdmin/mainScreen.dart';
+import 'package:app_bootsup/VistaCliente/screePrincipal/mainScreens.dart';
 import 'package:app_bootsup/Widgets/alertas.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -307,7 +307,7 @@ class _CompraExitosaScreenState extends State<CompraExitosaScreenVinos> {
                             context,
                             PageRouteBuilder(
                               pageBuilder: (_, __, ___) =>
-                                  MainScreenVinos(user: user),
+                                  MainScreenVinosClientes(user: user),
                               transitionsBuilder: (_, animation, __, child) {
                                 return FadeTransition(
                                   opacity: CurvedAnimation(

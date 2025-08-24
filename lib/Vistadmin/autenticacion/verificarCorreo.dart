@@ -152,7 +152,7 @@ class _VerificarCorreoPageState extends State<VerificarCorreoPage> {
         context,
         PageRouteBuilder(
           pageBuilder: (_, __, ___) =>
-              MainScreenVinos(user: FirebaseAuth.instance.currentUser),
+              MainScreenVinosAdmin(user: FirebaseAuth.instance.currentUser),
           transitionsBuilder: (_, animation, __, child) {
             return SlideTransition(
               position:

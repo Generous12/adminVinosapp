@@ -81,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     context,
                                     PageRouteBuilder(
                                       pageBuilder: (_, __, ___) =>
-                                          MainScreenVinos(
+                                          MainScreenVinosAdmin(
                                             user: FirebaseAuth
                                                 .instance
                                                 .currentUser,
@@ -224,7 +224,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       context,
                                       PageRouteBuilder(
                                         pageBuilder: (_, __, ___) =>
-                                            MainScreenVinos(
+                                            MainScreenVinosAdmin(
                                               user: FirebaseAuth
                                                   .instance
                                                   .currentUser,

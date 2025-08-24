@@ -8,16 +8,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
-class MainScreenVinos extends StatefulWidget {
+class MainScreenVinosAdmin extends StatefulWidget {
   final User? user;
 
-  const MainScreenVinos({Key? key, this.user}) : super(key: key);
+  const MainScreenVinosAdmin({Key? key, this.user}) : super(key: key);
 
   @override
-  State<MainScreenVinos> createState() => _MainScreenState();
+  State<MainScreenVinosAdmin> createState() => _MainScreenAdminState();
 }
 
-class _MainScreenState extends State<MainScreenVinos> {
+class _MainScreenAdminState extends State<MainScreenVinosAdmin> {
   int _selectedIndex = 0;
   bool _showBottomBar = true;
 

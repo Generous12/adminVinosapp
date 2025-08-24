@@ -280,7 +280,7 @@ class _AccesScreenState extends State<AccesScreen> {
                                     context,
                                     PageRouteBuilder(
                                       pageBuilder: (_, __, ___) =>
-                                          MainScreenVinos(
+                                          MainScreenVinosAdmin(
                                             user: FirebaseAuth
                                                 .instance
                                                 .currentUser,
