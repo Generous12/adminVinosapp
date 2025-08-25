@@ -146,7 +146,7 @@ class _InicioState extends State<InicioVinosC> {
             automaticallyImplyLeading: false,
             toolbarHeight: 40,
             title: const Text(
-              'La Casita del Pisco',
+              'Publicaciones',
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
@@ -177,9 +177,6 @@ class _InicioState extends State<InicioVinosC> {
                 // ignore: unused_local_variable
                 final empresaData = publicacion['empresa'];
 
-                final nombreEmpresa =
-                    publicacion['publicacion'] ?? 'Empresa desconocida';
-                final perfilEmpresa = publicacion['perfilEmpresa'] ?? '';
                 final publicacionId = publicacion['docRef'].id;
                 final _leDioLike = _publicacionesConLike.contains(
                   publicacionId,
@@ -208,52 +205,12 @@ class _InicioState extends State<InicioVinosC> {
                                   backgroundColor:
                                       theme.scaffoldBackgroundColor,
                                   child: ClipOval(
-                                    child: (perfilEmpresa.isNotEmpty)
-                                        ? Image.network(
-                                            perfilEmpresa,
-                                            fit: BoxFit.cover,
-                                            width: 40,
-                                            height: 40,
-                                            loadingBuilder: (context, child, loadingProgress) {
-                                              if (loadingProgress == null) {
-                                                return child;
-                                              }
-                                              return Center(
-                                                child: SizedBox(
-                                                  width: 20,
-                                                  height: 20,
-                                                  child: CircularProgressIndicator(
-                                                    value:
-                                                        loadingProgress
-                                                                .expectedTotalBytes !=
-                                                            null
-                                                        ? loadingProgress
-                                                                  .cumulativeBytesLoaded /
-                                                              loadingProgress
-                                                                  .expectedTotalBytes!
-                                                        : null,
-                                                    strokeWidth: 2.0,
-                                                    color: Color(0xFFFFC800),
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                            errorBuilder:
-                                                (context, error, stackTrace) {
-                                                  return Image.asset(
-                                                    'assets/images/empresa.png',
-                                                    fit: BoxFit.cover,
-                                                    width: 40,
-                                                    height: 40,
-                                                  );
-                                                },
-                                          )
-                                        : Image.asset(
-                                            'assets/images/empresa.png',
-                                            fit: BoxFit.cover,
-                                            width: 40,
-                                            height: 40,
-                                          ),
+                                    child: Image.asset(
+                                      'assets/images/logo.png',
+                                      fit: BoxFit.cover,
+                                      width: 40,
+                                      height: 40,
+                                    ),
                                   ),
                                 ),
                                 SizedBox(width: 12),
@@ -265,7 +222,7 @@ class _InicioState extends State<InicioVinosC> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          nombreEmpresa,
+                                          'La Casita del Pisco',
                                           style: TextStyle(
                                             fontWeight: FontWeight.normal,
                                             fontSize: 16,

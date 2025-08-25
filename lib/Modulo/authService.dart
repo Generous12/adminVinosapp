@@ -1,7 +1,10 @@
 import 'dart:math';
+import 'package:app_bootsup/VistaCliente/screePrincipal/mainScreens.dart';
 import 'package:app_bootsup/Vistadmin/autenticacion/SplashScreen.dart';
+import 'package:app_bootsup/Vistadmin/vistaAdmin/mainScreenAdmin.dart';
 import 'package:app_bootsup/Widgets/alertas.dart';
 import 'package:app_bootsup/Widgets/bottombar.dart';
+import 'package:app_bootsup/Widgets/navegator.dart';
 import 'package:app_bootsup/Widgets/themeprovider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
@@ -36,7 +39,7 @@ class AuthService {
       final data = userDoc.data();
       final String? membresia = data?['membresia'];
 
-      if (membresia == "Administrador" || membresia == "Cliente") {
+      if (membresia == "Administrador" || membresia == "Clientes") {
         return membresia;
       } else {
         print("⚠️ Membresía no válida: $membresia");
@@ -48,13 +51,16 @@ class AuthService {
     }
   }
 
-  /// Método para verificar acceso según membresía
-  Future<bool> validarAcceso({required bool soloAdmin}) async {
-    final membership = await getUserMembership();
-    if (soloAdmin) {
-      return membership == "Administrador";
+  Future<void> navegarSegunMembresia(BuildContext context) async {
+    final membresia = await getUserMembership();
+    final user = _auth.currentUser;
+
+    if (membresia == "Administrador") {
+      navegarConSlideDerecha(context, MainScreenVinosAdmin(user: user));
+    } else if (membresia == "Clientes") {
+      navegarConSlideDerecha(context, MainScreenVinosClientes(user: user));
     } else {
-      return membership == "Administrador" || membership == "Cliente";
+      print("⚠️ No se pudo determinar membresía.");
     }
   }
 
@@ -95,7 +101,45 @@ class AuthService {
     }
 
     try {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      // 🔹 Iniciar sesión con email y contraseña
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      final user = userCredential.user;
+      if (user == null) {
+        await showCustomDialog(
+          context: context,
+          title: 'Error',
+          message: 'No se pudo obtener la información del usuario.',
+          confirmButtonText: 'Cerrar',
+        );
+        return false;
+      }
+
+      // 🔹 Verificar que el correo esté validado
+      if (!user.emailVerified) {
+        await showCustomDialog(
+          context: context,
+          title: 'Correo no verificado',
+          message: 'Por favor verifica tu correo antes de iniciar sesión.',
+          confirmButtonText: 'Cerrar',
+        );
+        return false;
+      }
+
+      // 🔹 Consultar el documento del usuario en Firestore
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+
+      if (userDoc.exists) {
+        // 🔹 Usuario existente → navegar según membresía
+        await navegarSegunMembresia(context);
+      }
+
       return true;
     } on FirebaseAuthException catch (e) {
       String errorMessage = 'Correo o contraseña incorrectos';
@@ -130,39 +174,44 @@ class AuthService {
         credential,
       );
 
-      String email = userCredential.user!.email!;
-      String displayName = userCredential.user!.displayName ?? 'Usuario';
+      final user = userCredential.user!;
+      String email = user.email!;
+      String displayName = user.displayName ?? 'Usuario';
 
+      // Verificamos si el usuario ya existe en la colección
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
           .collection('users')
-          .doc(userCredential.user!.uid)
+          .doc(user.uid)
           .get();
 
       String usernameWithNumber;
 
       if (userDoc.exists) {
+        // 🔹 Usuario existente → validar membresía
         usernameWithNumber = userDoc['username'];
+        await navegarSegunMembresia(context);
       } else {
+        // 🔹 Usuario nuevo → crear doc y mandar a MainScreenVinosClientes
         String randomNumber = Random()
             .nextInt(999999)
             .toString()
             .padLeft(6, '0');
         usernameWithNumber = '$displayName#$randomNumber';
 
-        String profileImageUrl = userCredential.user!.photoURL ?? '';
+        String profileImageUrl = user.photoURL ?? '';
 
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(userCredential.user!.uid)
-            .set({
-              'username': usernameWithNumber,
-              'email': email,
-              'profileImageUrl': profileImageUrl,
-              'direccion': '',
-              'dni': '',
-              'telefono': '',
-              'membresia': 'Clientes',
-            });
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+          'username': usernameWithNumber,
+          'email': email,
+          'profileImageUrl': profileImageUrl,
+          'direccion': '',
+          'dni': '',
+          'telefono': '',
+          'membresia': 'Clientes',
+        });
+
+        // 🔹 Navegar directo a Clientes
+        navegarConSlideDerecha(context, MainScreenVinosClientes(user: user));
       }
 
       return true;

@@ -575,212 +575,217 @@ class _PublicacionesPageState extends State<PublicacionesPage> {
               ),
             ],
           ),
-          body: Stack(
-            children: [
-              SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CustomTextField(
-                          controller: _descripcionController,
-                          label: "Descripcion de la publicacion",
-                          hintText: "Agrega una descripcion a tu prublicacion",
-                          isNumeric: false,
-                          maxLength: 300,
-                          showCounter: false,
-                          maxLines: 5,
-                        ),
-                        SizedBox(height: 20),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 12.0),
-                              child: Text(
-                                'Selecciona el tamaño de tu imagen',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 12.0),
-                              child: Text(
-                                'Esto determinará cómo se mostrará tu publicación (ideal para redes sociales o productos).',
-                                style: theme.textTheme.titleMedium?.copyWith(
-                                  fontSize: 13,
-                                  color: theme.textTheme.bodyLarge?.color,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            ImageRatioSelector(
-                              onRatioSelected: (double x, double y) {
-                                setState(() {
-                                  _aspectX = x;
-                                  _aspectY = y;
-                                });
-                              },
-                              isDisabled: _mainImage != null,
-                            ),
-                          ],
-                        ),
-                        Container(
-                          margin: const EdgeInsets.symmetric(
-                            vertical: 12,
-                            horizontal: 0,
+          body: SafeArea(
+            child: Stack(
+              children: [
+                SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomTextField(
+                            controller: _descripcionController,
+                            label: "Descripcion de la publicacion",
+                            hintText:
+                                "Agrega una descripcion a tu prublicacion",
+                            isNumeric: false,
+                            maxLength: 300,
+                            showCounter: false,
+                            maxLines: 5,
                           ),
-                          padding: const EdgeInsets.all(12),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                          SizedBox(height: 20),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                children: [
-                                  Icon(
-                                    Iconsax.image,
-                                    size: 20,
-                                    color: theme.iconTheme.color,
+                              const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 12.0),
+                                child: Text(
+                                  'Selecciona el tamaño de tu imagen',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
                                   ),
-                                  SizedBox(width: 6),
-                                  Text(
-                                    'Imágenes seleccionadas',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
-                              SizedBox(height: 20),
-                              MasonryGridView.count(
-                                crossAxisCount: 3,
-                                mainAxisSpacing: 8,
-                                crossAxisSpacing: 8,
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: _selectedImages.length + 1,
-                                itemBuilder: (context, index) {
-                                  if (index < _selectedImages.length) {
-                                    final image = _selectedImages[index];
-                                    final isSelected = image == _mainImage;
-
-                                    return Stack(
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              _mainImage = image;
-                                            });
-                                            _showFullScreenImage(image);
-                                          },
-                                          child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(
-                                              12,
-                                            ),
-                                            child: Image.file(
-                                              image,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                        ),
-                                        // Indicador de imagen seleccionada
-                                        if (isSelected)
-                                          const Positioned(
-                                            top: 6,
-                                            right: 6,
-                                            child: Icon(
-                                              Iconsax.tick_circle,
-                                              color: ui.Color.fromARGB(
-                                                255,
-                                                255,
-                                                255,
-                                                255,
-                                              ),
-                                              size: 20,
-                                            ),
-                                          ),
-                                        // Botón eliminar
-                                        Positioned(
-                                          top: 6,
-                                          left: 6,
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              setState(() {
-                                                setState(() {
-                                                  _selectedImages.removeAt(
-                                                    index,
-                                                  );
-
-                                                  if (_selectedImages.isEmpty) {
-                                                    _mainImage = null;
-                                                  } else if (_mainImage ==
-                                                      image) {
-                                                    _mainImage =
-                                                        _selectedImages.first;
-                                                  }
-                                                });
-                                              });
-                                            },
-                                            child: const Icon(
-                                              Iconsax.trash,
-                                              color: ui.Color.fromARGB(
-                                                255,
-                                                189,
-                                                0,
-                                                0,
-                                              ),
-                                              size: 22,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  } else {
-                                    // Botón agregar imagen
-                                    return GestureDetector(
-                                      onTap: _selectImageSource,
-                                      child: Container(
-                                        height: 100,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white.withOpacity(0.6),
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                          border: Border.all(
-                                            color: const ui.Color.fromARGB(
-                                              255,
-                                              0,
-                                              0,
-                                              0,
-                                            ),
-                                          ),
-                                        ),
-                                        child: const Center(
-                                          child: Icon(
-                                            Iconsax.add_circle,
-                                            color: Colors.black87,
-                                            size: 30,
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  }
+                              const SizedBox(height: 4),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 12.0),
+                                child: Text(
+                                  'Esto determinará cómo se mostrará tu publicación (ideal para redes sociales o productos).',
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                    fontSize: 13,
+                                    color: theme.textTheme.bodyLarge?.color,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              ImageRatioSelector(
+                                onRatioSelected: (double x, double y) {
+                                  setState(() {
+                                    _aspectX = x;
+                                    _aspectY = y;
+                                  });
                                 },
+                                isDisabled: _mainImage != null,
                               ),
                             ],
                           ),
-                        ),
-                      ],
+                          Container(
+                            margin: const EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 0,
+                            ),
+                            padding: const EdgeInsets.all(12),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Iconsax.image,
+                                      size: 20,
+                                      color: theme.iconTheme.color,
+                                    ),
+                                    SizedBox(width: 6),
+                                    Text(
+                                      'Imágenes seleccionadas',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 20),
+                                MasonryGridView.count(
+                                  crossAxisCount: 3,
+                                  mainAxisSpacing: 8,
+                                  crossAxisSpacing: 8,
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: _selectedImages.length + 1,
+                                  itemBuilder: (context, index) {
+                                    if (index < _selectedImages.length) {
+                                      final image = _selectedImages[index];
+                                      final isSelected = image == _mainImage;
+
+                                      return Stack(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                _mainImage = image;
+                                              });
+                                              _showFullScreenImage(image);
+                                            },
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              child: Image.file(
+                                                image,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                          // Indicador de imagen seleccionada
+                                          if (isSelected)
+                                            const Positioned(
+                                              top: 6,
+                                              right: 6,
+                                              child: Icon(
+                                                Iconsax.tick_circle,
+                                                color: ui.Color.fromARGB(
+                                                  255,
+                                                  255,
+                                                  255,
+                                                  255,
+                                                ),
+                                                size: 20,
+                                              ),
+                                            ),
+                                          // Botón eliminar
+                                          Positioned(
+                                            top: 6,
+                                            left: 6,
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  setState(() {
+                                                    _selectedImages.removeAt(
+                                                      index,
+                                                    );
+
+                                                    if (_selectedImages
+                                                        .isEmpty) {
+                                                      _mainImage = null;
+                                                    } else if (_mainImage ==
+                                                        image) {
+                                                      _mainImage =
+                                                          _selectedImages.first;
+                                                    }
+                                                  });
+                                                });
+                                              },
+                                              child: const Icon(
+                                                Iconsax.trash,
+                                                color: ui.Color.fromARGB(
+                                                  255,
+                                                  189,
+                                                  0,
+                                                  0,
+                                                ),
+                                                size: 22,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    } else {
+                                      // Botón agregar imagen
+                                      return GestureDetector(
+                                        onTap: _selectImageSource,
+                                        child: Container(
+                                          height: 100,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white.withOpacity(
+                                              0.6,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                            border: Border.all(
+                                              color: const ui.Color.fromARGB(
+                                                255,
+                                                0,
+                                                0,
+                                                0,
+                                              ),
+                                            ),
+                                          ),
+                                          child: const Center(
+                                            child: Icon(
+                                              Iconsax.add_circle,
+                                              color: Colors.black87,
+                                              size: 30,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

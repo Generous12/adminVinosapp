@@ -85,211 +85,213 @@ class _EditarProductoPageState extends State<EditarProductoPage> {
     final categoriasUnicas = categorias.toSet().toList();
     final volumenesUnicos = volumenes.toSet().toList();
     return Scaffold(
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            const SizedBox(height: 30),
-            CustomTextField(
-              controller: nombreController,
-              label: "Nombre del producto",
-              prefixIcon: Iconsax.box,
-            ),
-            const SizedBox(height: 12),
-            CustomDropdown(
-              items: categoriasUnicas,
-              value: selectedCategoria,
-              onChanged: (v) => setState(() => selectedCategoria = v),
-              icon: Iconsax.category,
-              label: "Categoría / Tipo",
-              iconColor: const Color(0xFFA30000),
-            ),
-            const SizedBox(height: 12),
-            CustomTextField(
-              controller: marcaController,
-              label: "Marca / Bodega",
-              prefixIcon: Iconsax.shop,
-            ),
-            const SizedBox(height: 12),
-            CustomDropdown(
-              items: volumenesUnicos,
-              value: volumenesUnicos.firstWhere(
-                (v) => normalize(v) == normalize(selectedVolumen ?? ''),
-                orElse: () => volumenesUnicos.first,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(5),
+          child: Column(
+            children: [
+              const SizedBox(height: 5),
+              CustomTextField(
+                controller: nombreController,
+                label: "Nombre del producto",
+                prefixIcon: Iconsax.box,
               ),
-              onChanged: (v) => setState(() => selectedVolumen = v),
-              icon: Iconsax.archive,
-              label: "Volumen",
-              iconColor: const Color(0xFFA30000),
-            ),
-            SizedBox(height: 12),
-            CustomTextField(
-              controller: stockController,
-              label: "Stock disponible",
-              prefixIcon: Iconsax.box_1,
-              isNumeric: true,
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: CustomTextField(
-                    controller: precioController,
-                    label: "Precio de venta (S/.)",
-                    prefixIcon: Iconsax.dollar_circle,
-                    isNumeric: true,
-                  ),
+              const SizedBox(height: 12),
+              CustomDropdown(
+                items: categoriasUnicas,
+                value: selectedCategoria,
+                onChanged: (v) => setState(() => selectedCategoria = v),
+                icon: Iconsax.category,
+                label: "Categoría / Tipo",
+                iconColor: const Color(0xFFA30000),
+              ),
+              const SizedBox(height: 12),
+              CustomTextField(
+                controller: marcaController,
+                label: "Marca / Bodega",
+                prefixIcon: Iconsax.shop,
+              ),
+              const SizedBox(height: 12),
+              CustomDropdown(
+                items: volumenesUnicos,
+                value: volumenesUnicos.firstWhere(
+                  (v) => normalize(v) == normalize(selectedVolumen ?? ''),
+                  orElse: () => volumenesUnicos.first,
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: CustomTextField(
-                    controller: descuentoController,
-                    label: "Descuento (%)",
-                    prefixIcon: Iconsax.percentage_square,
-                    isNumeric: true,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            CustomTextField(
-              controller: descripcionController,
-              label: "Descripción / Notas de cata",
-              prefixIcon: Iconsax.note,
-              minLines: 1,
-              maxLines: 5,
-            ),
-            const SizedBox(height: 20),
-            Container(
-              padding: const EdgeInsets.all(1),
-              margin: const EdgeInsets.symmetric(vertical: 4),
-              child: Column(
+                onChanged: (v) => setState(() => selectedVolumen = v),
+                icon: Iconsax.archive,
+                label: "Volumen",
+                iconColor: const Color(0xFFA30000),
+              ),
+              SizedBox(height: 12),
+              CustomTextField(
+                controller: stockController,
+                label: "Stock disponible",
+                prefixIcon: Iconsax.box_1,
+                isNumeric: true,
+              ),
+              const SizedBox(height: 12),
+              Row(
                 children: [
-                  Row(
-                    children: const [
-                      Icon(Iconsax.image, size: 20, color: Colors.black87),
-                      SizedBox(width: 6),
-                      Text(
-                        'Imágenes seleccionadas',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
+                  Expanded(
+                    child: CustomTextField(
+                      controller: precioController,
+                      label: "Precio de venta (S/.)",
+                      prefixIcon: Iconsax.dollar_circle,
+                      isNumeric: true,
+                    ),
                   ),
-                  MasonryGridView.count(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 8,
-                    crossAxisSpacing: 8,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: _selectedImages.length + 1,
-                    itemBuilder: (context, index) {
-                      if (index < _selectedImages.length) {
-                        final image = _selectedImages[index];
-                        final isSelected = image == _mainImage;
-                        return Stack(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _mainImage = image;
-                                });
-                              },
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: image is File
-                                    ? Image.file(image, fit: BoxFit.cover)
-                                    : Image.network(image, fit: BoxFit.cover),
-                              ),
-                            ),
-                            if (isSelected)
-                              const Positioned(
-                                top: 6,
-                                right: 6,
-                                child: Icon(
-                                  Iconsax.tick_circle,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
-                              ),
-                            Positioned(
-                              top: 6,
-                              left: 6,
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    _selectedImages.removeAt(index);
-                                    if (_selectedImages.isEmpty)
-                                      _mainImage = null;
-                                    else if (_mainImage == image)
-                                      _mainImage = _selectedImages.first;
-                                  });
-                                },
-                                child: const Icon(
-                                  Iconsax.trash,
-                                  color: ui.Color(0xFFBD0000),
-                                  size: 22,
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      } else {
-                        return GestureDetector(
-                          onTap: _selectImageSource,
-                          child: Container(
-                            height: 100,
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.6),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: const ui.Color(0xFF000000),
-                              ),
-                            ),
-                            child: const Center(
-                              child: Icon(
-                                Iconsax.add_circle,
-                                color: Colors.black87,
-                                size: 30,
-                              ),
-                            ),
-                          ),
-                        );
-                      }
-                    },
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: CustomTextField(
+                      controller: descuentoController,
+                      label: "Descuento (%)",
+                      prefixIcon: Iconsax.percentage_square,
+                      isNumeric: true,
+                    ),
                   ),
                 ],
               ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: LoadingOverlayButton(
-                    text: 'Cancelar',
-                    color: Colors.grey,
-                    onPressedLogic: () async {
-                      Navigator.pop(context);
-                    },
-                  ),
+              const SizedBox(height: 12),
+              CustomTextField(
+                controller: descripcionController,
+                label: "Descripción / Notas de cata",
+                prefixIcon: Iconsax.note,
+                minLines: 1,
+                maxLines: 5,
+              ),
+              const SizedBox(height: 20),
+              Container(
+                padding: const EdgeInsets.all(1),
+                margin: const EdgeInsets.symmetric(vertical: 4),
+                child: Column(
+                  children: [
+                    Row(
+                      children: const [
+                        Icon(Iconsax.image, size: 20, color: Colors.black87),
+                        SizedBox(width: 6),
+                        Text(
+                          'Imágenes seleccionadas',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                    MasonryGridView.count(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 8,
+                      crossAxisSpacing: 8,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: _selectedImages.length + 1,
+                      itemBuilder: (context, index) {
+                        if (index < _selectedImages.length) {
+                          final image = _selectedImages[index];
+                          final isSelected = image == _mainImage;
+                          return Stack(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _mainImage = image;
+                                  });
+                                },
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: image is File
+                                      ? Image.file(image, fit: BoxFit.cover)
+                                      : Image.network(image, fit: BoxFit.cover),
+                                ),
+                              ),
+                              if (isSelected)
+                                const Positioned(
+                                  top: 6,
+                                  right: 6,
+                                  child: Icon(
+                                    Iconsax.tick_circle,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                ),
+                              Positioned(
+                                top: 6,
+                                left: 6,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _selectedImages.removeAt(index);
+                                      if (_selectedImages.isEmpty)
+                                        _mainImage = null;
+                                      else if (_mainImage == image)
+                                        _mainImage = _selectedImages.first;
+                                    });
+                                  },
+                                  child: const Icon(
+                                    Iconsax.trash,
+                                    color: ui.Color(0xFFBD0000),
+                                    size: 22,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        } else {
+                          return GestureDetector(
+                            onTap: _selectImageSource,
+                            child: Container(
+                              height: 100,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.6),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: const ui.Color(0xFF000000),
+                                ),
+                              ),
+                              child: const Center(
+                                child: Icon(
+                                  Iconsax.add_circle,
+                                  color: Colors.black87,
+                                  size: 30,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 5),
-                Expanded(
-                  child: LoadingOverlayButton(
-                    text: 'Guardar',
-                    color: const Color(0xFFA30000),
-                    onPressedLogic: () async {
-                      await _guardarProducto(
-                        'userId',
-                      ); // reemplazar por tu lógica de usuario
-                    },
+              ),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: LoadingOverlayButton(
+                      text: 'Cancelar',
+                      color: Colors.grey,
+                      onPressedLogic: () async {
+                        Navigator.pop(context);
+                      },
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                  const SizedBox(width: 5),
+                  Expanded(
+                    child: LoadingOverlayButton(
+                      text: 'Guardar',
+                      color: const Color(0xFFA30000),
+                      onPressedLogic: () async {
+                        await _guardarProducto(
+                          'userId',
+                        ); // reemplazar por tu lógica de usuario
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

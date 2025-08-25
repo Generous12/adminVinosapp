@@ -37,46 +37,18 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
   late PageController _pageController;
   bool _mostrarBoton = false;
   int _cantidadSeleccionada = 1;
-  List<Map<String, dynamic>> _empresas = [];
+
   bool expandido = false;
   final TextEditingController _comentarioController = TextEditingController();
   double _rating = 0.0;
   final FocusNode _focusNode = FocusNode();
-
-  Future<void> _fetchEmpresas() async {
-    try {
-      final snapshot = await FirebaseFirestore.instance
-          .collection('empresa')
-          .get();
-
-      final empresasCargadas = snapshot.docs.map((doc) {
-        final data = doc.data();
-
-        return {
-          'userid': data['userid']?.toString() ?? '',
-          'nombre': data['nombre']?.toString() ?? 'Nombre no disponible',
-          'perfilEmpresa': data['perfilEmpresa']?.toString() ?? '',
-        };
-      }).toList();
-
-      if (mounted) {
-        setState(() {
-          _empresas = empresasCargadas;
-        });
-      }
-
-      debugPrint('Empresas cargadas: ${_empresas.length}');
-    } catch (e) {
-      debugPrint('Error al cargar empresas: $e');
-    }
-  }
 
   @override
   void initState() {
     super.initState();
     imagenes = List<String>.from(widget.producto['imagenes'] ?? []);
     _pageController = PageController();
-    _fetchEmpresas();
+
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
         setState(() {

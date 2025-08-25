@@ -1,8 +1,11 @@
 import 'package:app_bootsup/Modulo/crritoServiceV.dart';
+import 'package:app_bootsup/Modulo/usuarioService.dart';
+import 'package:app_bootsup/VistaCliente/screePrincipal/mainScreens.dart';
 import 'package:app_bootsup/Vistadmin/autenticacion/SinConexion.dart';
 import 'package:app_bootsup/Vistadmin/autenticacion/SplashScreen.dart';
 import 'package:app_bootsup/Vistadmin/vistaAdmin/mainScreenAdmin.dart';
 import 'package:app_bootsup/Widgets/themeprovider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,21 +17,25 @@ import 'firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Color.fromARGB(255, 0, 0, 0),
       statusBarIconBrightness: Brightness.light,
     ),
   );
+
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => CarritoServiceVinos()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => UsuarioProvider()),
       ],
       child: const MyApp(),
     ),
@@ -44,19 +51,18 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   bool _isConnected = true;
-  bool _isLoggedIn = false;
   bool _verificacionCompleta = false;
 
   @override
   void initState() {
     super.initState();
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkConnectivity();
       _listenToAuthChanges();
-
       Connectivity().onConnectivityChanged.listen(_updateConnectionStatus);
     });
   }
@@ -79,8 +85,9 @@ class _MyAppState extends State<MyApp> {
     if (_isConnected != isNowConnected) {
       _isConnected = isNowConnected;
 
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
         if (!_isConnected) {
+          // 🔹 Sin conexión → Pantalla NoInternet
           _navigatorKey.currentState?.pushReplacement(
             PageRouteBuilder(
               pageBuilder: (_, __, ___) => NoInternetScreen(),
@@ -90,35 +97,87 @@ class _MyAppState extends State<MyApp> {
             ),
           );
         } else {
-          _navigatorKey.currentState?.pushAndRemoveUntil(
-            MaterialPageRoute(
-              builder: (_) => _isLoggedIn
-                  ? MainScreenVinosAdmin(
-                      user: FirebaseAuth.instance.currentUser,
-                    )
-                  : const SplashScreen(),
-            ),
-            (route) => false,
-          );
+          // 🔹 Con conexión → Verificar membresía y navegar
+          await _decidirPantalla();
         }
       });
     }
   }
 
   void _listenToAuthChanges() {
-    FirebaseAuth.instance.authStateChanges().listen((user) {
-      if (user == null) {
-        _isLoggedIn = false;
-      } else if (user.emailVerified) {
-        _isLoggedIn = true;
-      }
-
+    _auth.authStateChanges().listen((user) async {
       if (mounted) {
         setState(() {
           _verificacionCompleta = true;
         });
       }
+      if (user != null && user.emailVerified) {
+        await _decidirPantalla();
+      } else {
+        _navigatorKey.currentState?.pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const SplashScreen()),
+          (route) => false,
+        );
+      }
     });
+  }
+
+  Future<String?> _getUserMembership() async {
+    try {
+      final User? user = _auth.currentUser;
+      if (user == null) return null;
+
+      final userDoc = await _firestore.collection('users').doc(user.uid).get();
+      if (!userDoc.exists) return null;
+
+      final data = userDoc.data();
+      final String? membresia = data?['membresia'];
+
+      if (membresia == "Administrador" || membresia == "Clientes") {
+        return membresia;
+      }
+      return null;
+    } catch (e) {
+      debugPrint("❌ Error al obtener membresía: $e");
+      return null;
+    }
+  }
+
+  Future<void> _decidirPantalla() async {
+    final user = _auth.currentUser;
+    if (user == null || !user.emailVerified) {
+      _navigatorKey.currentState?.pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const SplashScreen()),
+        (route) => false,
+      );
+      return;
+    }
+
+    // 🔹 Configurar el UID del carrito aquí
+    final carrito = Provider.of<CarritoServiceVinos>(
+      _navigatorKey.currentContext!,
+      listen: false,
+    );
+    carrito.setUsuario(user.uid); // <--- MUY IMPORTANTE
+
+    final membresia = await _getUserMembership();
+    if (membresia == "Administrador") {
+      _navigatorKey.currentState?.pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => MainScreenVinosAdmin(user: user)),
+        (route) => false,
+      );
+    } else if (membresia == "Clientes") {
+      _navigatorKey.currentState?.pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => MainScreenVinosClientes(user: user)),
+        (route) => false,
+      );
+    } else {
+      debugPrint("⚠️ Membresía desconocida o nula.");
+      _navigatorKey.currentState?.pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const SplashScreen()),
+        (route) => false,
+      );
+    }
   }
 
   @override
@@ -170,10 +229,6 @@ class _MyAppState extends State<MyApp> {
       ),
       home: !_verificacionCompleta
           ? const SplashScreen()
-          : _isLoggedIn
-          ? MainScreenVinosAdmin(
-              user: FirebaseAuth.instance.currentUser,
-            ) //Quitar Vinos
           : const SplashScreen(),
     );
   }

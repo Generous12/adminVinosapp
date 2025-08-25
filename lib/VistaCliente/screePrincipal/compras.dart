@@ -122,11 +122,9 @@ class _ComprasPageState extends State<ComprasPageVinosC> {
     try {
       final productosQuery = categoria != null && categoria.isNotEmpty
           ? FirebaseFirestore.instance
-                .collection('VinosPiscosProductos') //cambiar por productos
+                .collection('VinosPiscosProductos')
                 .where('categoria', isEqualTo: categoria)
-          : FirebaseFirestore.instance.collection(
-              'VinosPiscosProductos',
-            ); //cambiar por productos
+          : FirebaseFirestore.instance.collection('VinosPiscosProductos');
 
       final productosSnapshot = await productosQuery.get();
 

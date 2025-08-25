@@ -13,10 +13,10 @@ class MainScreenVinosClientes extends StatefulWidget {
   const MainScreenVinosClientes({Key? key, this.user}) : super(key: key);
 
   @override
-  State<MainScreenVinosClientes> createState() => _MainScreenState();
+  State<MainScreenVinosClientes> createState() => _MainScreenClienteState();
 }
 
-class _MainScreenState extends State<MainScreenVinosClientes> {
+class _MainScreenClienteState extends State<MainScreenVinosClientes> {
   int _selectedIndex = 0;
   bool _showBottomBar = true;
 
@@ -40,42 +40,47 @@ class _MainScreenState extends State<MainScreenVinosClientes> {
     final isPerfilPage = _selectedIndex == 3;
 
     return Scaffold(
-      body: NotificationListener<ScrollNotification>(
-        onNotification: (scrollNotification) {
-          if (!isPerfilPage && scrollNotification is UserScrollNotification) {
-            final direction = scrollNotification.direction;
-            if (direction == ScrollDirection.forward && !_showBottomBar) {
-              setState(() => _showBottomBar = true);
-            } else if (direction == ScrollDirection.reverse && _showBottomBar) {
-              setState(() => _showBottomBar = false);
+      body: SafeArea(
+        child: NotificationListener<ScrollNotification>(
+          onNotification: (scrollNotification) {
+            if (!isPerfilPage && scrollNotification is UserScrollNotification) {
+              final direction = scrollNotification.direction;
+              if (direction == ScrollDirection.forward && !_showBottomBar) {
+                setState(() => _showBottomBar = true);
+              } else if (direction == ScrollDirection.reverse &&
+                  _showBottomBar) {
+                setState(() => _showBottomBar = false);
+              }
             }
-          }
-          return false;
-        },
-        child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 300),
-          child: IndexedStack(index: _selectedIndex, children: _screens),
+            return false;
+          },
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: IndexedStack(index: _selectedIndex, children: _screens),
+          ),
         ),
       ),
-      bottomNavigationBar: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        height: _showBottomBar ? kBottomNavigationBarHeight : 0,
-        child: Wrap(
-          children: [
-            CustomBottomNavBarCliente(
-              currentIndex: _selectedIndex,
-              user: widget.user,
-              onTap: (index) {
-                setState(() {
-                  _selectedIndex = index;
+      bottomNavigationBar: SafeArea(
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          height: _showBottomBar ? kBottomNavigationBarHeight : 0,
+          child: Wrap(
+            children: [
+              CustomBottomNavBarCliente(
+                currentIndex: _selectedIndex,
+                user: widget.user,
+                onTap: (index) {
+                  setState(() {
+                    _selectedIndex = index;
 
-                  if (index == 3) {
-                    _showBottomBar = true;
-                  }
-                });
-              },
-            ),
-          ],
+                    if (index == 3) {
+                      _showBottomBar = true;
+                    }
+                  });
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

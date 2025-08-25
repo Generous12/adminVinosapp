@@ -1,9 +1,7 @@
 import 'package:app_bootsup/Modulo/authService.dart';
 import 'package:app_bootsup/Vistadmin/autenticacion/SplashScreen.dart';
-import 'package:app_bootsup/Vistadmin/vistaAdmin/mainScreenAdmin.dart';
 import 'package:app_bootsup/Widgets/boton.dart';
 import 'package:app_bootsup/Widgets/cajasdetexto.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -69,49 +67,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             LoadingOverlayButton(
                               text: 'Iniciar Sesión',
                               onPressedLogic: () async {
-                                bool success = await AuthService()
-                                    .signInWithEmail(
-                                      context,
-                                      email: emailController.text.trim(),
-                                      password: passwordController.text.trim(),
-                                    );
-
-                                if (success) {
-                                  Navigator.pushAndRemoveUntil(
-                                    context,
-                                    PageRouteBuilder(
-                                      pageBuilder: (_, __, ___) =>
-                                          MainScreenVinosAdmin(
-                                            user: FirebaseAuth
-                                                .instance
-                                                .currentUser,
-                                          ),
-                                      transitionsBuilder:
-                                          (_, animation, __, child) {
-                                            return SlideTransition(
-                                              position:
-                                                  Tween<Offset>(
-                                                    begin: const Offset(
-                                                      1.0,
-                                                      0.0,
-                                                    ),
-                                                    end: Offset.zero,
-                                                  ).animate(
-                                                    CurvedAnimation(
-                                                      parent: animation,
-                                                      curve: Curves.easeInOut,
-                                                    ),
-                                                  ),
-                                              child: child,
-                                            );
-                                          },
-                                      transitionDuration: const Duration(
-                                        milliseconds: 300,
-                                      ),
-                                    ),
-                                    (route) => false,
-                                  );
-                                }
+                                AuthService().signInWithEmail(
+                                  context,
+                                  email: emailController.text.trim(),
+                                  password: passwordController.text.trim(),
+                                );
                               },
                             ),
                           ],
@@ -212,49 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   padding: const EdgeInsets.all(8.0),
                                 ),
                                 onPressed: () async {
-                                  setState(() => isLoading = true);
-
-                                  bool success = await AuthService()
-                                      .signInWithGoogle(context);
-
-                                  setState(() => isLoading = false);
-
-                                  if (success) {
-                                    Navigator.pushAndRemoveUntil(
-                                      context,
-                                      PageRouteBuilder(
-                                        pageBuilder: (_, __, ___) =>
-                                            MainScreenVinosAdmin(
-                                              user: FirebaseAuth
-                                                  .instance
-                                                  .currentUser,
-                                            ),
-                                        transitionsBuilder:
-                                            (_, animation, __, child) {
-                                              return SlideTransition(
-                                                position:
-                                                    Tween<Offset>(
-                                                      begin: const Offset(
-                                                        1.0,
-                                                        0.0,
-                                                      ),
-                                                      end: Offset.zero,
-                                                    ).animate(
-                                                      CurvedAnimation(
-                                                        parent: animation,
-                                                        curve: Curves.easeInOut,
-                                                      ),
-                                                    ),
-                                                child: child,
-                                              );
-                                            },
-                                        transitionDuration: const Duration(
-                                          milliseconds: 300,
-                                        ),
-                                      ),
-                                      (route) => false,
-                                    );
-                                  }
+                                  AuthService().signInWithGoogle(context);
                                 },
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
