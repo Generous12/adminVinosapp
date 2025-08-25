@@ -27,7 +27,14 @@ const paymentClient = new Payment(client);
 const app = express();
 app.use(cors());
   
-app.post("/webhook", express.raw({ type: "*/*" }), (req, res) => {
+// 🔹 Ruta GET para que Mercado Pago pueda probar la URL
+app.get("/webhook/mercadopago", (req, res) => {
+  console.log("🔍 Prueba de Mercado Pago recibida:", req.query);
+  res.status(200).send("OK");
+});
+
+// 🔹 Ruta real para recibir notificaciones de pago
+app.post("/webhook/mercadopago", express.raw({ type: "*/*" }), (req, res) => {
   try {
     const signature = req.headers["x-signature"];
     const requestId = req.headers["x-request-id"];
@@ -39,19 +46,18 @@ app.post("/webhook", express.raw({ type: "*/*" }), (req, res) => {
     console.log("🔔 Query:", url.searchParams.toString());
     console.log("🔔 Body:", req.body.toString());
 
-    // ✅ SIEMPRE RESPONDER 200
-    res.sendStatus(200);
+    res.sendStatus(200); // ✅ Siempre responder 200 rápido
 
-    // 🔒 Solo validamos si hay datos suficientes
+    // 🔒 Validar firma
     if (!signature || !requestId || !dataId || !secret) {
-      console.warn("⚠️ No se pudo validar firma (headers faltantes).");
+      console.warn("⚠️ No se pudo validar firma");
       return;
     }
 
     const ts = signature.split(",").find((s) => s.includes("ts"))?.split("=")[1];
     const v1 = signature.split(",").find((s) => s.includes("v1"))?.split("=")[1];
     if (!ts || !v1) {
-      console.warn("⚠️ No se encontraron ts o v1 en signature");
+      console.warn("⚠️ Falta ts o v1");
       return;
     }
 
@@ -66,16 +72,16 @@ app.post("/webhook", express.raw({ type: "*/*" }), (req, res) => {
       return;
     }
 
-    // ✅ Si hay datos correctos, procesar evento
     const event = JSON.parse(req.body.toString());
     if (event.type === "payment") {
       console.log(`✅ Pago confirmado: ${event.data.id}`);
-      // Guardar en tu DB
+      // TODO: Guardar en tu base de datos
     }
   } catch (error) {
     console.error("❌ Error procesando webhook:", error);
   }
 });
+
 
 
 // 🔹 AHORA ponemos express.json() para el resto de endpoints
