@@ -1,6 +1,6 @@
 import 'package:app_bootsup/Modulo/authService.dart';
 import 'package:app_bootsup/Vistadmin/autenticacion/SplashScreen.dart';
-import 'package:app_bootsup/Vistadmin/vistaAdmin/mainScreen.dart';
+import 'package:app_bootsup/Vistadmin/vistaAdmin/mainScreenAdmin.dart';
 import 'package:app_bootsup/Widgets/boton.dart';
 import 'package:app_bootsup/Widgets/cajasdetexto.dart';
 import 'package:firebase_auth/firebase_auth.dart';

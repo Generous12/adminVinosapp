@@ -1,6 +1,7 @@
+import 'package:app_bootsup/Modulo/crritoServiceV.dart';
 import 'package:app_bootsup/Vistadmin/autenticacion/SinConexion.dart';
 import 'package:app_bootsup/Vistadmin/autenticacion/SplashScreen.dart';
-import 'package:app_bootsup/Vistadmin/vistaAdmin/mainScreen.dart';
+import 'package:app_bootsup/Vistadmin/vistaAdmin/mainScreenAdmin.dart';
 import 'package:app_bootsup/Widgets/themeprovider.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -25,7 +26,10 @@ void main() async {
   ]);
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => ThemeProvider())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => CarritoServiceVinos()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+      ],
       child: const MyApp(),
     ),
   );
