@@ -7,8 +7,7 @@ class CustomDropdown extends StatelessWidget {
   final void Function(String?)? onChanged;
   final IconData icon;
   final String label;
-  final Color? iconColor; // 👈 nuevo parámetro opcional
-
+  final Color? iconColor;
   const CustomDropdown({
     super.key,
     required this.items,
@@ -16,7 +15,7 @@ class CustomDropdown extends StatelessWidget {
     required this.onChanged,
     required this.icon,
     required this.label,
-    this.iconColor, // 👈 lo recibimos
+    this.iconColor,
   });
 
   InputDecoration _dropdownDecoration(
@@ -40,8 +39,7 @@ class CustomDropdown extends StatelessWidget {
       prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
       labelText: label,
       labelStyle: TextStyle(
-        fontFamily: 'GFSDidot',
-        fontSize: 15.5,
+        fontSize: 13,
         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
       ),
       floatingLabelBehavior: FloatingLabelBehavior.auto,
@@ -50,11 +48,17 @@ class CustomDropdown extends StatelessWidget {
       contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 16),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: Colors.grey.shade600, width: 1),
+        borderSide: BorderSide(
+          color: const Color.fromARGB(255, 203, 203, 203),
+          width: 1,
+        ),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Colors.black, width: 1.3),
+        borderSide: const BorderSide(
+          color: Color.fromARGB(255, 126, 126, 126),
+          width: 1.3,
+        ),
       ),
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
     );
@@ -69,7 +73,7 @@ class CustomDropdown extends StatelessWidget {
           .map(
             (item) => DropdownMenuItem<String>(
               value: item,
-              child: Text(item, style: const TextStyle(fontSize: 14)),
+              child: Text(item, style: const TextStyle(fontSize: 13)),
             ),
           )
           .toList(),
@@ -108,8 +112,7 @@ class CustomDropdownSelector extends StatelessWidget {
       decoration: InputDecoration(
         labelText: labelText,
         labelStyle: TextStyle(
-          fontFamily: 'GFSDidot',
-          fontSize: 14,
+          fontSize: 13,
           color: isDarkMode
               ? Colors.grey[300]
               : const Color.fromARGB(255, 100, 100, 100),
@@ -147,8 +150,7 @@ class CustomDropdownSelector extends StatelessWidget {
       hint: Text(
         hintText,
         style: TextStyle(
-          fontFamily: 'GFSDidot',
-          fontSize: 15,
+          fontSize: 13,
           color: isDarkMode
               ? Colors.grey[400]
               : const Color.fromARGB(255, 108, 108, 108),
@@ -165,8 +167,7 @@ class CustomDropdownSelector extends StatelessWidget {
                     item,
                     textAlign: TextAlign.start,
                     style: TextStyle(
-                      fontFamily: 'GFSDidot',
-                      fontSize: 15,
+                      fontSize: 13,
                       color: isDarkMode ? Colors.white : Colors.black,
                     ),
                   ),
@@ -179,7 +180,7 @@ class CustomDropdownSelector extends StatelessWidget {
         if (value != null) {
           onChanged(value); // acción general
           if (itemActions != null && itemActions!.containsKey(value)) {
-            itemActions![value]!(); // acción específica
+            itemActions![value]!();
           }
         }
       },

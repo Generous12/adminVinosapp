@@ -62,7 +62,7 @@ class _CarritoPageState extends State<CarritoPageVinos> {
   final TextEditingController _direccionController = TextEditingController();
   final FocusNode _direccionFocusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
-  final Color naranja = const Color(0xFFFFAF00);
+  final Color naranja = const Color(0xFFA30000);
   final Color grisClaro = const Color.fromARGB(255, 0, 0, 0);
   bool _requiereDNI = false;
   @override
@@ -88,6 +88,7 @@ class _CarritoPageState extends State<CarritoPageVinos> {
     }
   }
 
+  //no se usa por ahora
   Future<void> finalizarCompra(BuildContext context) async {
     try {
       final user = FirebaseAuth.instance.currentUser;
@@ -423,10 +424,8 @@ class _CarritoPageState extends State<CarritoPageVinos> {
         behavior: HitTestBehavior.translucent,
         child: Scaffold(
           resizeToAvoidBottomInset: true,
-          backgroundColor: theme.scaffoldBackgroundColor,
           appBar: AppBar(
             titleSpacing: 0,
-            backgroundColor: theme.scaffoldBackgroundColor,
             elevation: 0,
             scrolledUnderElevation: 0,
             centerTitle: true,
@@ -435,7 +434,7 @@ class _CarritoPageState extends State<CarritoPageVinos> {
                 Text(
                   "My Shopping cart",
                   style: const TextStyle(
-                    fontSize: 20,
+                    fontSize: 16,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -443,7 +442,7 @@ class _CarritoPageState extends State<CarritoPageVinos> {
                 Text(
                   "Total Items ${carrito.length}",
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 12,
                     color: Colors.grey.shade600,
                     fontWeight: FontWeight.w400,
                   ),
@@ -464,22 +463,37 @@ class _CarritoPageState extends State<CarritoPageVinos> {
                   children: [
                     Center(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        padding: const EdgeInsets.fromLTRB(24, 10, 24, 90),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.primary.withOpacity(
+                                  0.1,
+                                ),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.credit_card,
+                                size: 60,
+                                color: theme.colorScheme.primary,
+                              ),
+                            ),
+                            const SizedBox(height: 24),
                             Text(
                               'Agrega tu DNI para continuar',
                               textAlign: TextAlign.center,
                               style: theme.textTheme.titleLarge?.copyWith(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 22,
+                                fontSize: 20,
                                 color: theme.colorScheme.onBackground,
                               ),
                             ),
                             const SizedBox(height: 12),
                             Text(
-                              'Para poder realizar compras, necesitamos que registres tu número de DNI.',
+                              'Para poder realizar compras de forma segura, necesitamos que registres tu número de DNI.',
                               textAlign: TextAlign.center,
                               style: theme.textTheme.bodyMedium?.copyWith(
                                 fontSize: 16,
@@ -498,25 +512,38 @@ class _CarritoPageState extends State<CarritoPageVinos> {
                                 );
                                 _validarDNI();
                               },
-                              icon: const Icon(Iconsax.edit_2),
-                              label: const Text(
+                              icon: const Icon(
+                                Iconsax.edit_2,
+                                color: Colors.white,
+                              ),
+                              label: Text(
                                 'Agregar DNI ahora',
-                                style: TextStyle(
-                                  fontSize: 16,
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  fontSize: 14,
                                   fontWeight: FontWeight.w600,
+                                  color: Colors.white,
                                 ),
                               ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: theme.colorScheme.primary,
-                                foregroundColor: theme.colorScheme.onSecondary,
-                                elevation: 2,
+                                elevation: 3,
                                 padding: const EdgeInsets.symmetric(
-                                  horizontal: 24,
-                                  vertical: 12,
+                                  horizontal: 20,
+                                  vertical: 13,
                                 ),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(14),
                                 ),
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              'Tu información estará protegida y solo se usará para tus compras.',
+                              textAlign: TextAlign.center,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                fontSize: 13,
+                                color: theme.textTheme.bodySmall?.color
+                                    ?.withOpacity(0.6),
                               ),
                             ),
                           ],
@@ -551,374 +578,382 @@ class _CarritoPageState extends State<CarritoPageVinos> {
                     ),
                   ],
                 )
-              : SingleChildScrollView(
-                  controller: _scrollController,
-                  physics: const BouncingScrollPhysics(),
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 478,
-                        child: ListView.builder(
-                          itemCount: carrito.length,
-                          itemBuilder: (context, index) {
-                            final producto = carrito[index];
-                            final precio =
-                                double.tryParse(
-                                  producto['precio'].toString(),
-                                ) ??
-                                0.0;
-                            final descuento =
-                                double.tryParse(
-                                  producto['descuento'].toString(),
-                                ) ??
-                                0.0;
+              : SafeArea(
+                  child: SingleChildScrollView(
+                    controller: _scrollController,
+                    physics: const BouncingScrollPhysics(),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 478,
+                          child: ListView.builder(
+                            itemCount: carrito.length,
+                            itemBuilder: (context, index) {
+                              final producto = carrito[index];
+                              final precio =
+                                  double.tryParse(
+                                    producto['precio'].toString(),
+                                  ) ??
+                                  0.0;
+                              final descuento =
+                                  double.tryParse(
+                                    producto['descuento'].toString(),
+                                  ) ??
+                                  0.0;
 
-                            return Card(
-                              elevation: 0,
-                              color: Colors.transparent,
-                              margin: const EdgeInsets.symmetric(
-                                vertical: 8,
-                                horizontal: 12,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              child: Container(
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color: theme.cardColor,
-                                  borderRadius: BorderRadius.circular(16),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.05),
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 4),
-                                    ),
-                                  ],
+                              return Card(
+                                elevation: 0,
+                                color: Colors.transparent,
+                                margin: const EdgeInsets.symmetric(
+                                  vertical: 8,
+                                  horizontal: 12,
                                 ),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(12),
-                                      child: Image.network(
-                                        producto['imagenes'] != null &&
-                                                producto['imagenes'].isNotEmpty
-                                            ? producto['imagenes'][0]
-                                            : 'https://via.placeholder.com/100',
-                                        width: 85,
-                                        height: 85,
-                                        fit: BoxFit.cover,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: Container(
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: theme.cardColor,
+                                    borderRadius: BorderRadius.circular(16),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.05),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 4),
                                       ),
-                                    ),
-                                    const SizedBox(width: 14),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            producto['nombreProducto'] ??
-                                                "Producto",
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w700,
+                                    ],
+                                  ),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(12),
+                                        child: Image.network(
+                                          producto['imagenes'] != null &&
+                                                  producto['imagenes']
+                                                      .isNotEmpty
+                                              ? producto['imagenes'][0]
+                                              : 'https://via.placeholder.com/100',
+                                          width: 85,
+                                          height: 85,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 14),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              producto['nombreProducto'] ??
+                                                  "Producto",
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
                                             ),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            producto['volumen'] ??
-                                                "Descripción",
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.grey.shade600,
-                                              fontWeight: FontWeight.w400,
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              producto['volumen'] ??
+                                                  "Descripción",
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.grey.shade600,
+                                                fontWeight: FontWeight.w400,
+                                              ),
                                             ),
-                                          ),
-                                          const SizedBox(height: 12),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              descuento > 0
-                                                  ? Row(
-                                                      children: [
-                                                        Text(
-                                                          'S/ ${(precio).toStringAsFixed(2)}',
-                                                          style:
-                                                              const TextStyle(
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
+                                            const SizedBox(height: 12),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                descuento > 0
+                                                    ? Row(
+                                                        children: [
+                                                          Text(
+                                                            'S/ ${(precio).toStringAsFixed(2)}',
+                                                            style:
+                                                                const TextStyle(
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                          ),
+                                                        ],
+                                                      )
+                                                    : Text(
+                                                        'S/ ${precio.toStringAsFixed(2)}',
+                                                        style: const TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.bold,
                                                         ),
-                                                      ],
-                                                    )
-                                                  : Text(
-                                                      'S/ ${precio.toStringAsFixed(2)}',
-                                                      style: const TextStyle(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                                      ),
+                                                Row(
+                                                  children: [
+                                                    _buildCantidadButton(
+                                                      icon: Icons.remove,
+                                                      onTap: () {
+                                                        final carritoService =
+                                                            Provider.of<
+                                                              CarritoServiceVinos
+                                                            >(
+                                                              context,
+                                                              listen: false,
+                                                            );
+                                                        setState(() {
+                                                          if ((producto['cantidad'] ??
+                                                                  1) >
+                                                              1) {
+                                                            producto['cantidad']--;
+                                                          } else {
+                                                            carritoService
+                                                                .eliminarProducto(
+                                                                  index,
+                                                                );
+                                                          }
+                                                        });
+                                                      },
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.symmetric(
+                                                            horizontal: 12,
+                                                          ),
+                                                      child: Text(
+                                                        '${producto['cantidad']}',
+                                                        style: const TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
                                                       ),
                                                     ),
-                                              Row(
-                                                children: [
-                                                  _buildCantidadButton(
-                                                    icon: Icons.remove,
-                                                    onTap: () {
-                                                      final carritoService =
-                                                          Provider.of<
-                                                            CarritoServiceVinos
-                                                          >(
-                                                            context,
-                                                            listen: false,
-                                                          );
-                                                      setState(() {
-                                                        if ((producto['cantidad'] ??
-                                                                1) >
-                                                            1) {
-                                                          producto['cantidad']--;
-                                                        } else {
-                                                          carritoService
-                                                              .eliminarProducto(
-                                                                index,
-                                                              );
-                                                        }
-                                                      });
-                                                    },
+                                                    _buildCantidadButton(
+                                                      icon: Icons.add,
+                                                      onTap: () {
+                                                        setState(() {
+                                                          producto['cantidad'] =
+                                                              (producto['cantidad'] ??
+                                                                  0) +
+                                                              1;
+                                                        });
+                                                      },
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 10,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _buildRowDetalle(
+                                    "Impuesto (10%)",
+                                    "S/ ${impuesto.toStringAsFixed(2)}",
+                                  ),
+                                  const SizedBox(height: 8),
+                                  if (totalDescuento > 0)
+                                    _buildRowDetalle(
+                                      "Descuentos",
+                                      "- S/ ${totalDescuento.toStringAsFixed(2)}",
+                                      color: Colors.green[700],
+                                    )
+                                  else
+                                    _buildRowDetalle(
+                                      "Descuentos",
+                                      "Sin descuento",
+                                      color: Colors.grey[500],
+                                    ),
+                                  const SizedBox(height: 5),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Total a pagar',
+                                        style: theme.textTheme.titleMedium
+                                            ?.copyWith(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w600,
+                                              color: theme
+                                                  .textTheme
+                                                  .bodyLarge
+                                                  ?.color,
+                                            ),
+                                      ),
+                                      Text(
+                                        'S/ ${totalFinal.toStringAsFixed(2)}',
+                                        style: theme.textTheme.titleMedium
+                                            ?.copyWith(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w600,
+                                              color: theme
+                                                  .textTheme
+                                                  .bodyLarge
+                                                  ?.color,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                  Divider(
+                                    color:
+                                        Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Colors.grey[700]
+                                        : Colors.grey[300],
+                                    thickness: 1,
+                                    height: 18,
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Consumer<CarritoServiceVinos>(
+                                    builder: (context, carritoService, child) {
+                                      return Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              _direccionController.text =
+                                                  carritoService
+                                                      .direccionEntrega;
+
+                                              showModalBottomSheet(
+                                                context: context,
+                                                isScrollControlled: true,
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                                shape:
+                                                    const RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.vertical(
+                                                            top:
+                                                                Radius.circular(
+                                                                  20,
+                                                                ),
+                                                          ),
+                                                    ),
+                                                builder: (context) => Padding(
+                                                  padding: EdgeInsets.only(
+                                                    bottom: MediaQuery.of(
+                                                      context,
+                                                    ).viewInsets.bottom,
+                                                    top: 20,
                                                   ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.symmetric(
-                                                          horizontal: 12,
-                                                        ),
-                                                    child: Text(
-                                                      '${producto['cantidad']}',
-                                                      style: const TextStyle(
-                                                        fontSize: 16,
+                                                  child: _buildDireccionModal(
+                                                    context,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  'Dirección de entrega',
+                                                  style: theme
+                                                      .textTheme
+                                                      .titleMedium
+                                                      ?.copyWith(
                                                         fontWeight:
                                                             FontWeight.w600,
+                                                        decoration:
+                                                            TextDecoration
+                                                                .underline,
+                                                        fontSize: 15,
+                                                        color: theme
+                                                            .textTheme
+                                                            .bodyLarge
+                                                            ?.color,
                                                       ),
-                                                    ),
-                                                  ),
-                                                  _buildCantidadButton(
-                                                    icon: Icons.add,
-                                                    onTap: () {
-                                                      setState(() {
-                                                        producto['cantidad'] =
-                                                            (producto['cantidad'] ??
-                                                                0) +
-                                                            1;
-                                                      });
-                                                    },
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                      Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 14,
-                              vertical: 10,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _buildRowDetalle(
-                                  "Impuesto (10%)",
-                                  "S/ ${impuesto.toStringAsFixed(2)}",
-                                ),
-                                const SizedBox(height: 8),
-                                if (totalDescuento > 0)
-                                  _buildRowDetalle(
-                                    "Descuentos",
-                                    "- S/ ${totalDescuento.toStringAsFixed(2)}",
-                                    color: Colors.green[700],
-                                  )
-                                else
-                                  _buildRowDetalle(
-                                    "Descuentos",
-                                    "Sin descuento",
-                                    color: Colors.grey[500],
-                                  ),
-                                const SizedBox(height: 5),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Total a pagar',
-                                      style: theme.textTheme.titleMedium
-                                          ?.copyWith(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w600,
-                                            color: theme
-                                                .textTheme
-                                                .bodyLarge
-                                                ?.color,
-                                          ),
-                                    ),
-                                    Text(
-                                      'S/ ${totalFinal.toStringAsFixed(2)}',
-                                      style: theme.textTheme.titleMedium
-                                          ?.copyWith(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w600,
-                                            color: theme
-                                                .textTheme
-                                                .bodyLarge
-                                                ?.color,
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                                Divider(
-                                  color:
-                                      Theme.of(context).brightness ==
-                                          Brightness.dark
-                                      ? Colors.grey[700]
-                                      : Colors.grey[300],
-                                  thickness: 1,
-                                  height: 18,
-                                ),
-                                const SizedBox(height: 10),
-                                Consumer<CarritoServiceVinos>(
-                                  builder: (context, carritoService, child) {
-                                    return Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            _direccionController.text =
-                                                carritoService.direccionEntrega;
-
-                                            showModalBottomSheet(
-                                              context: context,
-                                              isScrollControlled: true,
-                                              backgroundColor:
-                                                  Colors.transparent,
-                                              shape:
-                                                  const RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.vertical(
-                                                          top: Radius.circular(
-                                                            20,
-                                                          ),
-                                                        ),
-                                                  ),
-                                              builder: (context) => Padding(
-                                                padding: EdgeInsets.only(
-                                                  bottom: MediaQuery.of(
-                                                    context,
-                                                  ).viewInsets.bottom,
-                                                  top: 20,
                                                 ),
-                                                child: _buildDireccionModal(
-                                                  context,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                          child: Row(
-                                            children: [
-                                              Text(
-                                                'Dirección de entrega',
-                                                style: theme
-                                                    .textTheme
-                                                    .titleMedium
-                                                    ?.copyWith(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      decoration: TextDecoration
-                                                          .underline,
-                                                      fontSize: 15,
-                                                      color: theme
-                                                          .textTheme
-                                                          .bodyLarge
-                                                          ?.color,
-                                                    ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        const SizedBox(width: 50),
-                                        Expanded(
-                                          child: Align(
-                                            alignment: Alignment.centerRight,
-                                            child: Icon(
-                                              carritoService
-                                                      .direccionEntrega
-                                                      .isEmpty
-                                                  ? Iconsax.close_circle
-                                                  : Iconsax.tick_circle,
-                                              color:
-                                                  carritoService
-                                                      .direccionEntrega
-                                                      .isEmpty
-                                                  ? Colors.red
-                                                  : Colors.green,
-                                              size: 22,
+                                              ],
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                ),
-                                SizedBox(height: 15),
-                                Center(
-                                  child: LoadingOverlayButton(
-                                    text: 'Realizar Pago',
-                                    backgroundColor:
-                                        Theme.of(context).brightness ==
-                                            Brightness.dark
-                                        ? Colors.amber
-                                        : Colors.black,
-                                    foregroundColor:
-                                        Theme.of(context).brightness ==
-                                            Brightness.dark
-                                        ? Colors.black
-                                        : Colors.white,
-                                    onPressedLogic: () async {
-                                      if (carritoService.direccionEntrega
-                                          .trim()
-                                          .isEmpty) {
-                                        await showCustomDialog(
-                                          context: context,
-                                          title: 'Revisa tu formulario',
-                                          message:
-                                              'La dirección de entrega no puede estar vacía.',
-                                          confirmButtonText: 'Cerrar',
-                                        );
-                                        return;
-                                      }
-                                      _abrirCheckoutVinos(context);
+                                          const SizedBox(width: 50),
+                                          Expanded(
+                                            child: Align(
+                                              alignment: Alignment.centerRight,
+                                              child: Icon(
+                                                carritoService
+                                                        .direccionEntrega
+                                                        .isEmpty
+                                                    ? Iconsax.close_circle
+                                                    : Iconsax.tick_circle,
+                                                color:
+                                                    carritoService
+                                                        .direccionEntrega
+                                                        .isEmpty
+                                                    ? Colors.red
+                                                    : Colors.green,
+                                                size: 22,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      );
                                     },
                                   ),
-                                ),
-                              ],
+                                  SizedBox(height: 15),
+                                  Center(
+                                    child: LoadingOverlayButton(
+                                      text: 'Realizar Pago',
+                                      backgroundColor:
+                                          Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Colors.amber
+                                          : Colors.black,
+                                      foregroundColor:
+                                          Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Colors.black
+                                          : Colors.white,
+                                      onPressedLogic: () async {
+                                        if (carritoService.direccionEntrega
+                                            .trim()
+                                            .isEmpty) {
+                                          await showCustomDialog(
+                                            context: context,
+                                            title: 'Revisa tu formulario',
+                                            message:
+                                                'La dirección de entrega no puede estar vacía.',
+                                            confirmButtonText: 'Cerrar',
+                                          );
+                                          return;
+                                        }
+                                        _abrirCheckoutVinos(context);
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
         ),
@@ -973,7 +1008,7 @@ class _CarritoPageState extends State<CarritoPageVinos> {
           if (!snapshot.hasData) {
             return Center(
               child: LoadingAnimationWidget.staggeredDotsWave(
-                color: Color(0xFFFFAF00),
+                color: Color(0xFFA30000),
                 size: 40,
               ),
             );
@@ -989,139 +1024,61 @@ class _CarritoPageState extends State<CarritoPageVinos> {
                   direccionUsuario == carritoService.direccionEntrega;
               bool usarDireccionManual = !usarDireccionGuardada;
 
-              return Container(
-                decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-                ),
-                padding: const EdgeInsets.fromLTRB(20, 25, 20, 10),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Center(
-                      child: Container(
-                        width: 40,
-                        height: 4,
-                        margin: const EdgeInsets.only(bottom: 15),
-                        decoration: BoxDecoration(
-                          color: isDark ? Colors.grey[400] : Colors.grey[700],
-                          borderRadius: BorderRadius.circular(10),
+              return SafeArea(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(24),
+                    ),
+                  ),
+                  padding: const EdgeInsets.fromLTRB(20, 25, 20, 10),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Container(
+                          width: 40,
+                          height: 4,
+                          margin: const EdgeInsets.only(bottom: 15),
+                          decoration: BoxDecoration(
+                            color: isDark ? Colors.grey[400] : Colors.grey[700],
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
                       ),
-                    ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade300,
-                            borderRadius: BorderRadius.circular(8),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade300,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(
+                              Iconsax.home_2,
+                              size: 19,
+                              color: Colors.black,
+                            ),
                           ),
-                          child: Icon(
-                            Iconsax.home_2,
-                            size: 19,
-                            color: Colors.black,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Usar mi dirección guardada',
-                                style: theme.textTheme.titleMedium?.copyWith(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  color: theme.textTheme.bodyLarge?.color,
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    PageRouteBuilder(
-                                      pageBuilder: (_, animation, __) =>
-                                          DireccionScreen(),
-                                      transitionsBuilder:
-                                          (_, animation, __, child) {
-                                            final tween =
-                                                Tween(
-                                                  begin: const Offset(1.0, 0.0),
-                                                  end: Offset.zero,
-                                                ).chain(
-                                                  CurveTween(
-                                                    curve: Curves.ease,
-                                                  ),
-                                                );
-                                            return SlideTransition(
-                                              position: animation.drive(tween),
-                                              child: child,
-                                            );
-                                          },
-                                    ),
-                                  );
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 0),
-                                  child: Text(
-                                    'Actualizar direccion guardada',
-                                    style: TextStyle(
-                                      color: Colors.blue,
-                                      fontSize: 13,
-                                    ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Usar mi dirección guardada',
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: theme.textTheme.bodyLarge?.color,
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Switch(
-                          activeColor: Color(0xFFFFAF00),
-                          inactiveThumbColor: Colors.black,
-                          inactiveTrackColor: Colors.grey.shade300,
-                          value: usarDireccionGuardada,
-                          onChanged: (value) async {
-                            setState(() {
-                              usarDireccionGuardada = value;
-                              usarDireccionManual = !value;
-                            });
-
-                            if (usarDireccionGuardada) {
-                              final userId =
-                                  FirebaseAuth.instance.currentUser!.uid;
-                              final userDoc = await FirebaseFirestore.instance
-                                  .collection('users')
-                                  .doc(userId)
-                                  .get();
-                              final direccion =
-                                  userDoc.data()?['direccion'] ?? '';
-
-                              if (direccion.isNotEmpty) {
-                                carritoService.guardarDireccionEntrega(
-                                  direccion,
-                                );
-                                Navigator.pop(context);
-                              } else {
-                                setState(() {
-                                  usarDireccionGuardada = false;
-                                  usarDireccionManual = true;
-                                });
-
-                                await showCustomDialog(
-                                  context: context,
-                                  title: 'Sin dirección',
-                                  message:
-                                      'No tienes una dirección registrada. ¿Deseas agregarla ahora?',
-                                  confirmButtonText: 'Sí',
-                                  cancelButtonText: 'No',
-                                  confirmButtonColor: Colors.red,
-                                  cancelButtonColor: Colors.blue,
-                                ).then((confirmed) async {
-                                  if (confirmed == true) {
-                                    final resultado = await Navigator.push(
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
                                       context,
                                       PageRouteBuilder(
                                         pageBuilder: (_, animation, __) =>
@@ -1149,175 +1106,268 @@ class _CarritoPageState extends State<CarritoPageVinos> {
                                             },
                                       ),
                                     );
-
-                                    if (resultado != null) {
-                                      final userDoc = await FirebaseFirestore
-                                          .instance
-                                          .collection('users')
-                                          .doc(userId)
-                                          .get();
-                                      final direccion =
-                                          userDoc.data()?['direccion'] ?? '';
-
-                                      if (direccion.isNotEmpty) {
-                                        carritoService.guardarDireccionEntrega(
-                                          direccion,
-                                        );
-                                        Navigator.pop(context);
-                                      } else {
-                                        showCustomDialog(
-                                          context: context,
-                                          title: 'Error',
-                                          message:
-                                              'La dirección aún no ha sido registrada.',
-                                          confirmButtonText: 'Ok',
-                                        );
-                                      }
-                                    }
-                                  }
-                                });
-                              }
-                            } else {
-                              carritoService.limpiardescripcion();
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                    Divider(
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? Colors.grey[700]
-                          : Colors.grey[300],
-                      thickness: 1,
-                      height: 18,
-                    ),
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade300,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(
-                            Iconsax.edit_2,
-                            size: 19,
-                            color: Colors.black,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            'Ingresar nueva dirección',
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              color: theme.textTheme.bodyLarge?.color,
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 0),
+                                    child: Text(
+                                      'Actualizar direccion guardada',
+                                      style: TextStyle(
+                                        color: Colors.blue,
+                                        fontSize: 9,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ),
-                        Switch(
-                          activeColor: Color(0xFFFFAF00),
-                          inactiveThumbColor: Colors.black,
-                          inactiveTrackColor: Colors.grey.shade300,
-                          value: usarDireccionManual,
-                          onChanged: (value) {
-                            setState(() {
-                              usarDireccionManual = value;
-                              usarDireccionGuardada = !value;
-                            });
+                          Switch(
+                            activeColor: Color(0xFFA30000),
+                            inactiveThumbColor: Colors.black,
+                            inactiveTrackColor: Colors.grey.shade300,
+                            value: usarDireccionGuardada,
+                            onChanged: (value) async {
+                              setState(() {
+                                usarDireccionGuardada = value;
+                                usarDireccionManual = !value;
+                              });
 
-                            if (value) {
-                              carritoService.limpiardescripcion();
-                              _direccionController.clear();
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                    if (usarDireccionManual) ...[
-                      const SizedBox(height: 10),
-                      CustomTextField(
-                        focusNode: _direccionFocusNode,
-                        controller: _direccionController,
-                        hintText: 'Ej. Av. Los Incas 123, Ica - Perú',
-                        maxLength: 200,
-                        maxLines: 1,
-                        label: "Dirección de domicilio",
-                        showCounter: false,
-                      ),
-                      const SizedBox(height: 15),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: OutlinedButton(
-                              onPressed: () => Navigator.pop(context),
-                              style: OutlinedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                backgroundColor:
-                                    theme.brightness == Brightness.dark
-                                    ? Colors.grey[800]
-                                    : Colors.grey[200],
-                              ),
-                              child: Text(
-                                "Cancelar",
-                                style: TextStyle(
-                                  color: theme.textTheme.bodyLarge?.color,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: ElevatedButton(
-                              onPressed: () {
-                                String nuevaDireccion = _direccionController
-                                    .text
-                                    .trim();
-                                if (nuevaDireccion.isNotEmpty) {
+                              if (usarDireccionGuardada) {
+                                final userId =
+                                    FirebaseAuth.instance.currentUser!.uid;
+                                final userDoc = await FirebaseFirestore.instance
+                                    .collection('users')
+                                    .doc(userId)
+                                    .get();
+                                final direccion =
+                                    userDoc.data()?['direccion'] ?? '';
+
+                                if (direccion.isNotEmpty) {
                                   carritoService.guardarDireccionEntrega(
-                                    nuevaDireccion,
+                                    direccion,
                                   );
                                   Navigator.pop(context);
                                 } else {
-                                  showCustomDialog(
+                                  setState(() {
+                                    usarDireccionGuardada = false;
+                                    usarDireccionManual = true;
+                                  });
+
+                                  await showCustomDialog(
                                     context: context,
-                                    title: 'Campo vacío',
+                                    title: 'Sin dirección',
                                     message:
-                                        'Por favor, ingresa una dirección.',
-                                    confirmButtonText: 'Cerrar',
-                                  );
+                                        'No tienes una dirección registrada. ¿Deseas agregarla ahora?',
+                                    confirmButtonText: 'Sí',
+                                    cancelButtonText: 'No',
+                                    confirmButtonColor: Colors.red,
+                                    cancelButtonColor: Colors.blue,
+                                  ).then((confirmed) async {
+                                    if (confirmed == true) {
+                                      final resultado = await Navigator.push(
+                                        context,
+                                        PageRouteBuilder(
+                                          pageBuilder: (_, animation, __) =>
+                                              DireccionScreen(),
+                                          transitionsBuilder:
+                                              (_, animation, __, child) {
+                                                final tween =
+                                                    Tween(
+                                                      begin: const Offset(
+                                                        1.0,
+                                                        0.0,
+                                                      ),
+                                                      end: Offset.zero,
+                                                    ).chain(
+                                                      CurveTween(
+                                                        curve: Curves.ease,
+                                                      ),
+                                                    );
+                                                return SlideTransition(
+                                                  position: animation.drive(
+                                                    tween,
+                                                  ),
+                                                  child: child,
+                                                );
+                                              },
+                                        ),
+                                      );
+
+                                      if (resultado != null) {
+                                        final userDoc = await FirebaseFirestore
+                                            .instance
+                                            .collection('users')
+                                            .doc(userId)
+                                            .get();
+                                        final direccion =
+                                            userDoc.data()?['direccion'] ?? '';
+
+                                        if (direccion.isNotEmpty) {
+                                          carritoService
+                                              .guardarDireccionEntrega(
+                                                direccion,
+                                              );
+                                          Navigator.pop(context);
+                                        } else {
+                                          showCustomDialog(
+                                            context: context,
+                                            title: 'Error',
+                                            message:
+                                                'La dirección aún no ha sido registrada.',
+                                            confirmButtonText: 'Ok',
+                                          );
+                                        }
+                                      }
+                                    }
+                                  });
                                 }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: theme.colorScheme.primary,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                              child: _isLoading
-                                  ? const SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: CircularProgressIndicator(
-                                        color: Colors.white,
-                                        strokeWidth: 2,
-                                      ),
-                                    )
-                                  : const Text(
-                                      "Guardar",
-                                      style: TextStyle(
-                                        color: Color.fromARGB(255, 0, 0, 0),
-                                      ),
-                                    ),
-                            ),
+                              } else {
+                                carritoService.limpiardescripcion();
+                              }
+                            },
                           ),
                         ],
                       ),
+                      Divider(
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.grey[700]
+                            : Colors.grey[300],
+                        thickness: 1,
+                        height: 18,
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade300,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(
+                              Iconsax.edit_2,
+                              size: 19,
+                              color: Colors.black,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              'Ingresar nueva dirección',
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: theme.textTheme.bodyLarge?.color,
+                              ),
+                            ),
+                          ),
+                          Switch(
+                            activeColor: Color(0xFFA30000),
+                            inactiveThumbColor: Colors.black,
+                            inactiveTrackColor: Colors.grey.shade300,
+                            value: usarDireccionManual,
+                            onChanged: (value) {
+                              setState(() {
+                                usarDireccionManual = value;
+                                usarDireccionGuardada = !value;
+                              });
+
+                              if (value) {
+                                carritoService.limpiardescripcion();
+                                _direccionController.clear();
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                      if (usarDireccionManual) ...[
+                        const SizedBox(height: 10),
+                        CustomTextField(
+                          focusNode: _direccionFocusNode,
+                          controller: _direccionController,
+                          hintText: 'Ej. Av. Los Incas 123, Ica - Perú',
+                          maxLength: 200,
+                          maxLines: 1,
+                          label: "Dirección de domicilio",
+                          showCounter: false,
+                        ),
+                        const SizedBox(height: 15),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: () => Navigator.pop(context),
+                                style: OutlinedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  backgroundColor:
+                                      theme.brightness == Brightness.dark
+                                      ? Colors.grey[800]
+                                      : Colors.grey[200],
+                                ),
+                                child: Text(
+                                  "Cancelar",
+                                  style: TextStyle(
+                                    color: theme.textTheme.bodyLarge?.color,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  String nuevaDireccion = _direccionController
+                                      .text
+                                      .trim();
+                                  if (nuevaDireccion.isNotEmpty) {
+                                    carritoService.guardarDireccionEntrega(
+                                      nuevaDireccion,
+                                    );
+                                    Navigator.pop(context);
+                                  } else {
+                                    showCustomDialog(
+                                      context: context,
+                                      title: 'Campo vacío',
+                                      message:
+                                          'Por favor, ingresa una dirección.',
+                                      confirmButtonText: 'Cerrar',
+                                    );
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: theme.colorScheme.primary,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                child: _isLoading
+                                    ? const SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                    : const Text(
+                                        "Guardar",
+                                        style: TextStyle(
+                                          color: Color.fromARGB(
+                                            255,
+                                            255,
+                                            255,
+                                            255,
+                                          ),
+                                        ),
+                                      ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
               );
             },

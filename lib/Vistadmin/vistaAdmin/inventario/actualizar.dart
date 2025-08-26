@@ -1,5 +1,7 @@
 import 'package:app_bootsup/Modulo/inventarioService.dart';
 import 'package:app_bootsup/Vistadmin/vistaAdmin/inventario/actulizandoProducto.dart';
+import 'package:app_bootsup/Widgets/cajasdetexto.dart';
+import 'package:app_bootsup/Widgets/navegator.dart';
 import 'package:app_bootsup/Widgets/selector.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -18,8 +20,6 @@ class _ActualizarProductoPageState extends State<ActualizarProductoPage> {
   List<Map<String, dynamic>> _productos = [];
   bool _isLoading = false;
   String selectedCategoria = 'General';
-
-  // Buscador
   bool _isSearching = false;
   String searchQuery = '';
   final TextEditingController searchController = TextEditingController();
@@ -86,7 +86,7 @@ class _ActualizarProductoPageState extends State<ActualizarProductoPage> {
                               controller: searchController,
                               autofocus: true,
                               style: theme.textTheme.titleMedium?.copyWith(
-                                fontSize: 20,
+                                fontSize: 17,
                                 color: theme.textTheme.bodyLarge?.color,
                               ),
                               decoration: const InputDecoration(
@@ -103,7 +103,7 @@ class _ActualizarProductoPageState extends State<ActualizarProductoPage> {
                           : Text(
                               'Actualizar Producto',
                               style: theme.textTheme.titleMedium?.copyWith(
-                                fontSize: 20,
+                                fontSize: 17,
                                 fontWeight: FontWeight.bold,
                                 color: theme.textTheme.bodyLarge?.color,
                               ),
@@ -160,12 +160,9 @@ class _ActualizarProductoPageState extends State<ActualizarProductoPage> {
 
                         return InkWell(
                           onTap: () {
-                            Navigator.push(
+                            navegarConSlideDerecha(
                               context,
-                              MaterialPageRoute(
-                                builder: (_) =>
-                                    EditarProductoPage(producto: producto),
-                              ),
+                              EditarProductoPage(producto: producto),
                             );
                           },
                           borderRadius: BorderRadius.circular(12),
@@ -227,15 +224,17 @@ class _ActualizarProductoPageState extends State<ActualizarProductoPage> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        producto['nombreProducto'] ??
-                                            'Sin nombre',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                          color: isDark
-                                              ? Colors.white
-                                              : Colors.black,
+                                        formatText(
+                                          producto['nombreProducto'] ??
+                                              'Sin nombre',
+                                          maxLength: 23,
                                         ),
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
                                       const SizedBox(height: 4),
                                       Row(
@@ -244,7 +243,7 @@ class _ActualizarProductoPageState extends State<ActualizarProductoPage> {
                                             producto['categoria'] ??
                                                 'Sin categoría',
                                             style: TextStyle(
-                                              fontSize: 12,
+                                              fontSize: 10,
                                               color: isDark
                                                   ? Colors.white70
                                                   : Colors.black54,
@@ -255,7 +254,7 @@ class _ActualizarProductoPageState extends State<ActualizarProductoPage> {
                                             Text(
                                               fecha,
                                               style: TextStyle(
-                                                fontSize: 12,
+                                                fontSize: 10,
                                                 color: isDark
                                                     ? Colors.white70
                                                     : Colors.black54,

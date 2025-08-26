@@ -1,6 +1,7 @@
 import 'package:app_bootsup/Modulo/inventarioService.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import 'dart:ui' as ui;
 
@@ -17,13 +18,13 @@ class _CategoriaSelectorState extends State<CategoriaSelector> {
   String? selectedCategoria;
 
   final List<Map<String, dynamic>> categorias = [
-    {'label': 'General', 'icon': Icons.category},
-    {'label': 'Vino Tinto', 'icon': Icons.wine_bar},
-    {'label': 'Vino Blanco', 'icon': Icons.wine_bar},
-    {'label': 'Pisco Quebranta', 'icon': Icons.local_bar},
-    {'label': 'Pisco Acholado', 'icon': Icons.local_bar},
-    {'label': 'Pisco Italia', 'icon': Icons.local_bar},
-    {'label': 'Pisco Mosto Verde', 'icon': Icons.local_bar},
+    {'label': 'General', 'icon': LucideIcons.shapes}, // ícono de categoría
+    {'label': 'Vino Tinto', 'icon': LucideIcons.wine}, // ícono de vino
+    {'label': 'Vino Blanco', 'icon': LucideIcons.wine}, // ícono de vino
+    {'label': 'Pisco Quebranta', 'icon': LucideIcons.martini},
+    {'label': 'Pisco Acholado', 'icon': LucideIcons.martini},
+    {'label': 'Pisco Italia', 'icon': LucideIcons.martini},
+    {'label': 'Pisco Mosto Verde', 'icon': LucideIcons.martini},
   ];
 
   @override
@@ -44,9 +45,9 @@ class _CategoriaSelectorState extends State<CategoriaSelector> {
       height: 45,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 11),
         itemCount: categorias.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 10),
+        separatorBuilder: (_, __) => const SizedBox(width: 5),
         itemBuilder: (context, index) {
           final categoria = categorias[index]['label'];
           final icon = categorias[index]['icon'];
@@ -78,10 +79,10 @@ class _CategoriaSelectorState extends State<CategoriaSelector> {
             },
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 250),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
               decoration: BoxDecoration(
                 color: backgroundColor,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(10),
                 border: Border.all(
                   color: isSelected
                       ? selectedColor
@@ -101,14 +102,14 @@ class _CategoriaSelectorState extends State<CategoriaSelector> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(icon, size: 18, color: textColor),
+                  Icon(icon, size: 17, color: textColor),
                   const SizedBox(width: 6),
                   Text(
                     categoria,
                     style: TextStyle(
                       color: textColor,
                       fontWeight: FontWeight.bold,
-                      fontSize: 13,
+                      fontSize: 12,
                     ),
                   ),
                 ],
@@ -340,15 +341,6 @@ class PedidoFiltroSelectorState extends State<PedidoFiltroSelector> {
                       : (isDark ? Colors.white12 : Colors.black26),
                   width: 1,
                 ),
-                boxShadow: isSelected
-                    ? [
-                        BoxShadow(
-                          color: selectedColor.withOpacity(0.4),
-                          blurRadius: 6,
-                          offset: const Offset(0, 3),
-                        ),
-                      ]
-                    : [],
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -360,7 +352,7 @@ class PedidoFiltroSelectorState extends State<PedidoFiltroSelector> {
                     style: TextStyle(
                       color: textColor,
                       fontWeight: FontWeight.bold,
-                      fontSize: 13,
+                      fontSize: 12,
                     ),
                   ),
                 ],
@@ -444,15 +436,6 @@ class _ChatFiltroSelectorState extends State<ChatFiltroSelector> {
                       : (isDark ? Colors.white12 : Colors.black26),
                   width: 1,
                 ),
-                boxShadow: isSelected
-                    ? [
-                        BoxShadow(
-                          color: selectedColor.withOpacity(0.4),
-                          blurRadius: 6,
-                          offset: const Offset(0, 3),
-                        ),
-                      ]
-                    : [],
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -464,7 +447,7 @@ class _ChatFiltroSelectorState extends State<ChatFiltroSelector> {
                     style: TextStyle(
                       color: textColor,
                       fontWeight: FontWeight.bold,
-                      fontSize: 13,
+                      fontSize: 12,
                     ),
                   ),
                 ],
@@ -488,15 +471,14 @@ class CategoriaSelectorVinos extends StatefulWidget {
 
 class _CategoriaSelectorStateV extends State<CategoriaSelectorVinos> {
   String? selectedCategoria;
-
   final List<Map<String, dynamic>> categorias = [
-    {'label': 'General', 'icon': Icons.category},
-    {'label': 'Vino Tinto', 'icon': Icons.wine_bar},
-    {'label': 'Vino Blanco', 'icon': Icons.wine_bar},
-    {'label': 'Pisco Quebranta', 'icon': Icons.local_bar},
-    {'label': 'Pisco Acholado', 'icon': Icons.local_bar},
-    {'label': 'Pisco Italia', 'icon': Icons.local_bar},
-    {'label': 'Pisco Mosto Verde', 'icon': Icons.local_bar},
+    {'label': 'General', 'icon': LucideIcons.shapes}, // ícono de categoría
+    {'label': 'Vino Tinto', 'icon': LucideIcons.wine}, // ícono de vino
+    {'label': 'Vino Blanco', 'icon': LucideIcons.wine}, // ícono de vino
+    {'label': 'Pisco Quebranta', 'icon': LucideIcons.martini},
+    {'label': 'Pisco Acholado', 'icon': LucideIcons.martini},
+    {'label': 'Pisco Italia', 'icon': LucideIcons.martini},
+    {'label': 'Pisco Mosto Verde', 'icon': LucideIcons.martini},
   ];
 
   @override

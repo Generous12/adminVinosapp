@@ -365,7 +365,7 @@ class _DetalleCompraScreenState extends State<DetalleCompraScreenVinos> {
                       vertical: 4,
                     ),
                     child: SizedBox(
-                      width: double.infinity, // ocupa todo el ancho disponible
+                      width: double.infinity,
                       child: TextButton.icon(
                         onPressed: () async {
                           setState(() {

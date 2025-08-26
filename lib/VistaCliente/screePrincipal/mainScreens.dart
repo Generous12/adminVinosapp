@@ -61,26 +61,18 @@ class _MainScreenClienteState extends State<MainScreenVinosClientes> {
         ),
       ),
       bottomNavigationBar: SafeArea(
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          height: _showBottomBar ? kBottomNavigationBarHeight : 0,
-          child: Wrap(
-            children: [
-              CustomBottomNavBarCliente(
-                currentIndex: _selectedIndex,
-                user: widget.user,
-                onTap: (index) {
-                  setState(() {
-                    _selectedIndex = index;
+        child: CustomBottomNavBarCliente(
+          currentIndex: _selectedIndex,
+          user: widget.user,
+          onTap: (index) {
+            setState(() {
+              _selectedIndex = index;
 
-                    if (index == 3) {
-                      _showBottomBar = true;
-                    }
-                  });
-                },
-              ),
-            ],
-          ),
+              if (index == 3) {
+                _showBottomBar = true;
+              }
+            });
+          },
         ),
       ),
     );

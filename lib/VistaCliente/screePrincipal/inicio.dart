@@ -686,7 +686,7 @@ class _InicioState extends State<InicioVinosC> {
                                       'S/ ${precioOriginal.toStringAsFixed(2)}',
                                       style: theme.textTheme.titleMedium
                                           ?.copyWith(
-                                            fontSize: 14,
+                                            fontSize: 11,
                                             decoration:
                                                 TextDecoration.lineThrough,
                                             color: theme
@@ -699,7 +699,7 @@ class _InicioState extends State<InicioVinosC> {
                                       'S/ ${precioConDescuento.toStringAsFixed(2)}',
                                       style: theme.textTheme.titleMedium
                                           ?.copyWith(
-                                            fontSize: 20,
+                                            fontSize: 17,
                                             fontWeight: FontWeight.bold,
                                             color: theme
                                                 .textTheme
@@ -713,7 +713,7 @@ class _InicioState extends State<InicioVinosC> {
                                 Text(
                                   'S/ ${precioOriginal.toStringAsFixed(2)}',
                                   style: theme.textTheme.titleMedium?.copyWith(
-                                    fontSize: 20,
+                                    fontSize: 17,
                                     fontWeight: FontWeight.bold,
                                     color: theme.textTheme.bodyLarge?.color,
                                   ),
@@ -728,7 +728,7 @@ class _InicioState extends State<InicioVinosC> {
                                     '${descuento.toStringAsFixed(0)}% OFF',
                                     style: theme.textTheme.titleMedium
                                         ?.copyWith(
-                                          fontSize: 12,
+                                          fontSize: 10,
                                           fontWeight: FontWeight.bold,
                                           color: theme.colorScheme.error,
                                         ),

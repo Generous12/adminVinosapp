@@ -1,5 +1,6 @@
 import 'package:app_bootsup/Modulo/inventarioService.dart';
 import 'package:app_bootsup/Widgets/alertas.dart';
+import 'package:app_bootsup/Widgets/cajasdetexto.dart';
 import 'package:app_bootsup/Widgets/selector.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -87,7 +88,7 @@ class _EliminarPageProductoState extends State<EliminarPageProducto> {
                               controller: searchController,
                               autofocus: true,
                               style: theme.textTheme.titleMedium?.copyWith(
-                                fontSize: 20,
+                                fontSize: 17,
                                 color: theme.textTheme.bodyLarge?.color,
                               ),
                               decoration: const InputDecoration(
@@ -104,7 +105,7 @@ class _EliminarPageProductoState extends State<EliminarPageProducto> {
                           : Text(
                               'Eliminar Producto',
                               style: theme.textTheme.titleMedium?.copyWith(
-                                fontSize: 20,
+                                fontSize: 17,
                                 fontWeight: FontWeight.bold,
                                 color: theme.textTheme.bodyLarge?.color,
                               ),
@@ -220,15 +221,17 @@ class _EliminarPageProductoState extends State<EliminarPageProducto> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        producto['nombreProducto'] ??
-                                            'Sin nombre',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                          color: isDark
-                                              ? Colors.white
-                                              : Colors.black,
+                                        formatText(
+                                          producto['nombreProducto'] ??
+                                              'Sin nombre',
+                                          maxLength: 23,
                                         ),
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
                                       const SizedBox(height: 4),
                                       Row(
@@ -237,7 +240,7 @@ class _EliminarPageProductoState extends State<EliminarPageProducto> {
                                             producto['categoria'] ??
                                                 'Sin categoría',
                                             style: TextStyle(
-                                              fontSize: 12,
+                                              fontSize: 10,
                                               color: isDark
                                                   ? Colors.white70
                                                   : Colors.black54,
@@ -248,7 +251,7 @@ class _EliminarPageProductoState extends State<EliminarPageProducto> {
                                             Text(
                                               fecha,
                                               style: TextStyle(
-                                                fontSize: 12,
+                                                fontSize: 10,
                                                 color: isDark
                                                     ? Colors.white70
                                                     : Colors.black54,

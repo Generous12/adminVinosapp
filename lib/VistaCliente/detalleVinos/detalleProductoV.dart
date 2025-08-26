@@ -85,15 +85,14 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
       },
       behavior: HitTestBehavior.translucent,
       child: Scaffold(
-        backgroundColor: theme.scaffoldBackgroundColor,
-        body: Stack(
-          children: [
-            SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 0.0,
-                  vertical: 0.0,
-                ),
+        appBar: ProductoAppBar(
+          nombreProducto: widget.producto['nombreProducto'] ?? 'Sin nombre',
+          ratingWidget: ratingResumen(widget.producto['id']),
+        ),
+        body: SafeArea(
+          child: Stack(
+            children: [
+              SingleChildScrollView(
                 child: Container(
                   decoration: BoxDecoration(
                     color: theme.scaffoldBackgroundColor,
@@ -172,71 +171,6 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                         )
                                       : Container(color: Colors.grey[300]),
                                   Positioned(
-                                    top: 40,
-                                    left: 16,
-                                    child: Builder(
-                                      builder: (context) {
-                                        final isDark =
-                                            Theme.of(context).brightness ==
-                                            Brightness.dark;
-                                        return ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                            50,
-                                          ),
-                                          child: BackdropFilter(
-                                            filter: ImageFilter.blur(
-                                              sigmaX: 6,
-                                              sigmaY: 6,
-                                            ),
-                                            child: Material(
-                                              color: isDark
-                                                  ? const Color(0xFFA30000)
-                                                  : const Color(0xFFA30000),
-                                              child: InkWell(
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                                onTap: () {
-                                                  if (Navigator.canPop(
-                                                    context,
-                                                  )) {
-                                                    Navigator.of(context).pop();
-                                                  }
-                                                },
-                                                child: Container(
-                                                  padding: const EdgeInsets.all(
-                                                    10,
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          12,
-                                                        ),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Colors.black
-                                                            .withOpacity(0.3),
-                                                        blurRadius: 6,
-                                                        offset: const Offset(
-                                                          0,
-                                                          2,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  child: const Icon(
-                                                    Iconsax.arrow_left,
-                                                    size: 24,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  Positioned(
                                     bottom: 12,
                                     child: SmoothPageIndicator(
                                       controller: _pageController,
@@ -265,27 +199,8 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              widget.producto['nombreProducto'] ?? 'Sin nombre',
-                              style: Theme.of(context).textTheme.bodyLarge
-                                  ?.copyWith(
-                                    fontSize: 25,
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.onBackground,
-                                  ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                            buildCamposAdicionales(),
                             SizedBox(height: 10),
-                            ratingResumen(widget.producto['id']),
-                            SizedBox(height: 10),
-                            Text(
-                              widget.producto['descripcion'] ??
-                                  widget.producto['descripcion'] ??
-                                  'Sin descripcion',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            SizedBox(height: 18),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -326,16 +241,14 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                     '${descuento.toStringAsFixed(0)}% OFF',
                                     style: theme.textTheme.titleMedium
                                         ?.copyWith(
-                                          fontSize: 16,
+                                          fontSize: 14.5,
                                           fontWeight: FontWeight.bold,
                                           color: theme.colorScheme.error,
                                         ),
                                   ),
                               ],
                             ),
-                            SizedBox(height: 20),
-                            buildCamposAdicionales(),
-                            SizedBox(height: 20),
+                            SizedBox(height: 10),
                             CantidadSelectorHorizontal(
                               cantidadSeleccionada: _cantidadSeleccionada,
                               onSeleccionar: (nuevaCantidad) {
@@ -344,7 +257,7 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                 });
                               },
                             ),
-                            SizedBox(height: 20),
+                            SizedBox(height: 10),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -444,7 +357,7 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                           SizedBox(width: 6),
                                           Text(
                                             'Agregar al carrito',
-                                            style: TextStyle(fontSize: 18),
+                                            style: TextStyle(fontSize: 16),
                                           ),
                                         ],
                                       ),
@@ -454,12 +367,12 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                 SizedBox(width: 2),
                                 IconoCarritoConBadgeVinos(
                                   usarEstiloBoton: true,
-                                  altura: 48,
-                                  iconSize: 22,
+                                  altura: 45,
+                                  iconSize: 21,
                                   fondoColor:
                                       Theme.of(context).brightness ==
                                           Brightness.dark
-                                      ? Colors.amber
+                                      ? const Color(0xFFA30000)
                                       : Colors.black,
                                   iconColor:
                                       Theme.of(context).brightness ==
@@ -472,7 +385,7 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                             ),
                             SizedBox(height: 20),
                             Divider(
-                              thickness: 1.5,
+                              thickness: 1.3,
                               color: const Color.fromARGB(255, 225, 225, 225),
                             ),
                             Column(
@@ -490,7 +403,7 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                       Text(
                                         "Danos tu opinión",
                                         style: TextStyle(
-                                          fontSize: 24,
+                                          fontSize: 22,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
@@ -506,17 +419,25 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                         itemPadding: const EdgeInsets.symmetric(
                                           horizontal: 3.0,
                                         ),
-                                        itemBuilder: (context, _) => const Icon(
-                                          Iconsax.star,
-                                          color: Colors.amber,
-                                        ),
+                                        itemBuilder: (context, index) {
+                                          return Icon(
+                                            Iconsax.star,
+                                            color: index < _rating
+                                                ? const Color(0xFFA30000)
+                                                : Colors.grey[400],
+                                          );
+                                        },
                                         onRatingUpdate: (rating) {
                                           _rating = rating;
                                         },
-                                      ),
-                                      const SizedBox(height: 12),
 
-                                      // 💬 CAMPO DE TEXTO
+                                        itemSize: 30,
+                                        unratedColor: Colors.grey[400],
+                                        glow: false,
+                                        updateOnDrag: true,
+                                      ),
+                                      const SizedBox(height: 15),
+
                                       CustomTextField(
                                         controller: _comentarioController,
                                         focusNode: _focusNode,
@@ -607,7 +528,7 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                         "Valoracion y comentarios",
                                         style: theme.textTheme.titleMedium
                                             ?.copyWith(
-                                              fontSize: 24,
+                                              fontSize: 22,
                                               fontWeight: FontWeight.bold,
                                               color: theme
                                                   .textTheme
@@ -805,8 +726,8 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -814,29 +735,28 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
 
   Widget buildCamposAdicionales() {
     final theme = Theme.of(context);
+
     Widget buildCampo(String titulo, String? valor) {
       if (valor == null || valor.isEmpty) return const SizedBox.shrink();
       return Padding(
-        padding: const EdgeInsets.only(bottom: 8.0),
-        child: Row(
+        padding: const EdgeInsets.only(bottom: 12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               "$titulo:",
               style: theme.textTheme.titleMedium?.copyWith(
-                fontSize: 18,
+                fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: theme.textTheme.bodyLarge?.color,
               ),
             ),
-            const SizedBox(width: 6),
-            Flexible(
-              child: Text(
-                valor,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontSize: 18,
-                  color: theme.textTheme.bodyLarge?.color,
-                ),
-                overflow: TextOverflow.ellipsis,
+            const SizedBox(height: 4),
+            Text(
+              valor,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontSize: 13,
+                color: theme.textTheme.bodyLarge?.color,
               ),
             ),
           ],
@@ -845,6 +765,7 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
     }
 
     List<Widget> infoWidgets = [
+      buildCampo("Descripción", widget.producto['descripcion']),
       buildCampo("Marca", widget.producto['marca']),
       buildCampo("Volumen", widget.producto['volumen']),
     ].where((w) => w is! SizedBox).toList();
@@ -854,6 +775,99 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [const SizedBox(height: 10), ...infoWidgets],
+    );
+  }
+}
+
+class ProductoAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final String nombreProducto;
+  final Widget ratingWidget;
+
+  const ProductoAppBar({
+    super.key,
+    required this.nombreProducto,
+    required this.ratingWidget,
+  });
+
+  @override
+  Size get preferredSize => const Size.fromHeight(75);
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return AppBar(
+      automaticallyImplyLeading: false,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      toolbarHeight: 30,
+      flexibleSpace: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 5, 8),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(40),
+                child: Material(
+                  color: isDark
+                      ? const Color(0xFFA30000)
+                      : const Color(0xFFA30000),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: () {
+                      if (Navigator.canPop(context)) {
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.3),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Iconsax.arrow_left,
+                        size: 24,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(width: 16),
+
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      nombreProducto.isNotEmpty ? nombreProducto : 'Sin nombre',
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontSize: 17,
+
+                        color: Theme.of(context).colorScheme.onBackground,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                    const SizedBox(height: 1),
+                    ratingWidget,
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

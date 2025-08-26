@@ -199,14 +199,14 @@ class _InventarioPageState extends State<InventarioPage> {
 
                   return SingleChildScrollView(
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(12, 5, 12, 5),
+                      padding: const EdgeInsets.fromLTRB(12, 5, 12, 0),
                       child: GridView.builder(
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
-                              crossAxisSpacing: 12,
+                              crossAxisSpacing: 7,
                               mainAxisSpacing: 5,
                               childAspectRatio: 1.2,
                             ),
@@ -224,7 +224,7 @@ class _InventarioPageState extends State<InventarioPage> {
 
                           return Card(
                             color: color.withOpacity(0.85),
-                            elevation: 6,
+                            elevation: 4,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             ),
@@ -236,7 +236,7 @@ class _InventarioPageState extends State<InventarioPage> {
                                   Text(
                                     categoria,
                                     style: TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 13,
                                       fontWeight: FontWeight.bold,
                                       color: textoColor,
                                     ),
@@ -251,7 +251,7 @@ class _InventarioPageState extends State<InventarioPage> {
                                     child: Text(
                                       cantidad.toString(),
                                       style: TextStyle(
-                                        fontSize: 22,
+                                        fontSize: 20,
                                         fontWeight: FontWeight.bold,
                                         color: textoColor,
                                       ),

@@ -3,8 +3,10 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 class MetodoPagoResultadoScreenVinos extends StatefulWidget {
   final String preferenceUrl;
-  const MetodoPagoResultadoScreenVinos(
-      {super.key, required this.preferenceUrl});
+  const MetodoPagoResultadoScreenVinos({
+    super.key,
+    required this.preferenceUrl,
+  });
 
   @override
   State<MetodoPagoResultadoScreenVinos> createState() =>
@@ -45,8 +47,6 @@ class _MetodoPagoResultadoScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: WebViewWidget(controller: _controller),
-    );
+    return Scaffold(body: WebViewWidget(controller: _controller));
   }
 }

@@ -191,6 +191,7 @@ class _CompraExitosaScreenState extends State<CompraExitosaScreenVinos> {
           'cantidad': cantidadTotal,
           'precio': precioConDescuento,
           'descuento': descuento,
+          'categoria': producto['categoria'] ?? 'Sin categoría',
           'imagenCompraUrl': imagenStorageUrl,
         };
 
@@ -232,7 +233,7 @@ class _CompraExitosaScreenState extends State<CompraExitosaScreenVinos> {
   @override
   Widget build(BuildContext context) {
     final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    const Color primaryColor = Color(0xFFA30000); // rojo oscuro
+    const Color primaryColor = Color(0xFFA30000);
     const Color backgroundLight = Color(0xFFFAFAFA);
     const Color backgroundDark = Colors.black;
 
@@ -244,7 +245,6 @@ class _CompraExitosaScreenState extends State<CompraExitosaScreenVinos> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // ✅ Ícono principal con sombra
               Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
@@ -267,8 +267,6 @@ class _CompraExitosaScreenState extends State<CompraExitosaScreenVinos> {
               ),
 
               const SizedBox(height: 32),
-
-              // ✅ Título
               Text(
                 '¡Compra realizada!',
                 textAlign: TextAlign.center,
@@ -281,8 +279,6 @@ class _CompraExitosaScreenState extends State<CompraExitosaScreenVinos> {
               ),
 
               const SizedBox(height: 16),
-
-              // ✅ Subtítulo
               Text(
                 'Tu pedido se procesó correctamente.\nGracias por confiar en nosotros.',
                 textAlign: TextAlign.center,
@@ -294,8 +290,6 @@ class _CompraExitosaScreenState extends State<CompraExitosaScreenVinos> {
               ),
 
               const SizedBox(height: 50),
-
-              // ✅ Botón moderno
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(

@@ -189,100 +189,102 @@ class _ContactochatVinosState extends State<ContactochatVinos> {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Chat(
-              messages: List<types.Message>.from(_mensajes),
-              onSendPressed: _enviarMensaje,
-              user: _usuario,
-              showUserAvatars: false,
-              showUserNames: false,
-              theme: DefaultChatTheme(
-                inputBackgroundColor: const Color.fromARGB(255, 15, 116, 89),
-                primaryColor: const Color(0xFF142143),
-                secondaryColor: const Color(0xFFFFAF00),
-                backgroundColor: theme.scaffoldBackgroundColor,
-                messageInsetsVertical: 6,
-                messageInsetsHorizontal: 10,
-                sentMessageBodyTextStyle: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 15,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: Chat(
+                messages: List<types.Message>.from(_mensajes),
+                onSendPressed: _enviarMensaje,
+                user: _usuario,
+                showUserAvatars: false,
+                showUserNames: false,
+                theme: DefaultChatTheme(
+                  inputBackgroundColor: const Color.fromARGB(255, 15, 116, 89),
+                  primaryColor: const Color(0xFF142143),
+                  secondaryColor: const Color(0xFFFFAF00),
+                  backgroundColor: theme.scaffoldBackgroundColor,
+                  messageInsetsVertical: 6,
+                  messageInsetsHorizontal: 10,
+                  sentMessageBodyTextStyle: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                  ),
+                  receivedMessageBodyTextStyle: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                  ),
+                  inputTextColor: Colors.black,
+                  inputTextCursorColor: Colors.black,
                 ),
-                receivedMessageBodyTextStyle: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 15,
-                ),
-                inputTextColor: Colors.black,
-                inputTextCursorColor: Colors.black,
-              ),
-              customBottomWidget: buildCustomInput(),
-              emptyState: const SizedBox.shrink(),
-              bubbleBuilder:
-                  (child, {required message, required nextMessageInGroup}) {
-                    final isMe = message.author.id == _usuario.id;
-                    final hora = DateFormat('HH:mm').format(
-                      DateTime.fromMillisecondsSinceEpoch(
-                        message.createdAt ?? 0,
-                      ),
-                    );
-
-                    return Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: isMe
-                            ? const Color.fromARGB(255, 240, 164, 0)
-                            : const Color.fromARGB(255, 0, 0, 0),
-                        borderRadius: BorderRadius.only(
-                          topLeft: const Radius.circular(10),
-                          topRight: const Radius.circular(10),
-                          bottomLeft: Radius.circular(isMe ? 10 : 0),
-                          bottomRight: Radius.circular(isMe ? 0 : 10),
+                customBottomWidget: buildCustomInput(),
+                emptyState: const SizedBox.shrink(),
+                bubbleBuilder:
+                    (child, {required message, required nextMessageInGroup}) {
+                      final isMe = message.author.id == _usuario.id;
+                      final hora = DateFormat('HH:mm').format(
+                        DateTime.fromMillisecondsSinceEpoch(
+                          message.createdAt ?? 0,
                         ),
-                      ),
-                      child: LayoutBuilder(
-                        builder: (context, constraints) {
-                          return IntrinsicHeight(
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                // Mensaje
-                                Flexible(
-                                  child: DefaultTextStyle(
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                      fontFamily: 'Afacad',
-                                      color: Colors.white,
+                      );
+
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isMe
+                              ? const Color.fromARGB(255, 240, 164, 0)
+                              : const Color.fromARGB(255, 0, 0, 0),
+                          borderRadius: BorderRadius.only(
+                            topLeft: const Radius.circular(10),
+                            topRight: const Radius.circular(10),
+                            bottomLeft: Radius.circular(isMe ? 10 : 0),
+                            bottomRight: Radius.circular(isMe ? 0 : 10),
+                          ),
+                        ),
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            return IntrinsicHeight(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  // Mensaje
+                                  Flexible(
+                                    child: DefaultTextStyle(
+                                      style: const TextStyle(
+                                        fontSize: 15,
+                                        fontFamily: 'Afacad',
+                                        color: Colors.white,
+                                      ),
+                                      child: child,
                                     ),
-                                    child: child,
                                   ),
-                                ),
-                                const SizedBox(width: 6),
-                                Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: Text(
-                                    hora,
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      fontFamily: 'Afacad',
-                                      color: Colors.white.withOpacity(0.6),
+                                  const SizedBox(width: 6),
+                                  Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: Text(
+                                      hora,
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        fontFamily: 'Afacad',
+                                        color: Colors.white.withOpacity(0.6),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  },
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

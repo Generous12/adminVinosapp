@@ -51,7 +51,7 @@ class _ComprasUsuarioPageState extends State<PedidosPage> {
     _isLoading = true;
     _comprasSubscription = FirebaseFirestore.instance
         .collection('compras')
-        .orderBy('fecha', descending: true) // ordenar por fecha descendente
+        .orderBy('fecha', descending: true)
         .snapshots()
         .listen((snapshot) async {
           List<Map<String, dynamic>> comprasList = [];
@@ -200,7 +200,6 @@ class _ComprasUsuarioPageState extends State<PedidosPage> {
       },
       behavior: HitTestBehavior.translucent,
       child: Scaffold(
-        backgroundColor: theme.scaffoldBackgroundColor,
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(70),
           child: SafeArea(
@@ -238,15 +237,20 @@ class _ComprasUsuarioPageState extends State<PedidosPage> {
                         autofocus: false,
                         onChanged: (query) => _filtrarCompras(),
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          fontSize: 16,
+                          fontSize: 14,
 
                           color: theme.textTheme.bodyLarge?.color,
                         ),
                         decoration: InputDecoration(
                           hintText: 'Buscar pedido...',
                           hintStyle: TextStyle(
-                            color: Colors.grey[500],
-                            fontSize: 16,
+                            color: const Color.from(
+                              alpha: 1,
+                              red: 0.62,
+                              green: 0.62,
+                              blue: 0.62,
+                            ),
+                            fontSize: 14,
                           ),
                           border: InputBorder.none,
                           isDense: true,
@@ -281,117 +285,120 @@ class _ComprasUsuarioPageState extends State<PedidosPage> {
             ),
           ),
         ),
-        body: Column(
-          children: [
-            PedidoFiltroSelector(
-              onFiltroSelected: (estado) {
-                estadoSeleccionado = estado;
-                _filtrarCompras();
-              },
-            ),
-            Expanded(
-              child: _isLoading
-                  ? const RedactedChat()
-                  : _comprasFiltradas.isEmpty
-                  ? Center(
-                      child: Text(
-                        'No hay pedidos en este apartado',
-                        style: TextStyle(
-                          fontSize: 16,
+        body: SafeArea(
+          child: Column(
+            children: [
+              PedidoFiltroSelector(
+                onFiltroSelected: (estado) {
+                  estadoSeleccionado = estado;
+                  _filtrarCompras();
+                },
+              ),
+              SizedBox(height: 10),
+              Expanded(
+                child: _isLoading
+                    ? const RedactedChat()
+                    : _comprasFiltradas.isEmpty
+                    ? Center(
+                        child: Text(
+                          'No hay pedidos en este apartado',
+                          style: TextStyle(
+                            fontSize: 16,
 
-                          color: Theme.of(context).colorScheme.onBackground,
+                            color: Theme.of(context).colorScheme.onBackground,
+                          ),
                         ),
-                      ),
-                    )
-                  : Padding(
-                      padding: const EdgeInsets.all(2.0),
-                      child: ListView.builder(
-                        padding: const EdgeInsets.all(5),
-                        itemCount: _comprasFiltradas.length,
-                        itemBuilder: (context, index) {
-                          final compra = _comprasFiltradas[index];
-                          final fecha = (compra['fecha'] as Timestamp?)
-                              ?.toDate();
-                          final fechaFormateada = fecha != null
-                              ? timeago.format(fecha, locale: 'es')
-                              : 'Sin fecha';
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: ListView.builder(
+                          padding: const EdgeInsets.all(5),
+                          itemCount: _comprasFiltradas.length,
+                          itemBuilder: (context, index) {
+                            final compra = _comprasFiltradas[index];
+                            final fecha = (compra['fecha'] as Timestamp?)
+                                ?.toDate();
+                            final fechaFormateada = fecha != null
+                                ? timeago.format(fecha, locale: 'es')
+                                : 'Sin fecha';
 
-                          return Card(
-                            margin: const EdgeInsets.symmetric(vertical: 6),
-                            elevation: 1,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              side: BorderSide(
-                                color: Theme.of(context).dividerColor,
-                              ),
-                            ),
-                            child: ListTile(
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 8,
-                              ),
-                              leading: CircleAvatar(
-                                radius: 25,
-                                backgroundImage:
-                                    (compra['profileImageUrl'] != null &&
-                                        compra['profileImageUrl'].isNotEmpty)
-                                    ? NetworkImage(compra['profileImageUrl'])
-                                    : const AssetImage(
-                                            'assets/images/empresa.png',
-                                          )
-                                          as ImageProvider,
-                              ),
-                              title: Text(
-                                compra['username'],
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
+                            return Card(
+                              margin: const EdgeInsets.symmetric(vertical: 6),
+                              elevation: 1,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                side: BorderSide(
+                                  color: Theme.of(context).dividerColor,
                                 ),
                               ),
-                              subtitle: Text('Fecha: $fechaFormateada'),
-                              trailing: TextButton(
-                                onPressed: () {
-                                  navegarConSlideDerecha(
-                                    context,
-                                    EmpresaPedidosScreen(
-                                      usuarioId: compra['usuarioId'],
-                                      compraId: compra['compraId'],
+                              child: ListTile(
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 8,
+                                ),
+                                leading: CircleAvatar(
+                                  radius: 25,
+                                  backgroundImage:
+                                      (compra['profileImageUrl'] != null &&
+                                          compra['profileImageUrl'].isNotEmpty)
+                                      ? NetworkImage(compra['profileImageUrl'])
+                                      : const AssetImage(
+                                              'assets/images/empresa.png',
+                                            )
+                                            as ImageProvider,
+                                ),
+                                title: Text(
+                                  compra['username'],
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                                subtitle: Text('Fecha: $fechaFormateada'),
+                                trailing: TextButton(
+                                  onPressed: () {
+                                    navegarConSlideDerecha(
+                                      context,
+                                      EmpresaPedidosScreen(
+                                        usuarioId: compra['usuarioId'],
+                                        compraId: compra['compraId'],
+                                      ),
+                                    );
+                                  },
+                                  style: TextButton.styleFrom(
+                                    backgroundColor: Color(0xFFA30000),
+                                    elevation: 5.0,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
                                     ),
-                                  );
-                                },
-                                style: TextButton.styleFrom(
-                                  backgroundColor: Color(0xFFA30000),
-                                  elevation: 5.0,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 6,
+                                    ),
                                   ),
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 6,
-                                  ),
-                                ),
-                                child: Text(
-                                  /* estadoSeleccionado == 'Rechazado'
+                                  child: Text(
+                                    /* estadoSeleccionado == 'Rechazado'
                                             ? 'Ver'
                                             : estadoSeleccionado ==
                                                     'No atendido'
                                                 ? 'Verificar'
                                                 : */
-                                  'Atender',
-                                  style: const TextStyle(
-                                    color: Colors.white,
+                                    'Atender',
+                                    style: const TextStyle(
+                                      color: Colors.white,
 
-                                    fontSize: 14,
+                                      fontSize: 13,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          );
-                        },
+                            );
+                          },
+                        ),
                       ),
-                    ),
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -189,13 +189,13 @@ class _MyAppState extends State<MyApp> {
       themeMode: themeProvider.themeMode,
       theme: ThemeData(
         useMaterial3: true,
-        fontFamily: 'GFSDidot',
+        fontFamily: 'MontserratAlternates',
         brightness: Brightness.light,
         colorScheme: const ColorScheme.light(
           primary: Color(0xFFA30000),
           onPrimary: Color(0xFFFAFAFA),
-          background: Color(0xFFFAFAFA),
-          onBackground: Colors.black,
+          surface: Color(0xFFFAFAFA),
+          onSurface: Colors.black,
         ),
         scaffoldBackgroundColor: Color(0xFFFAFAFA),
         appBarTheme: const AppBarTheme(
@@ -209,7 +209,7 @@ class _MyAppState extends State<MyApp> {
       ),
       darkTheme: ThemeData(
         useMaterial3: true,
-        fontFamily: 'GFSDidot',
+        fontFamily: 'MontserratAlternates',
         brightness: Brightness.dark,
         colorScheme: const ColorScheme.dark(
           primary: Color(0xFFA30000),

@@ -1,4 +1,5 @@
 import 'package:app_bootsup/Widgets/boton.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -76,24 +77,18 @@ class _CustomTextFieldState extends State<CustomTextField> {
           onChanged: widget.onChanged,
           focusNode: widget.focusNode,
           cursorColor: colorScheme.onBackground,
-          style: TextStyle(
-            fontFamily: 'GFSDidot',
-            fontSize: 15.5,
-            color: colorScheme.onBackground,
-          ),
+          style: TextStyle(fontSize: 12, color: colorScheme.onBackground),
           decoration: InputDecoration(
             labelText: widget.label,
             labelStyle: TextStyle(
-              fontFamily: 'GFSDidot',
-              fontSize: 15.5,
+              fontSize: 12,
               color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
             ),
             floatingLabelBehavior: FloatingLabelBehavior.auto,
             alignLabelWithHint: isMultiline,
             hintText: widget.hintText,
             hintStyle: TextStyle(
-              fontFamily: 'GFSDidot',
-              fontSize: 15.5,
+              fontSize: 12,
               color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
             ),
             filled: true,
@@ -370,4 +365,306 @@ class InfoCard extends StatelessWidget {
       ),
     );
   }
+}
+
+String formatText(String text, {int maxLength = 29}) {
+  if (text.length > maxLength) {
+    return '${text.substring(0, maxLength)}...';
+  }
+  return text;
+}
+
+Widget buildLineChartCard(
+  String titulo,
+  Map<String, int> datos,
+  BuildContext context,
+) {
+  final keys = datos.keys.toList();
+  final values = datos.values.toList();
+  final theme = Theme.of(context);
+  final isDark = theme.brightness == Brightness.dark;
+
+  return Card(
+    elevation: 4,
+    shadowColor: Colors.black12,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    color: theme.cardColor,
+    margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+    child: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Iconsax.activity, color: theme.colorScheme.primary),
+              const SizedBox(width: 8),
+              Text(
+                titulo,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: theme.textTheme.bodyMedium?.color,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            height: 200,
+            child: LineChart(
+              LineChartData(
+                backgroundColor: Colors.transparent, // Fondo transparente
+                gridData: FlGridData(
+                  show: true,
+                  drawVerticalLine: true,
+                  getDrawingHorizontalLine: (value) => FlLine(
+                    color: isDark
+                        ? Colors.white.withOpacity(0.1)
+                        : Colors.black.withOpacity(0.1),
+                    strokeWidth: 0.5,
+                  ),
+                  getDrawingVerticalLine: (value) => FlLine(
+                    color: isDark
+                        ? Colors.white.withOpacity(0.1)
+                        : Colors.black.withOpacity(0.1),
+                    strokeWidth: 0.5,
+                  ),
+                ),
+                titlesData: FlTitlesData(
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 32,
+                      interval: 10,
+                      getTitlesWidget: (value, meta) {
+                        if (value % 10 == 0) {
+                          return Text(
+                            value.toInt().toString(),
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: theme.textTheme.bodyMedium?.color,
+                            ),
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      },
+                    ),
+                  ),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 42,
+                      interval: 1,
+                      getTitlesWidget: (value, meta) {
+                        final index = value.toInt();
+                        if (index >= 0 && index < keys.length) {
+                          return Text(
+                            keys[index],
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: theme.textTheme.bodyMedium?.color,
+                            ),
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      },
+                    ),
+                  ),
+                  topTitles: const AxisTitles(),
+                  rightTitles: const AxisTitles(),
+                ),
+                borderData: FlBorderData(
+                  show: true,
+                  border: Border.all(
+                    color: isDark
+                        ? Colors.white.withOpacity(0.15)
+                        : Colors.black.withOpacity(0.15),
+                  ),
+                ),
+                minX: 0,
+                maxX: (values.length - 1).toDouble(),
+                minY: 0,
+                maxY: values.isEmpty
+                    ? 10
+                    : (values.reduce((a, b) => a > b ? a : b).toDouble() <= 50
+                          ? 50
+                          : values.reduce((a, b) => a > b ? a : b).toDouble()),
+                lineBarsData: [
+                  LineChartBarData(
+                    isCurved: true,
+                    color: theme.colorScheme.primary,
+                    barWidth: 3,
+                    dotData: FlDotData(show: true),
+                    belowBarData: BarAreaData(
+                      show: true,
+                      gradient: LinearGradient(
+                        colors: [
+                          theme.colorScheme.primary.withOpacity(0.3),
+                          Colors.transparent,
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                    ),
+                    spots: List.generate(values.length, (index) {
+                      return FlSpot(index.toDouble(), values[index].toDouble());
+                    }),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget buildEstadisticaTile(
+  BuildContext context,
+  String titulo,
+  String valor, {
+  IconData icon = Iconsax.chart,
+}) {
+  final theme = Theme.of(context);
+  final colorScheme = theme.colorScheme;
+
+  return Card(
+    elevation: 3,
+    shadowColor: Colors.black12,
+    color: theme.cardColor,
+    margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    child: Padding(
+      padding: const EdgeInsets.all(12),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: colorScheme.primary.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: colorScheme.primary, size: 28),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  titulo,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  valor,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget buildTopList(
+  BuildContext context,
+  String titulo,
+  Map<String, int> datos,
+) {
+  final theme = Theme.of(context);
+  final colorScheme = theme.colorScheme;
+
+  return Card(
+    elevation: 3,
+    shadowColor: Colors.black12,
+    color: theme.cardColor,
+    margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    child: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 🔹 Encabezado
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: colorScheme.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  Iconsax.star_1,
+                  color: colorScheme.primary,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                titulo,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+
+          // 🔹 Mostrar mensaje si no hay datos
+          if (datos.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              child: Text(
+                "Ninguno",
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontSize: 14,
+                  fontStyle: FontStyle.italic,
+                  color: theme.disabledColor,
+                ),
+              ),
+            )
+          else
+            ...datos.entries
+                .take(5)
+                .map(
+                  (entry) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            entry.key,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          '${entry.value}',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+        ],
+      ),
+    ),
+  );
 }

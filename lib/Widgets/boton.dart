@@ -186,6 +186,7 @@ class _FullWidthMenuTileState extends State<FullWidthMenuTile> {
                         widget.option.title,
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w600,
+                          fontSize: 14,
                           color: theme.textTheme.bodyLarge?.color,
                         ),
                       ),
@@ -300,7 +301,7 @@ class FullWidthActionButton extends StatelessWidget {
         onTap: onPressed,
         child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
           child: Row(
             children: [
@@ -321,7 +322,7 @@ class FullWidthActionButton extends StatelessWidget {
                     Text(
                       title,
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 13,
                         fontWeight: FontWeight.w600,
                         color: isDark ? Colors.white : Colors.black,
                       ),
@@ -330,7 +331,7 @@ class FullWidthActionButton extends StatelessWidget {
                     Text(
                       subtitle,
                       style: TextStyle(
-                        fontSize: 11,
+                        fontSize: 10,
                         color: isDark ? Colors.white70 : Colors.black54,
                       ),
                     ),

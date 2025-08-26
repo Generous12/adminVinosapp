@@ -18,6 +18,8 @@ class CarritoServiceVinos extends ChangeNotifier {
     final nombreProducto = nuevoProducto['nombreProducto'];
     final marca = nuevoProducto['marca'];
     final volumen = nuevoProducto['volumen'];
+    final categoria =
+        nuevoProducto['categoria']; // 🔥 Ahora también leemos la categoría
 
     int cantidadNueva = 1;
 
@@ -35,6 +37,7 @@ class CarritoServiceVinos extends ChangeNotifier {
     );
 
     if (indexExistente != -1) {
+      // 🔥 Producto ya está en el carrito, solo actualizamos cantidad y descuento
       var productoExistente = _carritoActual[indexExistente];
       int cantidadExistente = productoExistente['cantidad'] is int
           ? productoExistente['cantidad']
@@ -42,8 +45,17 @@ class CarritoServiceVinos extends ChangeNotifier {
 
       productoExistente['cantidad'] = cantidadExistente + cantidadNueva;
       productoExistente['descuento'] = nuevoProducto['descuento'];
+
+      // 🔥 Si no tenía categoría antes, la asignamos
+      if (productoExistente['categoria'] == null && categoria != null) {
+        productoExistente['categoria'] = categoria;
+      }
     } else {
+      // 🔥 Producto nuevo, guardamos categoría
       nuevoProducto['cantidad'] = cantidadNueva;
+      if (categoria != null) {
+        nuevoProducto['categoria'] = categoria;
+      }
       _carritoActual.add(nuevoProducto);
     }
 

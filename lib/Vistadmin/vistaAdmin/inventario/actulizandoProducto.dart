@@ -1,8 +1,9 @@
 import 'dart:io';
-import 'package:app_bootsup/Widgets/boton.dart';
+import 'package:app_bootsup/Widgets/alertas.dart';
 import 'package:app_bootsup/Widgets/cajasdetexto.dart';
 import 'package:app_bootsup/Widgets/dropdownbutton2.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -45,6 +46,7 @@ class _EditarProductoPageState extends State<EditarProductoPage> {
   String normalize(String s) => s.replaceAll(' ', '').toLowerCase();
   dynamic _mainImage;
   List<dynamic> _selectedImages = [];
+  User? _user = FirebaseAuth.instance.currentUser;
 
   @override
   void initState() {
@@ -84,7 +86,133 @@ class _EditarProductoPageState extends State<EditarProductoPage> {
   Widget build(BuildContext context) {
     final categoriasUnicas = categorias.toSet().toList();
     final volumenesUnicos = volumenes.toSet().toList();
+    final theme = Theme.of(context);
     return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(60),
+        child: AppBar(
+          automaticallyImplyLeading: false,
+          elevation: 5,
+          titleSpacing: 0,
+          surfaceTintColor: Colors.transparent,
+          centerTitle: true,
+          title: Text(
+            "Actualizar",
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontSize: 17,
+              color: theme.textTheme.bodyLarge?.color,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 5, 5, 5),
+              child: Row(
+                children: [
+                  TextButton.icon(
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.grey.shade800,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 8,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onPressed: () async {
+                      final haynombre = nombreController.text.trim().isNotEmpty;
+                      final hayMarca = marcaController.text.trim().isNotEmpty;
+                      final hayStock = stockController.text.trim().isNotEmpty;
+                      final hayPrecio = precioController.text.trim().isNotEmpty;
+                      final hayDescuento = descuentoController.text
+                          .trim()
+                          .isNotEmpty;
+                      final hayDescripcion = descripcionController.text
+                          .trim()
+                          .isNotEmpty;
+                      final hayImagenPrincipal = _mainImage != null;
+                      final hayImagenesSeleccionadas =
+                          _selectedImages.isNotEmpty;
+                      if (hayDescripcion ||
+                          hayMarca ||
+                          hayStock ||
+                          hayPrecio ||
+                          hayDescuento ||
+                          haynombre ||
+                          hayImagenPrincipal ||
+                          hayImagenesSeleccionadas) {
+                        bool? result = await showCustomDialog(
+                          context: context,
+                          title: 'Aviso',
+                          message:
+                              '¿Estás seguro? Si sales ahora, perderás tu progreso.',
+                          confirmButtonText: 'Sí, salir',
+                          cancelButtonText: 'No',
+                          confirmButtonColor: Colors.red,
+                          cancelButtonColor: const Color.fromARGB(255, 0, 0, 0),
+                        );
+                        if (result == true) {
+                          if (mounted) {
+                            FocusScope.of(context).unfocus();
+                            Navigator.pop(context);
+                          }
+                        }
+                        return;
+                      }
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(
+                      Icons.close,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                    label: const Text(
+                      "Cancelar",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  const SizedBox(width: 5),
+                  TextButton.icon(
+                    style: TextButton.styleFrom(
+                      backgroundColor: const Color(0xFFA30000),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 8,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onPressed: () async {
+                      if (_user == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("No hay usuario logueado."),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                        return;
+                      }
+                      await _guardarProducto(_user!.uid);
+                      setState(() {});
+                    },
+                    icon: const Icon(
+                      Icons.check,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                    label: const Text(
+                      "Guardar",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(5),
@@ -265,31 +393,6 @@ class _EditarProductoPageState extends State<EditarProductoPage> {
                 ),
               ),
               const SizedBox(height: 20),
-              Row(
-                children: [
-                  Expanded(
-                    child: LoadingOverlayButton(
-                      text: 'Cancelar',
-                      color: Colors.grey,
-                      onPressedLogic: () async {
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 5),
-                  Expanded(
-                    child: LoadingOverlayButton(
-                      text: 'Guardar',
-                      color: const Color(0xFFA30000),
-                      onPressedLogic: () async {
-                        await _guardarProducto(
-                          'userId',
-                        ); // reemplazar por tu lógica de usuario
-                      },
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
         ),
@@ -310,38 +413,49 @@ class _EditarProductoPageState extends State<EditarProductoPage> {
   }
 
   Future<void> _guardarProducto(String userId) async {
-    List<String> uploadedUrls = [];
+    try {
+      List<String> uploadedUrls = [];
 
-    for (var image in _selectedImages) {
-      if (image is File) {
-        // Subir solo imágenes nuevas
-        String storagePath =
-            'Administrador/$userId/${DateTime.now().millisecondsSinceEpoch}.webp';
-        var uploadTask = await FirebaseStorage.instance
-            .ref(storagePath)
-            .putFile(image);
-        final url = await uploadTask.ref.getDownloadURL();
-        uploadedUrls.add(url);
-      } else if (image is String) {
-        // Mantener URLs existentes
-        uploadedUrls.add(image);
+      for (var image in _selectedImages) {
+        if (image is File) {
+          String storagePath =
+              'Administrador/$userId/${DateTime.now().millisecondsSinceEpoch}.webp';
+          var uploadTask = await FirebaseStorage.instance
+              .ref(storagePath)
+              .putFile(image);
+          final url = await uploadTask.ref.getDownloadURL();
+          uploadedUrls.add(url);
+        } else if (image is String) {
+          uploadedUrls.add(image);
+        }
       }
-    }
 
-    // Guardar producto en Firestore
-    await FirebaseFirestore.instance
-        .collection('productos')
-        .doc(widget.producto['id'])
-        .update({
-          'nombreProducto': nombreController.text,
-          'marca': marcaController.text,
-          'categoria': selectedCategoria,
-          'volumen': selectedVolumen,
-          'stock': int.tryParse(stockController.text) ?? 0,
-          'precio': double.tryParse(precioController.text) ?? 0,
-          'descuento': double.tryParse(descuentoController.text) ?? 0,
-          'descripcion': descripcionController.text,
-          'imagenes': uploadedUrls,
-        });
+      await FirebaseFirestore.instance
+          .collection('VinosPiscosProductos')
+          .doc(widget.producto['id'])
+          .update({
+            'nombreProducto': nombreController.text.trim(),
+            'marca': marcaController.text.trim(),
+            'categoria': selectedCategoria,
+            'volumen': selectedVolumen,
+            'stock': int.tryParse(stockController.text) ?? 0,
+            'precio': double.tryParse(precioController.text) ?? 0,
+            'descuento': double.tryParse(descuentoController.text) ?? 0,
+            'descripcion': descripcionController.text.trim(),
+            'imagenes': uploadedUrls,
+          });
+
+      await showCustomDialog(
+        context: context,
+        title: "Éxito",
+        message: "Producto actualizado correctamente",
+        confirmButtonText: "Cerrar",
+      );
+      Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error al actualizar: $e")));
+    }
   }
 }

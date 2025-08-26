@@ -488,7 +488,7 @@ class _PublicacionesPageState extends State<PublicacionesPage> {
             leading: IconButton(
               icon: Icon(
                 Iconsax.arrow_left,
-                size: 25,
+                size: 24,
                 color: theme.iconTheme.color,
               ),
               onPressed: () async {
@@ -526,7 +526,7 @@ class _PublicacionesPageState extends State<PublicacionesPage> {
                 }
               },
             ),
-            title: Text('Publicaciones', style: TextStyle(fontSize: 20)),
+            title: Text('Publicaciones', style: TextStyle(fontSize: 18)),
             actions: [
               ElevatedButton(
                 onPressed: () {
@@ -567,7 +567,7 @@ class _PublicacionesPageState extends State<PublicacionesPage> {
                     : Text(
                         'Publicar',
                         style: TextStyle(
-                          fontSize: 17,
+                          fontSize: 15,
                           fontWeight: FontWeight.bold,
                           color: const ui.Color.fromARGB(255, 255, 255, 255),
                         ),

@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:app_bootsup/Widgets/alertas.dart';
-import 'package:app_bootsup/Widgets/boton.dart';
 import 'package:app_bootsup/Widgets/cajasdetexto.dart';
 import 'package:app_bootsup/Widgets/dropdownbutton2.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -339,6 +338,7 @@ class _ProductoPageState extends State<ProductoPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return WillPopScope(
       onWillPop: () async {
         if (_isLoading) {
@@ -390,9 +390,152 @@ class _ProductoPageState extends State<ProductoPage> {
         },
         behavior: HitTestBehavior.translucent,
         child: Scaffold(
+          appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(60),
+            child: AppBar(
+              automaticallyImplyLeading: false,
+              elevation: 5,
+              titleSpacing: 0,
+              surfaceTintColor: Colors.transparent,
+              centerTitle: true,
+              title: Text(
+                "Registros",
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontSize: 17,
+                  color: theme.textTheme.bodyLarge?.color,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 5, 5, 5),
+                  child: Row(
+                    children: [
+                      TextButton.icon(
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.grey.shade800,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 8,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onPressed: () async {
+                          final haynombre = nombreController.text
+                              .trim()
+                              .isNotEmpty;
+                          final hayMarca = marcaController.text
+                              .trim()
+                              .isNotEmpty;
+                          final hayStock = stockController.text
+                              .trim()
+                              .isNotEmpty;
+                          final hayPrecio = precioController.text
+                              .trim()
+                              .isNotEmpty;
+                          final hayDescuento = descuentoController.text
+                              .trim()
+                              .isNotEmpty;
+                          final hayDescripcion = descripcionController.text
+                              .trim()
+                              .isNotEmpty;
+
+                          final hayImagenPrincipal = _mainImage != null;
+                          final hayImagenesSeleccionadas =
+                              _selectedImages.isNotEmpty;
+
+                          if (hayDescripcion ||
+                              hayMarca ||
+                              hayStock ||
+                              hayPrecio ||
+                              hayDescuento ||
+                              haynombre ||
+                              hayImagenPrincipal ||
+                              hayImagenesSeleccionadas) {
+                            bool? result = await showCustomDialog(
+                              context: context,
+                              title: 'Aviso',
+                              message:
+                                  '¿Estás seguro? Si sales ahora, perderás tu progreso.',
+                              confirmButtonText: 'Sí, salir',
+                              cancelButtonText: 'No',
+                              confirmButtonColor: Colors.red,
+                              cancelButtonColor: const Color.fromARGB(
+                                255,
+                                0,
+                                0,
+                                0,
+                              ),
+                            );
+
+                            if (result == true) {
+                              if (mounted) {
+                                FocusScope.of(context).unfocus();
+                                Navigator.pop(context);
+                              }
+                            }
+                            return;
+                          }
+
+                          Navigator.pop(context);
+                        },
+                        icon: const Icon(
+                          Icons.close,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                        label: const Text(
+                          "Cancelar",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      const SizedBox(width: 5),
+                      TextButton.icon(
+                        style: TextButton.styleFrom(
+                          backgroundColor: const Color(0xFFA30000),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 8,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onPressed: () async {
+                          if (_user == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("No hay usuario logueado."),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                            return;
+                          }
+                          print("Usuario logueado: ${_user?.uid}");
+                          await _guardarProducto(_user!.uid);
+                          setState(() {});
+                        },
+                        icon: const Icon(
+                          Icons.check,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                        label: const Text(
+                          "Guardar",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
           body: SafeArea(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(5),
+              padding: const EdgeInsets.fromLTRB(5, 5, 5, 15),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -482,12 +625,13 @@ class _ProductoPageState extends State<ProductoPage> {
                             Text(
                               'Imágenes seleccionadas',
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 14,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
                           ],
                         ),
+                        const SizedBox(height: 14),
                         MasonryGridView.count(
                           crossAxisCount: 2,
                           mainAxisSpacing: 8,
@@ -592,97 +736,6 @@ class _ProductoPageState extends State<ProductoPage> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: LoadingOverlayButton(
-                          text: 'Cancelar',
-                          color: Colors.grey,
-                          onPressedLogic: () async {
-                            final haynombre = nombreController.text
-                                .trim()
-                                .isNotEmpty;
-                            final hayMarca = marcaController.text
-                                .trim()
-                                .isNotEmpty;
-                            final hayStock = stockController.text
-                                .trim()
-                                .isNotEmpty;
-                            final hayPrecio = precioController.text
-                                .trim()
-                                .isNotEmpty;
-                            final hayDescuento = descuentoController.text
-                                .trim()
-                                .isNotEmpty;
-                            final hayDescripcion = descripcionController.text
-                                .trim()
-                                .isNotEmpty;
-
-                            final hayImagenPrincipal = _mainImage != null;
-                            final hayImagenesSeleccionadas =
-                                _selectedImages.isNotEmpty;
-
-                            if (hayDescripcion ||
-                                hayMarca ||
-                                hayStock ||
-                                hayPrecio ||
-                                hayDescuento ||
-                                haynombre ||
-                                hayImagenPrincipal ||
-                                hayImagenesSeleccionadas) {
-                              bool? result = await showCustomDialog(
-                                context: context,
-                                title: 'Aviso',
-                                message:
-                                    '¿Estás seguro? Si sales ahora, perderás tu progreso.',
-                                confirmButtonText: 'Sí, salir',
-                                cancelButtonText: 'No',
-                                confirmButtonColor: Colors.red,
-                                cancelButtonColor: const Color.fromARGB(
-                                  255,
-                                  0,
-                                  0,
-                                  0,
-                                ),
-                              );
-
-                              if (result == true) {
-                                if (mounted) {
-                                  FocusScope.of(context).unfocus();
-                                  Navigator.pop(context);
-                                }
-                              }
-                              return;
-                            }
-
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: 5),
-                      Expanded(
-                        child: LoadingOverlayButton(
-                          text: 'Guardar',
-                          color: const Color(0xFFA30000),
-                          onPressedLogic: () async {
-                            if (_user == null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("No hay usuario logueado."),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                              return;
-                            }
-                            print("Usuario logueado: ${_user?.uid}");
-                            await _guardarProducto(_user!.uid);
-                            setState(() {});
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
                 ],
               ),
             ),

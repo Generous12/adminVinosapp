@@ -18,7 +18,7 @@ class IconoCarritoConBadgeVinos extends StatefulWidget {
     super.key,
     this.usarEstiloBoton = false,
     this.altura = 48.0,
-    this.iconSize = 24.0,
+    this.iconSize = 22.0,
     this.fondoColor = const Color.fromARGB(0, 0, 0, 0),
     this.iconColor = Colors.white,
     this.borderRadius = 8.0,

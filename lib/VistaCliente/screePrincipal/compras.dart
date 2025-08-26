@@ -1,6 +1,7 @@
 import 'package:app_bootsup/Modulo/crritoServiceV.dart';
 import 'package:app_bootsup/VistaCliente/detalleVinos/badgesVinos.dart';
 import 'package:app_bootsup/VistaCliente/detalleVinos/detalleProductoV.dart';
+import 'package:app_bootsup/Widgets/cajasdetexto.dart';
 import 'package:app_bootsup/Widgets/navegator.dart';
 import 'package:app_bootsup/Widgets/rating.dart';
 import 'package:app_bootsup/Widgets/selector.dart';
@@ -299,14 +300,12 @@ class _ComprasPageState extends State<ComprasPageVinosC> {
                         onChanged: (_) => setState(() {}),
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontSize: 16,
-                          fontFamily: 'Afacad',
                         ),
                         decoration: const InputDecoration(
                           hintText: 'Buscar productos...',
                           hintStyle: TextStyle(
                             color: Colors.grey,
                             fontSize: 16,
-                            fontFamily: 'Afacad',
                           ),
                           border: InputBorder.none,
                         ),
@@ -369,7 +368,7 @@ class _ComprasPageState extends State<ComprasPageVinosC> {
               bottom: PreferredSize(
                 preferredSize: const Size.fromHeight(40),
                 child: Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
+                  padding: const EdgeInsets.only(bottom: 4.0),
                   child: CategoriaSelectorVinos(
                     onCategoriaSelected: (categoria) {
                       selectedCategoria = categoria;
@@ -470,14 +469,11 @@ class _ComprasPageState extends State<ComprasPageVinosC> {
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color.fromARGB(
-                                255,
-                                232,
-                                232,
-                                232,
-                              ).withOpacity(0.1),
-                              blurRadius: 4,
-                              offset: Offset(0, 2),
+                              color: theme.brightness == Brightness.dark
+                                  ? Colors.black.withOpacity(0.4)
+                                  : Colors.grey.withOpacity(0.1),
+                              blurRadius: 6,
+                              offset: const Offset(0, 3),
                             ),
                           ],
                         ),
@@ -527,7 +523,7 @@ class _ComprasPageState extends State<ComprasPageVinosC> {
                             ),
                             Expanded(
                               child: Padding(
-                                padding: const EdgeInsets.all(4.0),
+                                padding: const EdgeInsets.all(8.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -549,7 +545,7 @@ class _ComprasPageState extends State<ComprasPageVinosC> {
                                             })(),
                                             style: theme.textTheme.titleMedium
                                                 ?.copyWith(
-                                                  fontSize: 15,
+                                                  fontSize: 13,
                                                   color: theme
                                                       .textTheme
                                                       .bodyLarge
@@ -568,17 +564,13 @@ class _ComprasPageState extends State<ComprasPageVinosC> {
                                           horizontal: 8,
                                         ),
                                         child: Text(
-                                          (() {
-                                            final desc =
-                                                producto['descripcion'] ?? '';
-                                            final trimmed = desc.length > 40
-                                                ? desc.substring(0, 40) + '...'
-                                                : desc;
-                                            return trimmed;
-                                          })(),
+                                          formatText(
+                                            producto['descripcion'] ?? '',
+                                            maxLength: 50,
+                                          ),
                                           style: theme.textTheme.titleMedium
                                               ?.copyWith(
-                                                fontSize: 12,
+                                                fontSize: 11,
                                                 color: theme
                                                     .textTheme
                                                     .bodyLarge
@@ -588,6 +580,7 @@ class _ComprasPageState extends State<ComprasPageVinosC> {
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
+
                                     Spacer(),
                                     if (!_isRedacted)
                                       Row(
@@ -607,7 +600,7 @@ class _ComprasPageState extends State<ComprasPageVinosC> {
                                                       .textTheme
                                                       .titleMedium
                                                       ?.copyWith(
-                                                        fontSize: 13,
+                                                        fontSize: 11,
                                                         decoration:
                                                             TextDecoration
                                                                 .lineThrough,
@@ -626,7 +619,7 @@ class _ComprasPageState extends State<ComprasPageVinosC> {
                                                     .textTheme
                                                     .titleMedium
                                                     ?.copyWith(
-                                                      fontSize: 19,
+                                                      fontSize: 16,
                                                       fontWeight:
                                                           FontWeight.bold,
                                                       color: theme
@@ -646,7 +639,7 @@ class _ComprasPageState extends State<ComprasPageVinosC> {
                                               '${descuento.toStringAsFixed(0)}% OFF',
                                               style: theme.textTheme.titleMedium
                                                   ?.copyWith(
-                                                    fontSize: 11,
+                                                    fontSize: 10,
                                                     fontWeight: FontWeight.bold,
                                                     color:
                                                         theme.colorScheme.error,
@@ -668,8 +661,8 @@ class _ComprasPageState extends State<ComprasPageVinosC> {
                   }, childCount: _productosAleatorios.length),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 15,
+                    mainAxisSpacing: 15,
                     childAspectRatio: _isRedacted ? 0.75 : 0.57,
                   ),
                 ),

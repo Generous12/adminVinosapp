@@ -142,38 +142,40 @@ class _ContactoEmpresaScreenState extends State<ContactoEmpresaScreen> {
           ? const Center(child: CircularProgressIndicator())
           : _chatId == null
           ? const Center(child: Text('No se encontró chat con este cliente'))
-          : Column(
-              children: [
-                Expanded(
-                  child: Chat(
-                    messages: List<types.Message>.from(_mensajes),
-                    onSendPressed: _enviarMensaje,
-                    user: _usuarioEmpresa,
-                    showUserAvatars: false,
-                    showUserNames: false,
-                    theme: DefaultChatTheme(
-                      inputBackgroundColor: const Color.fromARGB(
-                        255,
-                        15,
-                        116,
-                        89,
+          : SafeArea(
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Chat(
+                      messages: List<types.Message>.from(_mensajes),
+                      onSendPressed: _enviarMensaje,
+                      user: _usuarioEmpresa,
+                      showUserAvatars: false,
+                      showUserNames: false,
+                      theme: DefaultChatTheme(
+                        inputBackgroundColor: const Color.fromARGB(
+                          255,
+                          15,
+                          116,
+                          89,
+                        ),
+                        primaryColor: azulOscuro,
+                        secondaryColor: naranja,
+                        backgroundColor: theme.scaffoldBackgroundColor,
+                        sentMessageBodyTextStyle: const TextStyle(
+                          color: Colors.white,
+                        ),
+                        receivedMessageBodyTextStyle: const TextStyle(
+                          color: Colors.white,
+                        ),
+                        inputTextColor: Colors.black,
+                        inputTextCursorColor: naranja,
                       ),
-                      primaryColor: azulOscuro,
-                      secondaryColor: naranja,
-                      backgroundColor: theme.scaffoldBackgroundColor,
-                      sentMessageBodyTextStyle: const TextStyle(
-                        color: Colors.white,
-                      ),
-                      receivedMessageBodyTextStyle: const TextStyle(
-                        color: Colors.white,
-                      ),
-                      inputTextColor: Colors.black,
-                      inputTextCursorColor: naranja,
+                      customBottomWidget: buildCustomInput(),
                     ),
-                    customBottomWidget: buildCustomInput(),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
     );
   }
