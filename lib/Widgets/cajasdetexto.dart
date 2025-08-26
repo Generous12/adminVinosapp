@@ -77,14 +77,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
           focusNode: widget.focusNode,
           cursorColor: colorScheme.onBackground,
           style: TextStyle(
-            fontFamily: 'Afacad',
+            fontFamily: 'GFSDidot',
             fontSize: 15.5,
             color: colorScheme.onBackground,
           ),
           decoration: InputDecoration(
             labelText: widget.label,
             labelStyle: TextStyle(
-              fontFamily: 'Afacad',
+              fontFamily: 'GFSDidot',
               fontSize: 15.5,
               color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
             ),
@@ -92,7 +92,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             alignLabelWithHint: isMultiline,
             hintText: widget.hintText,
             hintStyle: TextStyle(
-              fontFamily: 'Afacad',
+              fontFamily: 'GFSDidot',
               fontSize: 15.5,
               color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
             ),

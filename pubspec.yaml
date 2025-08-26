@@ -102,13 +102,10 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   fonts:
-    - family: Afacad
+    - family: GFSDidot
       fonts:
-        - asset: assets/assets/fonts/Afacad-Regular.ttf
-        - asset: assets/assets/fonts/Afacad-Bold.ttf
-          weight: 700
-        - asset: assets/assets/fonts/Afacad-Italic.ttf
-          style: italic
+        - asset: assets/assets/fonts/GFSDidot-Regular.ttf
+        
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

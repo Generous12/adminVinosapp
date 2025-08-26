@@ -371,7 +371,6 @@ class _ComprasPageState extends State<ComprasPageVinosC> {
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
                   child: CategoriaSelectorVinos(
-                    //elimnar Vinos
                     onCategoriaSelected: (categoria) {
                       selectedCategoria = categoria;
                       _productosAleatorios.clear();
@@ -647,7 +646,7 @@ class _ComprasPageState extends State<ComprasPageVinosC> {
                                               '${descuento.toStringAsFixed(0)}% OFF',
                                               style: theme.textTheme.titleMedium
                                                   ?.copyWith(
-                                                    fontSize: 12,
+                                                    fontSize: 11,
                                                     fontWeight: FontWeight.bold,
                                                     color:
                                                         theme.colorScheme.error,

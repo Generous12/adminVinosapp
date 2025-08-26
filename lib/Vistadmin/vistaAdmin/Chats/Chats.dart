@@ -102,7 +102,7 @@ class _ChatClientesScreenState extends State<ChatClientesScreen> {
                           ), // refresca la lista según búsqueda
                           style: theme.textTheme.bodyMedium?.copyWith(
                             fontSize: 16,
-                            fontFamily: 'Afacad',
+
                             color: theme.textTheme.bodyLarge?.color,
                           ),
                           decoration: InputDecoration(
@@ -110,7 +110,6 @@ class _ChatClientesScreenState extends State<ChatClientesScreen> {
                             hintStyle: TextStyle(
                               color: Colors.grey[500],
                               fontSize: 16,
-                              fontFamily: 'Afacad',
                             ),
                             border: InputBorder.none,
                             isDense: true,

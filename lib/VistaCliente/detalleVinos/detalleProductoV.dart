@@ -181,7 +181,7 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                             Brightness.dark;
                                         return ClipRRect(
                                           borderRadius: BorderRadius.circular(
-                                            12,
+                                            50,
                                           ),
                                           child: BackdropFilter(
                                             filter: ImageFilter.blur(
@@ -190,12 +190,8 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                             ),
                                             child: Material(
                                               color: isDark
-                                                  ? Colors.black.withOpacity(
-                                                      0.4,
-                                                    )
-                                                  : Colors.black.withOpacity(
-                                                      0.4,
-                                                    ),
+                                                  ? const Color(0xFFA30000)
+                                                  : const Color(0xFFA30000),
                                               child: InkWell(
                                                 borderRadius:
                                                     BorderRadius.circular(12),
@@ -270,11 +266,14 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              widget.producto['nombre'] ??
-                                  widget.producto['nombreProducto'] ??
-                                  'Sin nombre',
-                              style: Theme.of(context).textTheme.titleLarge
-                                  ?.copyWith(fontWeight: FontWeight.bold),
+                              widget.producto['nombreProducto'] ?? 'Sin nombre',
+                              style: Theme.of(context).textTheme.bodyLarge
+                                  ?.copyWith(
+                                    fontSize: 25,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onBackground,
+                                  ),
                               overflow: TextOverflow.ellipsis,
                             ),
                             SizedBox(height: 10),

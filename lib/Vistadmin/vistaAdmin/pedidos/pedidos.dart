@@ -239,7 +239,7 @@ class _ComprasUsuarioPageState extends State<PedidosPage> {
                         onChanged: (query) => _filtrarCompras(),
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontSize: 16,
-                          fontFamily: 'Afacad',
+
                           color: theme.textTheme.bodyLarge?.color,
                         ),
                         decoration: InputDecoration(
@@ -247,7 +247,6 @@ class _ComprasUsuarioPageState extends State<PedidosPage> {
                           hintStyle: TextStyle(
                             color: Colors.grey[500],
                             fontSize: 16,
-                            fontFamily: 'Afacad',
                           ),
                           border: InputBorder.none,
                           isDense: true,
@@ -299,7 +298,7 @@ class _ComprasUsuarioPageState extends State<PedidosPage> {
                         'No hay pedidos en este apartado',
                         style: TextStyle(
                           fontSize: 16,
-                          fontWeight: FontWeight.bold,
+
                           color: Theme.of(context).colorScheme.onBackground,
                         ),
                       ),
@@ -381,7 +380,7 @@ class _ComprasUsuarioPageState extends State<PedidosPage> {
                                   'Atender',
                                   style: const TextStyle(
                                     color: Colors.white,
-                                    fontFamily: 'Afacad',
+
                                     fontSize: 14,
                                   ),
                                 ),

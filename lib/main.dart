@@ -189,7 +189,7 @@ class _MyAppState extends State<MyApp> {
       themeMode: themeProvider.themeMode,
       theme: ThemeData(
         useMaterial3: true,
-        fontFamily: 'Afacad',
+        fontFamily: 'GFSDidot',
         brightness: Brightness.light,
         colorScheme: const ColorScheme.light(
           primary: Color(0xFFA30000),
@@ -209,7 +209,7 @@ class _MyAppState extends State<MyApp> {
       ),
       darkTheme: ThemeData(
         useMaterial3: true,
-        fontFamily: 'Afacad',
+        fontFamily: 'GFSDidot',
         brightness: Brightness.dark,
         colorScheme: const ColorScheme.dark(
           primary: Color(0xFFA30000),

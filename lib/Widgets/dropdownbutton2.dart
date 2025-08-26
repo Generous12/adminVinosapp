@@ -40,7 +40,7 @@ class CustomDropdown extends StatelessWidget {
       prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
       labelText: label,
       labelStyle: TextStyle(
-        fontFamily: 'Afacad',
+        fontFamily: 'GFSDidot',
         fontSize: 15.5,
         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
       ),
@@ -108,7 +108,7 @@ class CustomDropdownSelector extends StatelessWidget {
       decoration: InputDecoration(
         labelText: labelText,
         labelStyle: TextStyle(
-          fontFamily: 'Afacad',
+          fontFamily: 'GFSDidot',
           fontSize: 14,
           color: isDarkMode
               ? Colors.grey[300]
@@ -147,7 +147,7 @@ class CustomDropdownSelector extends StatelessWidget {
       hint: Text(
         hintText,
         style: TextStyle(
-          fontFamily: 'Afacad',
+          fontFamily: 'GFSDidot',
           fontSize: 15,
           color: isDarkMode
               ? Colors.grey[400]
@@ -165,7 +165,7 @@ class CustomDropdownSelector extends StatelessWidget {
                     item,
                     textAlign: TextAlign.start,
                     style: TextStyle(
-                      fontFamily: 'Afacad',
+                      fontFamily: 'GFSDidot',
                       fontSize: 15,
                       color: isDarkMode ? Colors.white : Colors.black,
                     ),
