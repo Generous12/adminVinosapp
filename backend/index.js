@@ -46,9 +46,7 @@ app.post("/webhook/mercadopago", express.raw({ type: "*/*" }), (req, res) => {
     console.log("🔔 Query:", url.searchParams.toString());
     console.log("🔔 Body:", req.body.toString());
 
-    res.sendStatus(200); // ✅ Siempre responder 200 rápido
-
-    // 🔒 Validar firma
+    res.sendStatus(200); 
     if (!signature || !requestId || !dataId || !secret) {
       console.warn("⚠️ No se pudo validar firma");
       return;
@@ -105,8 +103,7 @@ app.post("/crear-preferencia", async (req, res) => {
       payment_methods: {
           installments: 1,
       },
-      notification_url:
-        "https://adminvinosapp-production.up.railway.app/webhook",
+       notification_url: "https://adminvinosapp-production.up.railway.app/webhook/mercadopago",
     };
 
     console.log("📦 Items enviados a Mercado Pago:", items);
