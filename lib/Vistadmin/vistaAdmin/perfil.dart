@@ -92,7 +92,6 @@ class _PerfilState extends State<PerfilPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // 🔹 Header con perfil
                       _buildProfileContainer(),
                       Divider(
                         thickness: 0.5,
@@ -100,24 +99,19 @@ class _PerfilState extends State<PerfilPage> {
                         color: Theme.of(context).dividerColor.withOpacity(0.2),
                       ),
                       const SizedBox(height: 5),
-
-                      // 🔹 Título de estadísticas
                       Text(
                         "Estadística general",
                         style: theme.textTheme.titleMedium?.copyWith(
-                          fontSize: 20,
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      // 🔹 Gráfico
                       buildLineChartCard(
                         'Compras por día',
                         _comprasPorDia,
                         context,
                       ),
                       const SizedBox(height: 20),
-
-                      // 🔹 Métricas principales
                       buildEstadisticaTile(
                         context,
                         'Total de compras',
@@ -168,7 +162,7 @@ class _PerfilState extends State<PerfilPage> {
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 0),
-      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+      padding: const EdgeInsets.fromLTRB(5, 0, 0, 5),
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(16),
@@ -186,7 +180,7 @@ class _PerfilState extends State<PerfilPage> {
             child: Stack(
               children: [
                 CircleAvatar(
-                  radius: 26, // 🔹 Más proporcionado
+                  radius: 24, // 🔹 Más proporcionado
                   backgroundColor: theme.colorScheme.primary.withOpacity(0.1),
                   child: ClipOval(
                     child:
@@ -302,7 +296,6 @@ class _PerfilState extends State<PerfilPage> {
     );
   }
 
-  /// 🔹 Botón circular reutilizable
   Widget _buildCircleIconButton({
     required IconData icon,
     required String tooltip,

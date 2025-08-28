@@ -402,7 +402,7 @@ Widget buildLineChartCard(
               Text(
                 titulo,
                 style: theme.textTheme.titleMedium?.copyWith(
-                  fontSize: 16,
+                  fontSize: 14,
                   fontWeight: FontWeight.bold,
                   color: theme.textTheme.bodyMedium?.color,
                 ),
@@ -414,7 +414,6 @@ Widget buildLineChartCard(
             height: 200,
             child: LineChart(
               LineChartData(
-                backgroundColor: Colors.transparent, // Fondo transparente
                 gridData: FlGridData(
                   show: true,
                   drawVerticalLine: true,

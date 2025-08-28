@@ -30,6 +30,7 @@ class PersonalizacionCuentaScreen extends StatelessWidget {
         elevation: 0.5,
         toolbarHeight: 48,
         centerTitle: true,
+        surfaceTintColor: Colors.transparent,
         backgroundColor: theme.scaffoldBackgroundColor,
         foregroundColor: theme.textTheme.bodyMedium?.color,
         bottom: PreferredSize(

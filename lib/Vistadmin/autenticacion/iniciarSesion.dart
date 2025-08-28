@@ -40,13 +40,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding: const EdgeInsets.all(30.0),
                     child: Column(
                       children: [
-                        const SizedBox(height: 40.0),
+                        const SizedBox(height: 20.0),
                         Image.asset(
-                          'assets/images/splash4.png',
-                          height: 190.0,
+                          'assets/images/logo.png',
+                          height: 230.0,
                           fit: BoxFit.fitWidth,
                         ),
-                        const SizedBox(height: 20.0),
+
                         CustomTextField(
                           controller: emailController,
                           hintText: "Ingresar correo electrónico",

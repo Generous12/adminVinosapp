@@ -20,21 +20,6 @@ class _MainScreenClienteState extends State<MainScreenVinosClientes> {
   int _selectedIndex = 0;
   bool _showBottomBar = true;
 
-  late final List<Widget> _screens;
-
-  @override
-  void initState() {
-    super.initState();
-    _showBottomBar = true;
-    _selectedIndex = 0;
-    _screens = [
-      InicioVinosC(),
-      ComprasPageVinosC(),
-      BuscarPageVinosC(),
-      PerfilPageVinosC(),
-    ];
-  }
-
   @override
   Widget build(BuildContext context) {
     final isPerfilPage = _selectedIndex == 3;
@@ -56,7 +41,15 @@ class _MainScreenClienteState extends State<MainScreenVinosClientes> {
           },
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
-            child: IndexedStack(index: _selectedIndex, children: _screens),
+            child: IndexedStack(
+              index: _selectedIndex,
+              children: [
+                InicioVinosC(),
+                ComprasPageVinosC(),
+                ReelsScreen(isVisible: _selectedIndex == 2),
+                PerfilPageVinosC(),
+              ],
+            ),
           ),
         ),
       ),
@@ -67,7 +60,6 @@ class _MainScreenClienteState extends State<MainScreenVinosClientes> {
           onTap: (index) {
             setState(() {
               _selectedIndex = index;
-
               if (index == 3) {
                 _showBottomBar = true;
               }

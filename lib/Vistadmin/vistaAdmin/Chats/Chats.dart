@@ -99,7 +99,7 @@ class _ChatClientesScreenState extends State<ChatClientesScreen> {
                           autofocus: false,
                           onChanged: (_) => setState(() {}),
                           style: theme.textTheme.bodyMedium?.copyWith(
-                            fontSize: 14,
+                            fontSize: 16,
 
                             color: theme.textTheme.bodyLarge?.color,
                           ),
@@ -107,7 +107,7 @@ class _ChatClientesScreenState extends State<ChatClientesScreen> {
                             hintText: 'Buscar chat...',
                             hintStyle: TextStyle(
                               color: Colors.grey[500],
-                              fontSize: 14,
+                              fontSize: 16,
                             ),
                             border: InputBorder.none,
                             isDense: true,
@@ -226,114 +226,110 @@ class _ChatClientesScreenState extends State<ChatClientesScreen> {
             ),
           ),
         ),
-        body: SafeArea(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(10, 2, 10, 8),
-                child: ChatFiltroSelector(
-                  onFiltroSelected: (filtro) {
-                    setState(() {
-                      filtroActivo = filtro;
-                    });
-                  },
-                ),
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 2, 10, 8),
+              child: ChatFiltroSelector(
+                onFiltroSelected: (filtro) {
+                  setState(() {
+                    filtroActivo = filtro;
+                  });
+                },
               ),
-              Expanded(
-                child: StreamBuilder<List<ChatResumen>>(
-                  stream: _streamChats,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    if (snapshot.hasError) {
-                      return const Center(
-                        child: Text("Ocurrió un error inesperado."),
-                      );
-                    }
-                    _allChats = snapshot.data ?? [];
-                    List<ChatResumen> chats = [..._allChats];
-                    if (filtroActivo == 'Leídos') {
-                      chats = chats.where((c) => c.unreadCount == 0).toList();
-                    } else if (filtroActivo == 'No leídos') {
-                      chats = chats.where((c) => c.unreadCount > 0).toList();
-                    }
-                    final query = _searchController.text.toLowerCase();
-                    if (query.isNotEmpty) {
-                      chats = chats
-                          .where((c) => c.nombre.toLowerCase().contains(query))
-                          .toList();
-                    }
-                    if (chats.isEmpty) {
-                      return Center(
-                        child: Text(
-                          "No hay chats disponibles.",
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontSize: 14,
-                            color: theme.textTheme.bodyLarge?.color,
-                          ),
-                        ),
-                      );
-                    }
-                    return ListView.builder(
-                      itemCount: chats.length,
-                      itemBuilder: (context, index) {
-                        final chat = chats[index];
-                        return _ChatItemWidget(
-                          resumen: chat,
-                          empresaId: empresaId,
-                          seleccionado: _chatsSeleccionados.contains(
-                            chat.chatId,
-                          ),
-                          estaSeleccionando: _estaSeleccionando,
-                          onLongPress: (chatId) {
-                            setState(() {
-                              if (_chatsSeleccionados.contains(chatId)) {
-                                _chatsSeleccionados.remove(chatId);
-                              } else {
-                                _chatsSeleccionados.add(chatId);
-                              }
-                            });
-                          },
-                          onTap: (chatId) async {
-                            final mensajesSnapshot = await FirebaseFirestore
-                                .instance
-                                .collection('chatsVinos')
-                                .doc(chat.chatId)
-                                .collection('messages')
-                                .where('authorId', isEqualTo: chat.clienteId)
-                                .get();
-
-                            final batch = FirebaseFirestore.instance.batch();
-                            for (var doc in mensajesSnapshot.docs) {
-                              final readBy = List<String>.from(
-                                doc['readBy'] ?? [],
-                              );
-                              if (!readBy.contains(empresaId)) {
-                                batch.update(doc.reference, {
-                                  'readBy': FieldValue.arrayUnion([empresaId]),
-                                });
-                              }
-                            }
-
-                            await batch.commit();
-
-                            if (!context.mounted) return;
-                            navegarConSlideDerecha(
-                              context,
-                              ContactoEmpresaScreen(
-                                userIdVisitante: chat.clienteId,
-                              ),
-                            );
-                          },
-                        );
-                      },
+            ),
+            Expanded(
+              child: StreamBuilder<List<ChatResumen>>(
+                stream: _streamChats,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Ocurrió un error inesperado."),
                     );
-                  },
-                ),
+                  }
+                  _allChats = snapshot.data ?? [];
+                  List<ChatResumen> chats = [..._allChats];
+                  if (filtroActivo == 'Chats leídos') {
+                    chats = chats.where((c) => c.unreadCount == 0).toList();
+                  } else if (filtroActivo == 'Chats no leídos') {
+                    chats = chats.where((c) => c.unreadCount > 0).toList();
+                  }
+                  final query = _searchController.text.toLowerCase();
+                  if (query.isNotEmpty) {
+                    chats = chats
+                        .where((c) => c.nombre.toLowerCase().contains(query))
+                        .toList();
+                  }
+                  if (chats.isEmpty) {
+                    return Center(
+                      child: Text(
+                        "No hay chats disponibles.",
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontSize: 15,
+                          color: theme.textTheme.bodyLarge?.color,
+                        ),
+                      ),
+                    );
+                  }
+                  return ListView.builder(
+                    itemCount: chats.length,
+                    itemBuilder: (context, index) {
+                      final chat = chats[index];
+                      return _ChatItemWidget(
+                        resumen: chat,
+                        empresaId: empresaId,
+                        seleccionado: _chatsSeleccionados.contains(chat.chatId),
+                        estaSeleccionando: _estaSeleccionando,
+                        onLongPress: (chatId) {
+                          setState(() {
+                            if (_chatsSeleccionados.contains(chatId)) {
+                              _chatsSeleccionados.remove(chatId);
+                            } else {
+                              _chatsSeleccionados.add(chatId);
+                            }
+                          });
+                        },
+                        onTap: (chatId) async {
+                          final mensajesSnapshot = await FirebaseFirestore
+                              .instance
+                              .collection('chatsVinos')
+                              .doc(chat.chatId)
+                              .collection('messages')
+                              .where('authorId', isEqualTo: chat.clienteId)
+                              .get();
+
+                          final batch = FirebaseFirestore.instance.batch();
+                          for (var doc in mensajesSnapshot.docs) {
+                            final readBy = List<String>.from(
+                              doc['readBy'] ?? [],
+                            );
+                            if (!readBy.contains(empresaId)) {
+                              batch.update(doc.reference, {
+                                'readBy': FieldValue.arrayUnion([empresaId]),
+                              });
+                            }
+                          }
+
+                          await batch.commit();
+
+                          if (!context.mounted) return;
+                          navegarConSlideDerecha(
+                            context,
+                            ContactoEmpresaScreen(
+                              userIdVisitante: chat.clienteId,
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -363,10 +359,11 @@ class _ChatItemWidget extends StatelessWidget {
     final theme = Theme.of(context);
     return InkWell(
       onLongPress: () => onLongPress(resumen.chatId),
-      onTap: () {
+      onTap: () async {
         if (estaSeleccionando) {
           onLongPress(resumen.chatId);
         } else {
+          await marcarComoLeido(resumen.chatId);
           onTap(resumen.chatId);
         }
       },
@@ -391,7 +388,7 @@ class _ChatItemWidget extends StatelessWidget {
                     resumen.nombre,
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
-                      fontSize: 14,
+                      fontSize: 16,
                       color: theme.textTheme.bodyLarge?.color,
                     ),
                   ),
@@ -399,7 +396,7 @@ class _ChatItemWidget extends StatelessWidget {
                   Text(
                     resumen.lastMessage,
                     style: theme.textTheme.titleMedium?.copyWith(
-                      fontSize: 13,
+                      fontSize: 14,
                       color: theme.textTheme.bodyLarge?.color,
                     ),
                     maxLines: 1,
@@ -441,4 +438,14 @@ class _ChatItemWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<void> marcarComoLeido(String chatId) async {
+  final chatRef = FirebaseFirestore.instance
+      .collection('chatsVinos')
+      .doc(chatId);
+
+  await chatRef.update({
+    'readBy': FieldValue.arrayUnion(['empresa_unica']),
+  });
 }

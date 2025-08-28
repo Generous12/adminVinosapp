@@ -232,6 +232,7 @@ class _PasswordScreenState extends State<PasswordScreen1> {
                         color: Theme.of(context).brightness == Brightness.dark
                             ? Colors.white
                             : Colors.black,
+                        fontSize: 11,
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -252,6 +253,7 @@ class _PasswordScreenState extends State<PasswordScreen1> {
                         color: Theme.of(context).brightness == Brightness.dark
                             ? Colors.white
                             : Colors.black,
+                        fontSize: 11,
                       ),
                     ),
                   ],
@@ -276,6 +278,7 @@ class _PasswordScreenState extends State<PasswordScreen1> {
                         color: Theme.of(context).brightness == Brightness.dark
                             ? Colors.white
                             : Colors.black,
+                        fontSize: 11,
                       ),
                     ),
                     const SizedBox(width: 20),
@@ -296,6 +299,7 @@ class _PasswordScreenState extends State<PasswordScreen1> {
                         color: Theme.of(context).brightness == Brightness.dark
                             ? Colors.white
                             : Colors.black,
+                        fontSize: 11,
                       ),
                     ),
                   ],

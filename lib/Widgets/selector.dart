@@ -18,9 +18,9 @@ class _CategoriaSelectorState extends State<CategoriaSelector> {
   String? selectedCategoria;
 
   final List<Map<String, dynamic>> categorias = [
-    {'label': 'General', 'icon': LucideIcons.shapes}, // ícono de categoría
-    {'label': 'Vino Tinto', 'icon': LucideIcons.wine}, // ícono de vino
-    {'label': 'Vino Blanco', 'icon': LucideIcons.wine}, // ícono de vino
+    {'label': 'General', 'icon': LucideIcons.shapes},
+    {'label': 'Vino Tinto', 'icon': LucideIcons.wine},
+    {'label': 'Vino Blanco', 'icon': LucideIcons.wine},
     {'label': 'Pisco Quebranta', 'icon': LucideIcons.martini},
     {'label': 'Pisco Acholado', 'icon': LucideIcons.martini},
     {'label': 'Pisco Italia', 'icon': LucideIcons.martini},
@@ -38,14 +38,13 @@ class _CategoriaSelectorState extends State<CategoriaSelector> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return SizedBox(
-      height: 45,
+      height: 35,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 11),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         itemCount: categorias.length,
         separatorBuilder: (_, __) => const SizedBox(width: 5),
         itemBuilder: (context, index) {
@@ -53,10 +52,10 @@ class _CategoriaSelectorState extends State<CategoriaSelector> {
           final icon = categorias[index]['icon'];
           final isSelected = selectedCategoria == categoria;
 
-          final selectedColor = isDark ? const Color(0xFFA30000) : Colors.black;
           final backgroundColor = isSelected
-              ? selectedColor
-              : (isDark ? Colors.grey.shade900 : Colors.grey.shade200);
+              ? const Color(0xFFA30000)
+              : (isDark ? const Color(0xFF1C1C1C) : const Color(0xFFF5F5F5));
+
           final textColor = isSelected
               ? Colors.white
               : (isDark ? Colors.white70 : Colors.black87);
@@ -79,37 +78,30 @@ class _CategoriaSelectorState extends State<CategoriaSelector> {
             },
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 250),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+              curve: Curves.easeInOut,
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               decoration: BoxDecoration(
                 color: backgroundColor,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(14),
+
                 border: Border.all(
                   color: isSelected
-                      ? selectedColor
+                      ? const Color(0xFFA30000)
                       : (isDark ? Colors.white12 : Colors.black26),
                   width: 1,
                 ),
-                boxShadow: isSelected
-                    ? [
-                        BoxShadow(
-                          color: selectedColor.withOpacity(0.3),
-                          blurRadius: 6,
-                          offset: const Offset(0, 3),
-                        ),
-                      ]
-                    : [],
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(icon, size: 17, color: textColor),
+                  Icon(icon, size: 14, color: textColor),
                   const SizedBox(width: 6),
                   Text(
                     categoria,
                     style: TextStyle(
                       color: textColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 11,
                     ),
                   ),
                 ],
@@ -147,7 +139,7 @@ class _ImageRatioSelectorState extends State<ImageRatioSelector> {
     },
     {
       'label': '3x4',
-      'desc': 'Vertical clásico',
+      'desc': 'Vertical',
       'ratio': [3.0, 4.0],
     },
     {
@@ -299,25 +291,24 @@ class PedidoFiltroSelectorState extends State<PedidoFiltroSelector> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return SizedBox(
-      height: 40,
+      height: 35, // igual que CategoriaSelector
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 12),
         itemCount: filtros.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        separatorBuilder: (_, __) => const SizedBox(width: 5),
         itemBuilder: (context, index) {
           final filtro = filtros[index]['label'];
           final icon = filtros[index]['icon'];
           final isSelected = filtroSeleccionado == filtro;
 
-          final selectedColor = isDark ? const Color(0xFFA30000) : Colors.black;
           final backgroundColor = isSelected
-              ? selectedColor
-              : (isDark ? Colors.grey.shade900 : Colors.grey.shade200);
+              ? const Color(0xFFA30000)
+              : (isDark ? const Color(0xFF1C1C1C) : const Color(0xFFF5F5F5));
+
           final textColor = isSelected
               ? Colors.white
               : (isDark ? Colors.white70 : Colors.black87);
@@ -331,13 +322,14 @@ class PedidoFiltroSelectorState extends State<PedidoFiltroSelector> {
             },
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 250),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+              curve: Curves.easeInOut,
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               decoration: BoxDecoration(
                 color: backgroundColor,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(14),
                 border: Border.all(
                   color: isSelected
-                      ? selectedColor
+                      ? const Color(0xFFA30000)
                       : (isDark ? Colors.white12 : Colors.black26),
                   width: 1,
                 ),
@@ -345,14 +337,14 @@ class PedidoFiltroSelectorState extends State<PedidoFiltroSelector> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(icon, size: 18, color: textColor),
+                  Icon(icon, size: 14, color: textColor),
                   const SizedBox(width: 6),
                   Text(
                     filtro,
                     style: TextStyle(
                       color: textColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 11,
                     ),
                   ),
                 ],
@@ -378,9 +370,9 @@ class _ChatFiltroSelectorState extends State<ChatFiltroSelector> {
   String? filtroSeleccionado;
 
   final List<Map<String, dynamic>> filtros = [
-    {'label': 'Todos', 'icon': Iconsax.message},
-    {'label': 'No leídos', 'icon': Iconsax.sms},
-    {'label': 'Leídos', 'icon': Iconsax.tick_circle},
+    {'label': 'Todos los chats', 'icon': Iconsax.message},
+    {'label': 'Chats no leídos', 'icon': Iconsax.sms},
+    {'label': 'Chats leídos', 'icon': Iconsax.tick_circle},
   ];
 
   @override
@@ -394,25 +386,25 @@ class _ChatFiltroSelectorState extends State<ChatFiltroSelector> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return SizedBox(
-      height: 40,
+      height: 35, // igual que CategoriaSelector
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 12),
         itemCount: filtros.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        separatorBuilder: (_, __) =>
+            const SizedBox(width: 5), // igual que CategoriaSelector
         itemBuilder: (context, index) {
           final filtro = filtros[index]['label'];
           final icon = filtros[index]['icon'];
           final isSelected = filtroSeleccionado == filtro;
 
-          final selectedColor = isDark ? const Color(0xFFA30000) : Colors.black;
           final backgroundColor = isSelected
-              ? selectedColor
-              : (isDark ? Colors.grey.shade900 : Colors.grey.shade200);
+              ? const Color(0xFFA30000)
+              : (isDark ? const Color(0xFF1C1C1C) : const Color(0xFFF5F5F5));
+
           final textColor = isSelected
               ? Colors.white
               : (isDark ? Colors.white70 : Colors.black87);
@@ -426,13 +418,14 @@ class _ChatFiltroSelectorState extends State<ChatFiltroSelector> {
             },
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 250),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+              curve: Curves.easeInOut,
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               decoration: BoxDecoration(
                 color: backgroundColor,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(14),
                 border: Border.all(
                   color: isSelected
-                      ? selectedColor
+                      ? const Color(0xFFA30000)
                       : (isDark ? Colors.white12 : Colors.black26),
                   width: 1,
                 ),
@@ -440,14 +433,14 @@ class _ChatFiltroSelectorState extends State<ChatFiltroSelector> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(icon, size: 18, color: textColor),
+                  Icon(icon, size: 14, color: textColor),
                   const SizedBox(width: 6),
                   Text(
                     filtro,
                     style: TextStyle(
                       color: textColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 11,
                     ),
                   ),
                 ],
@@ -461,7 +454,7 @@ class _ChatFiltroSelectorState extends State<ChatFiltroSelector> {
 }
 
 class CategoriaSelectorVinos extends StatefulWidget {
-  final Function(String) onCategoriaSelected;
+  final void Function(String categoria) onCategoriaSelected;
 
   const CategoriaSelectorVinos({super.key, required this.onCategoriaSelected});
 
@@ -471,10 +464,11 @@ class CategoriaSelectorVinos extends StatefulWidget {
 
 class _CategoriaSelectorStateV extends State<CategoriaSelectorVinos> {
   String? selectedCategoria;
+
   final List<Map<String, dynamic>> categorias = [
-    {'label': 'General', 'icon': LucideIcons.shapes}, // ícono de categoría
-    {'label': 'Vino Tinto', 'icon': LucideIcons.wine}, // ícono de vino
-    {'label': 'Vino Blanco', 'icon': LucideIcons.wine}, // ícono de vino
+    {'label': 'General', 'icon': LucideIcons.shapes},
+    {'label': 'Vino Tinto', 'icon': LucideIcons.wine},
+    {'label': 'Vino Blanco', 'icon': LucideIcons.wine},
     {'label': 'Pisco Quebranta', 'icon': LucideIcons.martini},
     {'label': 'Pisco Acholado', 'icon': LucideIcons.martini},
     {'label': 'Pisco Italia', 'icon': LucideIcons.martini},
@@ -495,23 +489,24 @@ class _CategoriaSelectorStateV extends State<CategoriaSelectorVinos> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return SizedBox(
-      height: 40,
+      height: 35,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         itemCount: categorias.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        separatorBuilder: (_, __) => const SizedBox(width: 5),
         itemBuilder: (context, index) {
           final categoria = categorias[index]['label'];
           final icon = categorias[index]['icon'];
           final isSelected = selectedCategoria == categoria;
 
           final backgroundColor = isSelected
-              ? (isDark ? const Color(0xFFA30000) : Colors.black)
-              : (isDark ? Colors.grey.shade900 : const Color(0xFFFAFAFA));
+              ? const Color(0xFFA30000)
+              : (isDark ? const Color(0xFF1C1C1C) : const Color(0xFFF5F5F5));
+
           final textColor = isSelected
-              ? (isDark ? Colors.black : Colors.white)
-              : (isDark ? Colors.white70 : Colors.black);
+              ? Colors.white
+              : (isDark ? Colors.white70 : Colors.black87);
 
           return GestureDetector(
             onTap: () async {
@@ -529,28 +524,32 @@ class _CategoriaSelectorStateV extends State<CategoriaSelectorVinos> {
 
               widget.onCategoriaSelected(categoria);
             },
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeInOut,
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               decoration: BoxDecoration(
                 color: backgroundColor,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(14),
+
                 border: Border.all(
-                  color: isDark
-                      ? Colors.white12
-                      : Colors.black.withOpacity(0.3),
+                  color: isSelected
+                      ? const Color(0xFFA30000)
+                      : (isDark ? Colors.white12 : Colors.black26),
+                  width: 1,
                 ),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(icon, size: 18, color: textColor),
+                  Icon(icon, size: 14, color: textColor),
                   const SizedBox(width: 6),
                   Text(
                     categoria,
                     style: TextStyle(
                       color: textColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 11,
                     ),
                   ),
                 ],

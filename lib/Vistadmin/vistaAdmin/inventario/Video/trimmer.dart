@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:lucide_icons/lucide_icons.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:video_trimmer/video_trimmer.dart';
 
 class VideoTrimmerPage extends StatefulWidget {
@@ -13,7 +15,6 @@ class VideoTrimmerPage extends StatefulWidget {
 
 class _VideoTrimmerPageState extends State<VideoTrimmerPage> {
   final Trimmer _trimmer = Trimmer();
-
   bool _isTrimming = false;
   double _startValue = 0.0;
   double _endValue = 0.0;
@@ -21,27 +22,46 @@ class _VideoTrimmerPageState extends State<VideoTrimmerPage> {
   @override
   void initState() {
     super.initState();
-    _loadVideo();
+    _loadVideo(widget.videoFile);
   }
 
-  Future<void> _loadVideo() async {
-    await _trimmer.loadVideo(videoFile: widget.videoFile);
-    setState(() {});
+  Future<void> _loadVideo(File file) async {
+    await _trimmer.loadVideo(videoFile: file);
+    final duration = _trimmer.videoPlayerController?.value.duration;
+    setState(() {
+      _startValue = 0.0;
+      _endValue = duration?.inMilliseconds.toDouble() ?? 0.0;
+    });
+  }
+
+  Future<String> _getUniqueFilePath() async {
+    final dir = await getTemporaryDirectory();
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    return '${dir.path}/trimmed_$timestamp.mp4';
   }
 
   Future<void> _saveTrimmedVideo() async {
     setState(() => _isTrimming = true);
 
-    _trimmer.saveTrimmedVideo(
-      startValue: _startValue,
-      endValue: _endValue,
-      onSave: (String? outputPath) {
-        setState(() => _isTrimming = false);
-        if (outputPath != null) {
-          Navigator.pop(context, File(outputPath));
-        }
-      },
-    );
+    final outputPath = await _getUniqueFilePath();
+    // Este método igual puedes usarlo para generar un nombre único
+
+    try {
+      await _trimmer.saveTrimmedVideo(
+        startValue: _startValue,
+        endValue: _endValue,
+        videoFileName: outputPath.split('/').last, // 👈 nombre del archivo
+        onSave: (String? path) {
+          setState(() => _isTrimming = false);
+          if (path != null) {
+            Navigator.pop(context, File(path));
+          }
+        },
+      );
+    } catch (e) {
+      debugPrint("Error al recortar: $e");
+      setState(() => _isTrimming = false);
+    }
   }
 
   @override
@@ -52,7 +72,7 @@ class _VideoTrimmerPageState extends State<VideoTrimmerPage> {
 
   @override
   Widget build(BuildContext context) {
-    final naranja = const Color(0xFFFFAF00);
+    final naranja = const Color.fromARGB(255, 255, 255, 255);
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -76,7 +96,10 @@ class _VideoTrimmerPageState extends State<VideoTrimmerPage> {
                       : CircleAvatar(
                           backgroundColor: naranja,
                           child: IconButton(
-                            icon: const Icon(Icons.save, color: Colors.white),
+                            icon: const Icon(
+                              LucideIcons.save,
+                              color: Color.fromARGB(255, 0, 0, 0),
+                            ),
                             onPressed: _saveTrimmedVideo,
                           ),
                         ),
@@ -91,7 +114,7 @@ class _VideoTrimmerPageState extends State<VideoTrimmerPage> {
               maxVideoLength: const Duration(seconds: 30),
               onChangeStart: (value) => _startValue = value,
               onChangeEnd: (value) => _endValue = value,
-              onChangePlaybackState: (value) {},
+              onChangePlaybackState: (isPlaying) {},
             ),
             const SizedBox(height: 20),
           ],

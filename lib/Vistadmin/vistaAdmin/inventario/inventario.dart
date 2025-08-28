@@ -81,9 +81,7 @@ class _InventarioPageState extends State<InventarioPage> {
               ListTile(
                 leading: Icon(
                   Iconsax.document,
-                  color: isDarkMode
-                      ? const Color.from(alpha: 1, red: 1, green: 1, blue: 1)
-                      : Colors.black,
+                  color: isDarkMode ? const Color(0xFFA30000) : Colors.black,
                 ),
                 title: Text(
                   'Publicaciones',
@@ -100,7 +98,7 @@ class _InventarioPageState extends State<InventarioPage> {
               ListTile(
                 leading: Icon(
                   Iconsax.box,
-                  color: isDarkMode ? Colors.white : Colors.black,
+                  color: isDarkMode ? const Color(0xFFA30000) : Colors.black,
                 ),
                 title: Text(
                   'Productos',
@@ -117,7 +115,7 @@ class _InventarioPageState extends State<InventarioPage> {
               ListTile(
                 leading: Icon(
                   Iconsax.video,
-                  color: isDarkMode ? Colors.white : Colors.black,
+                  color: isDarkMode ? const Color(0xFFA30000) : Colors.black,
                 ),
                 title: Text(
                   'Reels',

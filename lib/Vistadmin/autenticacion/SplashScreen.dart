@@ -20,7 +20,6 @@ class _SplashPageState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 248, 248, 248),
       body: SafeArea(
         child: Stack(
           children: [
@@ -29,7 +28,10 @@ class _SplashPageState extends State<SplashScreen> {
               child: Container(
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Color.fromARGB(255, 4, 4, 4), Color(0xFFFFAF00)],
+                    colors: [
+                      Color.fromARGB(255, 4, 4, 4),
+                      Color.fromARGB(255, 223, 0, 0),
+                    ],
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
                   ),
@@ -45,7 +47,7 @@ class _SplashPageState extends State<SplashScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Image.asset(
-                      'assets/images/splash3.png',
+                      'assets/images/logo1.png',
                       width: 180,
                       height: 180,
                       fit: BoxFit.contain,
@@ -65,7 +67,7 @@ class _SplashPageState extends State<SplashScreen> {
                   children: [
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFFAF00),
+                        backgroundColor: const Color(0xFFA30000),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25),
                         ),
@@ -85,7 +87,10 @@ class _SplashPageState extends State<SplashScreen> {
                       },
                       child: Text(
                         'Empezar',
-                        style: TextStyle(fontSize: 18, color: Colors.black),
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: const Color.fromARGB(255, 255, 255, 255),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 15),
@@ -99,7 +104,7 @@ class _SplashPageState extends State<SplashScreen> {
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25),
-                          side: BorderSide(color: Color(0xFFFFAF00)),
+                          side: BorderSide(color: Color(0xFFA30000)),
                         ),
                       ),
                       onPressed: () {
@@ -115,7 +120,7 @@ class _SplashPageState extends State<SplashScreen> {
                         'Iniciar Sesión',
                         style: TextStyle(
                           fontSize: 18,
-                          color: Color(0xFFFFAF00),
+                          color: Color.fromARGB(255, 255, 255, 255),
                         ),
                       ),
                     ),

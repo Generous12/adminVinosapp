@@ -273,21 +273,13 @@ class _ComprasPageState extends State<ComprasPageVinosC> {
               snap: false,
               elevation: 0,
               scrolledUnderElevation: 0,
-              backgroundColor: theme.scaffoldBackgroundColor,
+
               automaticallyImplyLeading: false,
               toolbarHeight: 70,
               title: Container(
                 height: 50,
                 decoration: BoxDecoration(
-                  color: theme.cardColor,
                   borderRadius: BorderRadius.circular(8),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 6,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
                 ),
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Row(
@@ -366,9 +358,9 @@ class _ComprasPageState extends State<ComprasPageVinosC> {
                 ),
               ),
               bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(40),
+                preferredSize: const Size.fromHeight(45),
                 child: Padding(
-                  padding: const EdgeInsets.only(bottom: 4.0),
+                  padding: const EdgeInsets.only(bottom: 15.0),
                   child: CategoriaSelectorVinos(
                     onCategoriaSelected: (categoria) {
                       selectedCategoria = categoria;

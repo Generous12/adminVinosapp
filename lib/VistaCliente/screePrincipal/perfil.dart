@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:app_bootsup/Modulo/authService.dart';
 import 'package:app_bootsup/VistaCliente/screePrincipal/Comprasrealizadas/listaComprasV.dart';
 import 'package:app_bootsup/VistaCliente/screePrincipal/atencionCliente/atencionClient.dart';
@@ -10,8 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_initicon/flutter_initicon.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 
 class PerfilPageVinosC extends StatefulWidget {
   const PerfilPageVinosC({super.key});
@@ -159,8 +160,23 @@ class _PerfilState extends State<PerfilPageVinosC> {
   Widget _buildProfileContainer() {
     final theme = Theme.of(context);
 
+    // Texto seguro para Initicon
+    final String initText = (_firestoreUsername?.trim().isNotEmpty ?? false)
+        ? _firestoreUsername!
+        : (_user?.displayName?.trim().isNotEmpty ?? false)
+        ? _user!.displayName!
+        : 'C';
+
+    // URL de imagen si existe
+    final String? imageUrl = _firestoreProfileImageUrl ?? _user?.photoURL;
+
+    // Color aleatorio para el CircleAvatar / Initicon
+    final Color avatarColor = Color(
+      (Random().nextDouble() * 0xFFFFFF).toInt(),
+    ).withOpacity(1.0);
+
     return SizedBox(
-      width: double.infinity, // Ocupa todo el ancho posible
+      width: double.infinity,
       child: Material(
         borderRadius: BorderRadius.circular(0),
         color: theme.scaffoldBackgroundColor,
@@ -178,13 +194,11 @@ class _PerfilState extends State<PerfilPageVinosC> {
                     tag: 'profile-image-hero',
                     child: CircleAvatar(
                       radius: 40,
-                      backgroundColor: theme.cardColor,
-                      child:
-                          _firestoreProfileImageUrl != null ||
-                              _user?.photoURL != null
+                      backgroundColor:
+                          avatarColor, // color aleatorio solo para el avatar
+                      child: imageUrl != null
                           ? CachedNetworkImage(
-                              imageUrl:
-                                  _firestoreProfileImageUrl ?? _user!.photoURL!,
+                              imageUrl: imageUrl,
                               imageBuilder: (context, imageProvider) =>
                                   CircleAvatar(
                                     backgroundImage: imageProvider,
@@ -198,19 +212,19 @@ class _PerfilState extends State<PerfilPageVinosC> {
                                   strokeWidth: 3,
                                 ),
                               ),
-                              errorWidget: (context, url, error) => Icon(
-                                LucideIcons.user2,
-                                size: 55.0,
-                                color: theme.iconTheme.color,
+                              errorWidget: (context, url, error) => Initicon(
+                                text: initText,
+                                size: 80,
+
+                                backgroundColor:
+                                    avatarColor, // usa el mismo color aleatorio
                               ),
                             )
-                          : const SizedBox(
-                              width: 30,
-                              height: 30,
-                              child: CircularProgressIndicator(
-                                color: Color(0xFFFFAF00),
-                                strokeWidth: 2.5,
-                              ),
+                          : Initicon(
+                              text: initText,
+                              size: 80,
+
+                              backgroundColor: avatarColor, // color aleatorio
                             ),
                     ),
                   ),
@@ -231,22 +245,19 @@ class _PerfilState extends State<PerfilPageVinosC> {
                     ),
                 ],
               ),
-
               const SizedBox(width: 16),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    _firestoreUsername ??
-                        _user!.displayName ??
-                        'Cargando usuario',
+                    initText,
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
-                    _user!.email ?? 'Cargando correo electrónico',
+                    _user?.email ?? 'Cargando correo electrónico',
                     style: theme.textTheme.bodySmall?.copyWith(fontSize: 12),
                   ),
                 ],

@@ -43,13 +43,13 @@ class _AccesScreenState extends State<AccesScreen> {
                   padding: const EdgeInsets.all(30.0),
                   child: Column(
                     children: [
-                      const SizedBox(height: 40.0),
+                      const SizedBox(height: 20.0),
                       Image.asset(
-                        'assets/images/splash4.png',
-                        height: 190.0,
+                        'assets/images/logo.png',
+                        height: 230.0,
                         fit: BoxFit.fitWidth,
                       ),
-                      const SizedBox(height: 20.0),
+
                       CustomTextField(
                         controller: emailController,
                         hintText: "Ingresar correo electrónico",
@@ -159,7 +159,7 @@ class _AccesScreenState extends State<AccesScreen> {
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFFFAF00),
+                          backgroundColor: const Color(0xFFA30000),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
                           ),
@@ -167,7 +167,10 @@ class _AccesScreenState extends State<AccesScreen> {
                         ),
                         child: Text(
                           'Continuar',
-                          style: TextStyle(fontSize: 18, color: Colors.black),
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: const Color.fromARGB(255, 255, 255, 255),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 20.0),

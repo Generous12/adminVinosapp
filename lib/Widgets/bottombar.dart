@@ -2,8 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_initicon/flutter_initicon.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 
 class ImageCacheHelper {
   static String? profileImageUrl;
@@ -32,6 +32,7 @@ class CustomBottomNavBar extends StatefulWidget {
 
 class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   String? firestoreProfileImageUrl;
+  String? firestoreUsername; // <-- nuevo campo
   bool isImageLoaded = false;
 
   @override
@@ -39,14 +40,13 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     super.initState();
 
     if (!ImageCacheHelper.isImageLoaded && widget.user != null) {
-      getFirestoreProfileImageUrl(widget.user!.uid).then((url) {
+      getUserData(widget.user!.uid).then((data) {
         if (mounted) {
           setState(() {
-            firestoreProfileImageUrl = url;
+            firestoreProfileImageUrl = data['profileImageUrl'];
+            firestoreUsername = data['username'];
             isImageLoaded = true;
-
-            // Cachearlo
-            ImageCacheHelper.profileImageUrl = url;
+            ImageCacheHelper.profileImageUrl = firestoreProfileImageUrl;
             ImageCacheHelper.isImageLoaded = true;
           });
         }
@@ -57,7 +57,8 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     }
   }
 
-  Future<String?> getFirestoreProfileImageUrl(String userId) async {
+  // Trae URL de imagen y username desde Firestore
+  Future<Map<String, String?>> getUserData(String userId) async {
     try {
       final doc = await FirebaseFirestore.instance
           .collection('users')
@@ -66,17 +67,15 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
 
       if (doc.exists) {
         final data = doc.data() as Map<String, dynamic>;
-        final url = data['profileImageUrl'];
-        if (url is String && url.isNotEmpty) {
-          return url;
-        }
+        final url = data['profileImageUrl'] as String?;
+        final username = data['username'] as String?;
+        return {'profileImageUrl': url, 'username': username};
       }
     } catch (e, stackTrace) {
-      // Usa logging en lugar de print en apps reales
-      print("Error obteniendo la URL de la imagen de Firestore: $e");
+      print("Error obteniendo datos del usuario: $e");
       print("StackTrace: $stackTrace");
     }
-    return null;
+    return {'profileImageUrl': null, 'username': null};
   }
 
   @override
@@ -85,6 +84,13 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     final colorScheme = theme.colorScheme;
     double imageSize = 13;
     bool isProfileSelected = widget.currentIndex == 3;
+
+    // Inicial para Initicon
+    final String initText = (firestoreUsername?.trim().isNotEmpty ?? false)
+        ? firestoreUsername!.substring(0, 1).toUpperCase()
+        : (widget.user?.displayName?.trim().isNotEmpty ?? false)
+        ? widget.user!.displayName!.substring(0, 1).toUpperCase()
+        : 'C';
 
     return SizedBox(
       height: 56,
@@ -134,41 +140,25 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                                   CircularProgressIndicator(
                                     color: colorScheme.primary,
                                   ),
-                              errorWidget: (context, url, error) => Icon(
-                                LucideIcons.user2,
-                                size: 26.0,
-                                color: colorScheme.onBackground,
+                              errorWidget: (context, url, error) => Initicon(
+                                text: initText,
+                                size: imageSize * 2.5,
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.white,
+                                ),
+                                backgroundColor: Color(0xFFA30000),
                               ),
                             )
-                          : (widget.user != null &&
-                                    widget.user!.photoURL != null
-                                ? CachedNetworkImage(
-                                    imageUrl: widget.user!.photoURL!,
-                                    imageBuilder: (context, imageProvider) =>
-                                        CircleAvatar(
-                                          backgroundImage: imageProvider,
-                                          radius: imageSize,
-                                        ),
-                                    placeholder: (context, url) =>
-                                        CircularProgressIndicator(
-                                          color: colorScheme.primary,
-                                        ),
-                                    errorWidget: (context, url, error) => Icon(
-                                      LucideIcons.user2,
-                                      size: 26.0,
-                                      color: colorScheme.onBackground,
-                                    ),
-                                  )
-                                : CircleAvatar(
-                                    radius: imageSize,
-                                    backgroundColor:
-                                        theme.scaffoldBackgroundColor,
-                                    child: Icon(
-                                      LucideIcons.user2,
-                                      size: 26.0,
-                                      color: colorScheme.onBackground,
-                                    ),
-                                  )))
+                          : Initicon(
+                              text: initText,
+                              size: imageSize * 2.5,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: Colors.white,
+                              ),
+                              backgroundColor: Color(0xFFA30000),
+                            ))
                     : CircularProgressIndicator(color: colorScheme.primary),
               ),
             ),
@@ -209,30 +199,33 @@ class CustomBottomNavBarCliente extends StatefulWidget {
 
 class _CustomBottomNavBarClienteState extends State<CustomBottomNavBarCliente> {
   String? firestoreProfileImageUrl;
+  String? firestoreUsername; // <-- Nuevo campo
   bool isImageLoaded = false;
 
   @override
   void initState() {
     super.initState();
 
-    if (!ImageCacheHelper.isImageLoaded && widget.user != null) {
-      getFirestoreProfileImageUrl(widget.user!.uid).then((url) {
+    if (!ImageCacheHelperCliente.isImageLoaded && widget.user != null) {
+      getUserData(widget.user!.uid).then((data) {
         if (mounted) {
           setState(() {
-            firestoreProfileImageUrl = url;
+            firestoreProfileImageUrl = data['profileImageUrl'];
+            firestoreUsername = data['username'];
             isImageLoaded = true;
-            ImageCacheHelper.profileImageUrl = url;
-            ImageCacheHelper.isImageLoaded = true;
+            ImageCacheHelperCliente.profileImageUrl = firestoreProfileImageUrl;
+            ImageCacheHelperCliente.isImageLoaded = true;
           });
         }
       });
     } else {
-      firestoreProfileImageUrl = ImageCacheHelper.profileImageUrl;
+      firestoreProfileImageUrl = ImageCacheHelperCliente.profileImageUrl;
       isImageLoaded = true;
     }
   }
 
-  Future<String?> getFirestoreProfileImageUrl(String userId) async {
+  // Trae URL de imagen y username desde Firestore
+  Future<Map<String, String?>> getUserData(String userId) async {
     try {
       final doc = await FirebaseFirestore.instance
           .collection('users')
@@ -241,16 +234,15 @@ class _CustomBottomNavBarClienteState extends State<CustomBottomNavBarCliente> {
 
       if (doc.exists) {
         final data = doc.data() as Map<String, dynamic>;
-        final url = data['profileImageUrl'];
-        if (url is String && url.isNotEmpty) {
-          return url;
-        }
+        final url = data['profileImageUrl'] as String?;
+        final username = data['username'] as String?;
+        return {'profileImageUrl': url, 'username': username};
       }
     } catch (e, stackTrace) {
-      print("Error obteniendo la URL de la imagen de Firestore: $e");
+      print("Error obteniendo datos del usuario: $e");
       print("StackTrace: $stackTrace");
     }
-    return null;
+    return {'profileImageUrl': null, 'username': null};
   }
 
   @override
@@ -259,6 +251,11 @@ class _CustomBottomNavBarClienteState extends State<CustomBottomNavBarCliente> {
     final colorScheme = theme.colorScheme;
     double imageSize = 13;
     bool isProfileSelected = widget.currentIndex == 3;
+    final String initText = (firestoreUsername?.trim().isNotEmpty ?? false)
+        ? firestoreUsername!.substring(0, 1).toUpperCase()
+        : (widget.user?.displayName?.trim().isNotEmpty ?? false)
+        ? widget.user!.displayName!.substring(0, 1).toUpperCase()
+        : 'C';
 
     return SizedBox(
       height: 55,
@@ -294,7 +291,6 @@ class _CustomBottomNavBarClienteState extends State<CustomBottomNavBarCliente> {
                   : colorScheme.onBackground.withOpacity(0.6),
               child: CircleAvatar(
                 radius: imageSize,
-                backgroundColor: theme.scaffoldBackgroundColor,
                 child: isImageLoaded
                     ? (firestoreProfileImageUrl != null
                           ? CachedNetworkImage(
@@ -308,41 +304,25 @@ class _CustomBottomNavBarClienteState extends State<CustomBottomNavBarCliente> {
                                   CircularProgressIndicator(
                                     color: colorScheme.primary,
                                   ),
-                              errorWidget: (context, url, error) => Icon(
-                                LucideIcons.user2,
-                                size: 26.0,
-                                color: colorScheme.onBackground,
+                              errorWidget: (context, url, error) => Initicon(
+                                text: initText,
+                                size: imageSize * 2.5,
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  color: Color.fromARGB(255, 255, 255, 255),
+                                ),
+                                backgroundColor: Color(0xFFA30000),
                               ),
                             )
-                          : (widget.user != null &&
-                                    widget.user!.photoURL != null
-                                ? CachedNetworkImage(
-                                    imageUrl: widget.user!.photoURL!,
-                                    imageBuilder: (context, imageProvider) =>
-                                        CircleAvatar(
-                                          backgroundImage: imageProvider,
-                                          radius: imageSize,
-                                        ),
-                                    placeholder: (context, url) =>
-                                        CircularProgressIndicator(
-                                          color: colorScheme.primary,
-                                        ),
-                                    errorWidget: (context, url, error) => Icon(
-                                      LucideIcons.user2,
-                                      size: 26.0,
-                                      color: colorScheme.onBackground,
-                                    ),
-                                  )
-                                : CircleAvatar(
-                                    radius: imageSize,
-                                    backgroundColor:
-                                        theme.scaffoldBackgroundColor,
-                                    child: Icon(
-                                      LucideIcons.user2,
-                                      size: 26.0,
-                                      color: colorScheme.onBackground,
-                                    ),
-                                  )))
+                          : Initicon(
+                              text: initText,
+                              size: imageSize * 2.5,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: Color.fromARGB(255, 255, 255, 255),
+                              ),
+                              backgroundColor: Color(0xFFA30000),
+                            ))
                     : CircularProgressIndicator(color: colorScheme.primary),
               ),
             ),

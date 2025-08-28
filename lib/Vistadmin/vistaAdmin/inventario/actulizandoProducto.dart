@@ -47,6 +47,7 @@ class _EditarProductoPageState extends State<EditarProductoPage> {
   dynamic _mainImage;
   List<dynamic> _selectedImages = [];
   User? _user = FirebaseAuth.instance.currentUser;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -91,124 +92,103 @@ class _EditarProductoPageState extends State<EditarProductoPage> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60),
         child: AppBar(
-          automaticallyImplyLeading: false,
-          elevation: 5,
-          titleSpacing: 0,
+          backgroundColor: theme.scaffoldBackgroundColor,
+          elevation: 0,
+          scrolledUnderElevation: 0,
           surfaceTintColor: Colors.transparent,
-          centerTitle: true,
-          title: Text(
-            "Actualizar",
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontSize: 17,
-              color: theme.textTheme.bodyLarge?.color,
-              fontWeight: FontWeight.w600,
+          leading: IconButton(
+            icon: Icon(
+              Iconsax.arrow_left,
+              size: 24,
+              color: theme.iconTheme.color,
             ),
+            onPressed: () async {
+              final haynombre = nombreController.text.trim().isNotEmpty;
+              final hayMarca = marcaController.text.trim().isNotEmpty;
+              final hayStock = stockController.text.trim().isNotEmpty;
+              final hayPrecio = precioController.text.trim().isNotEmpty;
+              final hayDescuento = descuentoController.text.trim().isNotEmpty;
+              final hayDescripcion = descripcionController.text
+                  .trim()
+                  .isNotEmpty;
+              final hayImagenPrincipal = _mainImage != null;
+              final hayImagenesSeleccionadas = _selectedImages.isNotEmpty;
+              if (hayDescripcion ||
+                  hayMarca ||
+                  hayStock ||
+                  hayPrecio ||
+                  hayDescuento ||
+                  haynombre ||
+                  hayImagenPrincipal ||
+                  hayImagenesSeleccionadas) {
+                bool? result = await showCustomDialog(
+                  context: context,
+                  title: 'Aviso',
+                  message:
+                      '¿Estás seguro? Si sales ahora, perderás tu progreso.',
+                  confirmButtonText: 'Sí, salir',
+                  cancelButtonText: 'No',
+                  confirmButtonColor: Colors.red,
+                  cancelButtonColor: const Color.fromARGB(255, 0, 0, 0),
+                );
+                if (result == true) {
+                  if (mounted) {
+                    FocusScope.of(context).unfocus();
+                    Navigator.pop(context);
+                  }
+                }
+                return;
+              }
+              Navigator.pop(context);
+            },
           ),
+          title: Text('Productos', style: TextStyle(fontSize: 18)),
           actions: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(12, 5, 5, 5),
-              child: Row(
-                children: [
-                  TextButton.icon(
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.grey.shade800,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 8,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+            ElevatedButton(
+              onPressed: () async {
+                if (_user == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("No hay usuario logueado."),
+                      backgroundColor: Colors.red,
                     ),
-                    onPressed: () async {
-                      final haynombre = nombreController.text.trim().isNotEmpty;
-                      final hayMarca = marcaController.text.trim().isNotEmpty;
-                      final hayStock = stockController.text.trim().isNotEmpty;
-                      final hayPrecio = precioController.text.trim().isNotEmpty;
-                      final hayDescuento = descuentoController.text
-                          .trim()
-                          .isNotEmpty;
-                      final hayDescripcion = descripcionController.text
-                          .trim()
-                          .isNotEmpty;
-                      final hayImagenPrincipal = _mainImage != null;
-                      final hayImagenesSeleccionadas =
-                          _selectedImages.isNotEmpty;
-                      if (hayDescripcion ||
-                          hayMarca ||
-                          hayStock ||
-                          hayPrecio ||
-                          hayDescuento ||
-                          haynombre ||
-                          hayImagenPrincipal ||
-                          hayImagenesSeleccionadas) {
-                        bool? result = await showCustomDialog(
-                          context: context,
-                          title: 'Aviso',
-                          message:
-                              '¿Estás seguro? Si sales ahora, perderás tu progreso.',
-                          confirmButtonText: 'Sí, salir',
-                          cancelButtonText: 'No',
-                          confirmButtonColor: Colors.red,
-                          cancelButtonColor: const Color.fromARGB(255, 0, 0, 0),
-                        );
-                        if (result == true) {
-                          if (mounted) {
-                            FocusScope.of(context).unfocus();
-                            Navigator.pop(context);
-                          }
-                        }
-                        return;
-                      }
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(
-                      Icons.close,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                    label: const Text(
-                      "Cancelar",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  const SizedBox(width: 5),
-                  TextButton.icon(
-                    style: TextButton.styleFrom(
-                      backgroundColor: const Color(0xFFA30000),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 8,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    onPressed: () async {
-                      if (_user == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("No hay usuario logueado."),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                        return;
-                      }
-                      await _guardarProducto(_user!.uid);
-                      setState(() {});
-                    },
-                    icon: const Icon(
-                      Icons.check,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                    label: const Text(
-                      "Guardar",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ],
+                  );
+                  return;
+                }
+                await _guardarProducto(_user!.uid);
+                setState(() {});
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _isLoading
+                    ? const Color.fromARGB(255, 185, 185, 185)
+                    : const ui.Color(0xFFA30000),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 30,
+                  vertical: 8,
+                ),
               ),
+              child: _isLoading
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Color.fromARGB(255, 115, 115, 115),
+                        ),
+                      ),
+                    )
+                  : Text(
+                      'Actualizar',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: const ui.Color.fromARGB(255, 255, 255, 255),
+                      ),
+                    ),
             ),
           ],
         ),

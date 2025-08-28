@@ -128,8 +128,6 @@ class AuthService {
         );
         return false;
       }
-
-      // 🔹 Consultar el documento del usuario en Firestore
       final userDoc = await FirebaseFirestore.instance
           .collection('users')
           .doc(user.uid)

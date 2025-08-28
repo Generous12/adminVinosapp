@@ -93,34 +93,55 @@ class FiltrosAdicionalesSheet extends StatelessWidget {
     return SafeArea(
       child: Container(
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          color: isDark ? const Color(0xFF111111) : Colors.white,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              blurRadius: 12,
+              offset: const Offset(0, -4),
+            ),
+          ],
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Indicador de sheet
             Center(
               child: Container(
                 width: 40,
-                height: 4,
-                margin: const EdgeInsets.only(bottom: 15),
+                height: 5,
+                margin: const EdgeInsets.only(bottom: 18),
                 decoration: BoxDecoration(
-                  color: isDark ? Colors.grey[400] : Colors.grey[700],
+                  color: isDark ? Colors.grey[700] : Colors.grey[400],
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
             ),
-            Text(
-              'Filtrar productos por',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: isDark ? Colors.white : Colors.black,
-              ),
+
+            // Título
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Filtrar productos',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: isDark ? Colors.white : Colors.black,
+                  ),
+                ),
+                Icon(
+                  LucideIcons.slidersHorizontal,
+                  color: const Color(0xFFA30000),
+                ),
+              ],
             ),
-            const SizedBox(height: 5),
+            const SizedBox(height: 12),
+
+            // Filtros
             _buildFiltroTile(
               context: context,
               icon: LucideIcons.messageCircle,
@@ -160,28 +181,40 @@ class FiltrosAdicionalesSheet extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2.0),
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Material(
         color: Colors.transparent,
-        child: ListTile(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-          leading: Icon(icon, color: const Color(0xFFFFAF00)),
-          title: Text(
-            label,
-            style: TextStyle(
-              fontSize: 16,
-              color: isDark ? Colors.white : Colors.black,
-              fontWeight: FontWeight.w500,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(14),
+          onTap: onTap,
+          splashColor: const Color(0xFFA30000).withOpacity(0.15),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
+              color: isDark ? const Color(0xFF1C1C1C) : Colors.grey[100],
+            ),
+            child: Row(
+              children: [
+                Icon(icon, color: const Color(0xFFA30000), size: 22),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: isDark ? Colors.white : Colors.black,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                Icon(
+                  LucideIcons.chevronRight,
+                  color: isDark ? Colors.white70 : Colors.black54,
+                ),
+              ],
             ),
           ),
-          trailing: Icon(
-            LucideIcons.chevronRight,
-            color: isDark ? Colors.white : Colors.black,
-          ),
-          onTap: onTap,
         ),
       ),
     );

@@ -332,7 +332,7 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                         backgroundColor:
                                             Theme.of(context).brightness ==
                                                 Brightness.dark
-                                            ? Colors.amber
+                                            ? const Color(0xFFA30000)
                                             : Colors.black,
                                         foregroundColor:
                                             Theme.of(context).brightness ==
@@ -353,11 +353,25 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                           Icon(
                                             Icons.shopping_cart_outlined,
                                             size: 22,
+                                            color: Color.fromRGBO(
+                                              255,
+                                              255,
+                                              255,
+                                              1,
+                                            ),
                                           ),
                                           SizedBox(width: 6),
                                           Text(
                                             'Agregar al carrito',
-                                            style: TextStyle(fontSize: 16),
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: Color.fromRGBO(
+                                                255,
+                                                255,
+                                                255,
+                                                1,
+                                              ),
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -377,7 +391,7 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                   iconColor:
                                       Theme.of(context).brightness ==
                                           Brightness.dark
-                                      ? Colors.black
+                                      ? Colors.white
                                       : Colors.white,
                                   borderRadius: 8,
                                 ),
@@ -824,13 +838,6 @@ class ProductoAppBar extends StatelessWidget implements PreferredSizeWidget {
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.3),
-                            blurRadius: 6,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
                       ),
                       child: const Icon(
                         Iconsax.arrow_left,

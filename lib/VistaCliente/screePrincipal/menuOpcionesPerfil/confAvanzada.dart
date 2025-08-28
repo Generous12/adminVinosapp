@@ -204,7 +204,7 @@ class _ConfAvanzadaState extends State<ConfAvanzada> {
               )
             : Text(
                 'Eliminar Cuenta',
-                style: TextStyle(fontSize: 16, color: Colors.white),
+                style: TextStyle(fontSize: 12, color: Colors.white),
               ),
       ),
     );

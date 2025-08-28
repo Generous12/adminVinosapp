@@ -60,11 +60,11 @@ class _LoadingOverlayButtonState extends State<LoadingOverlayButton> {
               onPressed: isLoading ? null : _handlePressed,
               style: ElevatedButton.styleFrom(
                 backgroundColor: backgroundColor,
-                elevation: 5.0,
+                elevation: 0.0,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(50.0),
                 ),
-                minimumSize: const Size(double.infinity, 45.0),
+                minimumSize: const Size(double.infinity, 50.0),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -157,7 +157,7 @@ class _FullWidthMenuTileState extends State<FullWidthMenuTile> {
           onTap: _handleTap,
           child: Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+            padding: const EdgeInsets.symmetric(vertical: 11, horizontal: 20),
             decoration: BoxDecoration(
               color: theme.scaffoldBackgroundColor,
               borderRadius: BorderRadius.circular(0),

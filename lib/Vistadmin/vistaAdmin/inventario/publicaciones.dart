@@ -546,7 +546,7 @@ class _PublicacionesPageState extends State<PublicacionesPage> {
                       ? const Color.fromARGB(255, 185, 185, 185)
                       : const ui.Color(0xFFA30000),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 30,
@@ -585,17 +585,6 @@ class _PublicacionesPageState extends State<PublicacionesPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          CustomTextField(
-                            controller: _descripcionController,
-                            label: "Descripcion de la publicacion",
-                            hintText:
-                                "Agrega una descripcion a tu prublicacion",
-                            isNumeric: false,
-                            maxLength: 300,
-                            showCounter: false,
-                            maxLines: 5,
-                          ),
-                          SizedBox(height: 20),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -632,6 +621,30 @@ class _PublicacionesPageState extends State<PublicacionesPage> {
                               ),
                             ],
                           ),
+                          SizedBox(height: 20),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 12.0),
+                            child: Text(
+                              'Añade una descripcion',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          CustomTextField(
+                            controller: _descripcionController,
+                            label: "Descripcion de la publicacion",
+                            hintText:
+                                "Agrega una descripcion a tu prublicacion",
+                            isNumeric: false,
+                            maxLength: 300,
+                            showCounter: false,
+                            minLines: 4,
+                            maxLines: 5,
+                          ),
+
                           Container(
                             margin: const EdgeInsets.symmetric(
                               vertical: 12,
