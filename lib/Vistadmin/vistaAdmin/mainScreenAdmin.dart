@@ -1,7 +1,7 @@
 import 'package:app_bootsup/Vistadmin/vistaAdmin/Chats/Chats.dart';
 import 'package:app_bootsup/Vistadmin/vistaAdmin/inventario/inventario.dart';
 import 'package:app_bootsup/Vistadmin/vistaAdmin/pedidos/pedidos.dart';
-import 'package:app_bootsup/Vistadmin/vistaAdmin/perfil.dart';
+import 'package:app_bootsup/Vistadmin/vistaAdmin/perfiladmin.dart';
 import 'package:app_bootsup/Widgets/bottombar.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';

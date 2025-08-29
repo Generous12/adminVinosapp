@@ -108,173 +108,180 @@ class _PublicacionesPageState extends State<PublicacionesPage> {
       MaterialPageRoute(
         builder: (_) => Scaffold(
           backgroundColor: Colors.black,
-          body: Stack(
-            children: [
-              // 💫 FILTRO DIFUSO (esto desenfoca lo anterior)
-              Positioned.fill(
-                child: BackdropFilter(
-                  filter: ui.ImageFilter.blur(sigmaX: 20.0, sigmaY: 20.0),
-                  child: Container(
-                    color: const ui.Color.fromARGB(
-                      255,
-                      0,
-                      0,
-                      0,
-                    ).withOpacity(0.6),
-                  ),
-                ),
-              ),
-              Center(child: Image.file(imageFile)),
-
-              Positioned(
-                top: 40,
-                right: 20,
-                child: GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.black54,
-                      shape: BoxShape.circle,
-                    ),
-                    padding: EdgeInsets.all(8),
-                    child: Icon(
-                      LucideIcons.minimize,
-                      color: Colors.white,
-                      size: 24,
+          body: SafeArea(
+            child: Stack(
+              children: [
+                // 💫 FILTRO DIFUSO (esto desenfoca lo anterior)
+                Positioned.fill(
+                  child: BackdropFilter(
+                    filter: ui.ImageFilter.blur(sigmaX: 20.0, sigmaY: 20.0),
+                    child: Container(
+                      color: const ui.Color.fromARGB(
+                        255,
+                        0,
+                        0,
+                        0,
+                      ).withOpacity(0.6),
                     ),
                   ),
                 ),
-              ),
+                Center(child: Image.file(imageFile)),
 
-              Positioned(
-                bottom: 40,
-                left: 0,
-                right: 0,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      backgroundColor: const ui.Color.fromARGB(255, 0, 0, 0),
-                      radius: 30,
-                      child: IconButton(
-                        icon: Icon(
-                          Iconsax.edit,
-                          color: const ui.Color(0xFFFFAF00),
-                        ),
-                        onPressed: () async {
-                          final bytes = await imageFile.readAsBytes();
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => ProImageEditor.memory(
-                                bytes,
-                                configs: const ProImageEditorConfigs(
-                                  cropRotateEditor: CropRotateEditorConfigs(
-                                    enabled: false,
-                                  ),
-                                  i18n: I18n(
-                                    various: I18nVarious(
-                                      closeEditorWarningTitle: "Advertencia",
-                                      closeEditorWarningMessage:
-                                          "¿Desea descartar los cambios realizados?",
-                                      loadingDialogMsg: "Aplicando cambios",
+                Positioned(
+                  top: 40,
+                  right: 20,
+                  child: GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black54,
+                        shape: BoxShape.circle,
+                      ),
+                      padding: EdgeInsets.all(8),
+                      child: Icon(
+                        LucideIcons.minimize,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                    ),
+                  ),
+                ),
+
+                Positioned(
+                  bottom: 40,
+                  left: 0,
+                  right: 0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: const ui.Color.fromARGB(255, 0, 0, 0),
+                        radius: 30,
+                        child: IconButton(
+                          icon: Icon(
+                            Iconsax.edit,
+                            color: const ui.Color(0xFFA30000),
+                          ),
+                          onPressed: () async {
+                            final bytes = await imageFile.readAsBytes();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => ProImageEditor.memory(
+                                  bytes,
+                                  configs: const ProImageEditorConfigs(
+                                    cropRotateEditor: CropRotateEditorConfigs(
+                                      enabled: false,
+                                    ),
+                                    i18n: I18n(
+                                      various: I18nVarious(
+                                        closeEditorWarningTitle: "Advertencia",
+                                        closeEditorWarningMessage:
+                                            "¿Desea descartar los cambios realizados?",
+                                        loadingDialogMsg: "Aplicando cambios",
+                                      ),
                                     ),
                                   ),
-                                ),
-                                callbacks: ProImageEditorCallbacks(
-                                  onImageEditingComplete:
-                                      (Uint8List editedImage) async {
-                                        File editedFile =
-                                            await _convertBytesToFile(
-                                              editedImage,
+                                  callbacks: ProImageEditorCallbacks(
+                                    onImageEditingComplete:
+                                        (Uint8List editedImage) async {
+                                          File editedFile =
+                                              await _convertBytesToFile(
+                                                editedImage,
+                                              );
+                                          setState(() {
+                                            int index = _selectedImages.indexOf(
+                                              imageFile,
                                             );
-                                        setState(() {
-                                          int index = _selectedImages.indexOf(
-                                            imageFile,
-                                          );
-                                          if (index != -1) {
-                                            _selectedImages[index] = editedFile;
-                                          }
-                                          if (_mainImage?.path ==
-                                              imageFile.path) {
-                                            _mainImage = editedFile;
-                                          }
-                                        });
-                                        Navigator.pop(context);
-                                        Navigator.pop(context);
-                                      },
+                                            if (index != -1) {
+                                              _selectedImages[index] =
+                                                  editedFile;
+                                            }
+                                            if (_mainImage?.path ==
+                                                imageFile.path) {
+                                              _mainImage = editedFile;
+                                            }
+                                          });
+                                          Navigator.pop(context);
+                                          Navigator.pop(context);
+                                        },
+                                  ),
                                 ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    SizedBox(width: 30),
-                    CircleAvatar(
-                      backgroundColor: const ui.Color.fromARGB(255, 0, 0, 0),
-                      radius: 30,
-                      child: IconButton(
-                        icon: Icon(
-                          Iconsax.crop,
-                          color: const ui.Color(0xFFFFAF00),
-                        ),
-                        onPressed: () async {
-                          try {
-                            final croppedFile = await ImageCropper().cropImage(
-                              sourcePath: imageFile.path,
-                              compressFormat: ImageCompressFormat.jpg,
-                              compressQuality: 100,
-                              aspectRatio: CropAspectRatio(
-                                ratioX: _aspectX,
-                                ratioY: _aspectY,
-                              ),
-                              uiSettings: [
-                                AndroidUiSettings(
-                                  toolbarTitle: 'Cropper',
-                                  toolbarColor: const Color(0xFFFFAF00),
-                                  toolbarWidgetColor: Colors.white,
-                                  lockAspectRatio: true,
-                                  hideBottomControls: false,
-                                  showCropGrid: true,
-                                  initAspectRatio:
-                                      CropAspectRatioPreset.original,
-                                  aspectRatioPresets: [
-                                    CropAspectRatioPreset.square,
-                                    CropAspectRatioPreset.original,
-                                    CropAspectRatioPresetCustom4x5(),
-                                    CropAspectRatioPresetCustom3x4(), // Aquí usas tu preset personalizado
-                                  ],
-                                ),
-                              ],
                             );
-
-                            if (croppedFile != null) {
-                              final File newImageFile = File(croppedFile.path);
-
-                              setState(() {
-                                int index = _selectedImages.indexOf(imageFile);
-                                if (index != -1) {
-                                  _selectedImages[index] = newImageFile;
-                                }
-
-                                if (_mainImage?.path == imageFile.path) {
-                                  _mainImage = File(newImageFile.path);
-                                }
-                              });
-
-                              Navigator.pop(context);
-                            }
-                          } catch (e) {
-                            print("Error al recortar imagen: $e");
-                          }
-                        },
+                          },
+                        ),
                       ),
-                    ),
-                  ],
+                      SizedBox(width: 30),
+                      CircleAvatar(
+                        backgroundColor: const ui.Color.fromARGB(255, 0, 0, 0),
+                        radius: 30,
+                        child: IconButton(
+                          icon: Icon(
+                            Iconsax.crop,
+                            color: const ui.Color(0xFFA30000),
+                          ),
+                          onPressed: () async {
+                            try {
+                              final croppedFile = await ImageCropper().cropImage(
+                                sourcePath: imageFile.path,
+                                compressFormat: ImageCompressFormat.jpg,
+                                compressQuality: 100,
+                                aspectRatio: CropAspectRatio(
+                                  ratioX: _aspectX,
+                                  ratioY: _aspectY,
+                                ),
+                                uiSettings: [
+                                  AndroidUiSettings(
+                                    toolbarTitle: 'Cropper',
+                                    toolbarColor: const Color(0xFFA30000),
+                                    toolbarWidgetColor: Colors.white,
+                                    lockAspectRatio: true,
+                                    hideBottomControls: false,
+                                    showCropGrid: true,
+                                    initAspectRatio:
+                                        CropAspectRatioPreset.original,
+                                    aspectRatioPresets: [
+                                      CropAspectRatioPreset.square,
+                                      CropAspectRatioPreset.original,
+                                      CropAspectRatioPresetCustom4x5(),
+                                      CropAspectRatioPresetCustom3x4(), // Aquí usas tu preset personalizado
+                                    ],
+                                  ),
+                                ],
+                              );
+
+                              if (croppedFile != null) {
+                                final File newImageFile = File(
+                                  croppedFile.path,
+                                );
+
+                                setState(() {
+                                  int index = _selectedImages.indexOf(
+                                    imageFile,
+                                  );
+                                  if (index != -1) {
+                                    _selectedImages[index] = newImageFile;
+                                  }
+
+                                  if (_mainImage?.path == imageFile.path) {
+                                    _mainImage = File(newImageFile.path);
+                                  }
+                                });
+
+                                Navigator.pop(context);
+                              }
+                            } catch (e) {
+                              print("Error al recortar imagen: $e");
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -742,7 +749,7 @@ class _PublicacionesPageState extends State<PublicacionesPage> {
                                                 });
                                               },
                                               child: const Icon(
-                                                Iconsax.trash,
+                                                LucideIcons.trash,
                                                 color: ui.Color.fromARGB(
                                                   255,
                                                   189,

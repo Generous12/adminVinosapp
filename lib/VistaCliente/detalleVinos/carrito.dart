@@ -923,12 +923,17 @@ class _CarritoPageState extends State<CarritoPageVinos> {
                                       backgroundColor:
                                           Theme.of(context).brightness ==
                                               Brightness.dark
-                                          ? Colors.amber
+                                          ? const Color(0xFFA30000)
                                           : Colors.black,
                                       foregroundColor:
                                           Theme.of(context).brightness ==
                                               Brightness.dark
-                                          ? Colors.black
+                                          ? const Color.fromARGB(
+                                              255,
+                                              255,
+                                              255,
+                                              255,
+                                            )
                                           : Colors.white,
                                       onPressedLogic: () async {
                                         if (carritoService.direccionEntrega
@@ -1252,7 +1257,7 @@ class _CarritoPageState extends State<CarritoPageVinos> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              'Ingresar nueva dirección',
+                              'Ingresar otra dirección',
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,
@@ -1298,7 +1303,7 @@ class _CarritoPageState extends State<CarritoPageVinos> {
                                 onPressed: () => Navigator.pop(context),
                                 style: OutlinedButton.styleFrom(
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
+                                    borderRadius: BorderRadius.circular(20),
                                   ),
                                   backgroundColor:
                                       theme.brightness == Brightness.dark
@@ -1338,7 +1343,7 @@ class _CarritoPageState extends State<CarritoPageVinos> {
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: theme.colorScheme.primary,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
+                                    borderRadius: BorderRadius.circular(20),
                                   ),
                                 ),
                                 child: _isLoading

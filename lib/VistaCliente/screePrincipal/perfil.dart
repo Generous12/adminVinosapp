@@ -145,7 +145,9 @@ class _PerfilState extends State<PerfilPageVinosC> {
                       description: 'Salir de la cuenta',
                       icon: Iconsax.logout,
                       onTap: () {
-                        AuthService().signOut(context);
+                        if (!mounted) return;
+                        User? currentUser = FirebaseAuth.instance.currentUser;
+                        AuthService().signOut(context, currentUser?.uid);
                       },
                     ),
                   ),

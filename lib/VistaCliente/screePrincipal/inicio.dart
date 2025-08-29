@@ -49,14 +49,12 @@ class _InicioState extends State<InicioVinosC> {
   }
 
   Future<void> _checkSignInStatus() async {
-    if (mounted) {
-      setState(() {});
-    }
+    if (!mounted) return;
+    setState(() {});
   }
 
   Future<void> _cargarMasPublicaciones(String userId) async {
     if (!mounted || _isLoadingMore || !_hasMore) return;
-    if (!mounted) return;
     setState(() {
       _isLoadingMore = true;
     });
@@ -71,6 +69,7 @@ class _InicioState extends State<InicioVinosC> {
 
       final productos = await FirestoreService.fetchProductosVinos();
       if (nuevasPublicaciones.isEmpty) {
+        if (!mounted) return;
         setState(() {
           _hasMore = false;
           _isLoadingMore = false;
@@ -113,11 +112,9 @@ class _InicioState extends State<InicioVinosC> {
     });
 
     await _cargarMasPublicaciones(userId);
-    if (mounted) {
-      setState(() {
-        _isInitialLoading = false;
-      });
-    }
+
+    if (!mounted) return;
+    setState(() => _isInitialLoading = false);
   }
 
   @override
@@ -206,7 +203,7 @@ class _InicioState extends State<InicioVinosC> {
                                       theme.scaffoldBackgroundColor,
                                   child: ClipOval(
                                     child: Image.asset(
-                                      'assets/images/logo.png',
+                                      'assets/images/logo1.png',
                                       fit: BoxFit.cover,
                                       width: 40,
                                       height: 40,

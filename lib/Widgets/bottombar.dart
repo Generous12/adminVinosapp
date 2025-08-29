@@ -172,11 +172,20 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
 //BOTTOMBAR DE CLIENTE
 
 class ImageCacheHelperCliente {
-  static String? profileImageUrl;
-  static bool isImageLoaded = false;
-  static void clearCache() {
-    profileImageUrl = null;
-    isImageLoaded = false;
+  static final Map<String, String?> _profileImages = {};
+  static final Map<String, bool> _loadedFlags = {};
+
+  static String? getProfileImage(String userId) => _profileImages[userId];
+  static bool isImageLoaded(String userId) => _loadedFlags[userId] ?? false;
+
+  static void setProfileImage(String userId, String? url) {
+    _profileImages[userId] = url;
+    _loadedFlags[userId] = true;
+  }
+
+  static void clearCache(String userId) {
+    _profileImages.remove(userId);
+    _loadedFlags.remove(userId);
   }
 }
 
@@ -206,21 +215,30 @@ class _CustomBottomNavBarClienteState extends State<CustomBottomNavBarCliente> {
   void initState() {
     super.initState();
 
-    if (!ImageCacheHelperCliente.isImageLoaded && widget.user != null) {
-      getUserData(widget.user!.uid).then((data) {
-        if (mounted) {
-          setState(() {
-            firestoreProfileImageUrl = data['profileImageUrl'];
-            firestoreUsername = data['username'];
-            isImageLoaded = true;
-            ImageCacheHelperCliente.profileImageUrl = firestoreProfileImageUrl;
-            ImageCacheHelperCliente.isImageLoaded = true;
-          });
-        }
-      });
-    } else {
-      firestoreProfileImageUrl = ImageCacheHelperCliente.profileImageUrl;
-      isImageLoaded = true;
+    if (widget.user != null) {
+      final cachedUrl = ImageCacheHelperCliente.getProfileImage(
+        widget.user!.uid,
+      );
+      final loaded = ImageCacheHelperCliente.isImageLoaded(widget.user!.uid);
+
+      if (!loaded) {
+        getUserData(widget.user!.uid).then((data) {
+          if (mounted) {
+            setState(() {
+              firestoreProfileImageUrl = data['profileImageUrl'];
+              firestoreUsername = data['username'];
+              isImageLoaded = true;
+              ImageCacheHelperCliente.setProfileImage(
+                widget.user!.uid,
+                firestoreProfileImageUrl,
+              );
+            });
+          }
+        });
+      } else {
+        firestoreProfileImageUrl = cachedUrl;
+        isImageLoaded = true;
+      }
     }
   }
 

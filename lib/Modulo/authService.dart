@@ -228,12 +228,14 @@ class AuthService {
     }
   }
 
-  Future<void> signOut(BuildContext context) async {
+  Future<void> signOut(BuildContext context, String? userId) async {
     try {
       final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
       await _auth.signOut();
       await _googleSignIn.signOut();
-      ImageCacheHelper.clearCache();
+      if (userId != null) {
+        ImageCacheHelperCliente.clearCache(userId);
+      }
       themeProvider.resetTheme();
       Navigator.pushAndRemoveUntil(
         context,
@@ -247,6 +249,8 @@ class AuthService {
         ),
         (route) => false,
       );
-    } catch (e) {}
+    } catch (e) {
+      print('Error cerrando sesión: $e');
+    }
   }
 }

@@ -612,7 +612,7 @@ class _VideoEditorPageState extends State<VideoEditorPage> {
                       ),
 
                       // Overlay de carga
-                      if (_isLoading)
+                      if (_isLoading1)
                         Positioned.fill(
                           child: Container(
                             color: Colors.black54,
@@ -626,7 +626,7 @@ class _VideoEditorPageState extends State<VideoEditorPage> {
                     ],
                   ),
           ),
-          if (_isLoading1)
+          if (_isLoading)
             Positioned.fill(
               child: Container(
                 color: Colors.black54,

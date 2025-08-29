@@ -286,7 +286,8 @@ class _PerfilState extends State<PerfilPage> {
                 icon: Iconsax.logout,
                 tooltip: 'Cerrar sesión',
                 onPressed: () async {
-                  AuthService().signOut(context);
+                  User? currentUser = FirebaseAuth.instance.currentUser;
+                  await AuthService().signOut(context, currentUser?.uid);
                 },
               ),
             ],
