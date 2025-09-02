@@ -171,7 +171,7 @@ class _ComprasPageState extends State<ComprasPageVinosC> {
 
   void _cargarMasProductos() {
     if (_isCargandoMas || _todosCargados) return;
-
+    if (!mounted) return;
     setState(() {
       _isCargandoMas = true;
     });

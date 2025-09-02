@@ -215,30 +215,31 @@ class _CustomBottomNavBarClienteState extends State<CustomBottomNavBarCliente> {
   void initState() {
     super.initState();
 
-    if (widget.user != null) {
-      final cachedUrl = ImageCacheHelperCliente.getProfileImage(
-        widget.user!.uid,
-      );
-      final loaded = ImageCacheHelperCliente.isImageLoaded(widget.user!.uid);
+    if (widget.user == null) {
+      print("⚠️ No hay usuario logueado en CustomBottomNavBarCliente");
+      return; // ⛔ No seguimos, porque no hay usuario
+    }
 
-      if (!loaded) {
-        getUserData(widget.user!.uid).then((data) {
-          if (mounted) {
-            setState(() {
-              firestoreProfileImageUrl = data['profileImageUrl'];
-              firestoreUsername = data['username'];
-              isImageLoaded = true;
-              ImageCacheHelperCliente.setProfileImage(
-                widget.user!.uid,
-                firestoreProfileImageUrl,
-              );
-            });
-          }
-        });
-      } else {
-        firestoreProfileImageUrl = cachedUrl;
-        isImageLoaded = true;
-      }
+    final cachedUrl = ImageCacheHelperCliente.getProfileImage(widget.user!.uid);
+    final loaded = ImageCacheHelperCliente.isImageLoaded(widget.user!.uid);
+
+    if (!loaded) {
+      getUserData(widget.user!.uid).then((data) {
+        if (mounted) {
+          setState(() {
+            firestoreProfileImageUrl = data['profileImageUrl'];
+            firestoreUsername = data['username'];
+            isImageLoaded = true;
+            ImageCacheHelperCliente.setProfileImage(
+              widget.user!.uid,
+              firestoreProfileImageUrl,
+            );
+          });
+        }
+      });
+    } else {
+      firestoreProfileImageUrl = cachedUrl;
+      isImageLoaded = true;
     }
   }
 
@@ -273,7 +274,7 @@ class _CustomBottomNavBarClienteState extends State<CustomBottomNavBarCliente> {
         ? firestoreUsername!.substring(0, 1).toUpperCase()
         : (widget.user?.displayName?.trim().isNotEmpty ?? false)
         ? widget.user!.displayName!.substring(0, 1).toUpperCase()
-        : 'C';
+        : 'C'; // 🔥 fallback seguro
 
     return SizedBox(
       height: 55,

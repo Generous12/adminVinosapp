@@ -34,7 +34,7 @@ class _ReelsScreenState extends State<ReelsScreen> {
 
   Future<void> _getVideos() async {
     if (isLoading || !hasMore) return;
-
+    if (!context.mounted) return;
     setState(() => isLoading = true);
 
     Query query = _firestore
@@ -45,7 +45,7 @@ class _ReelsScreenState extends State<ReelsScreen> {
     if (lastDocument != null) {
       query = query.startAfterDocument(lastDocument!);
     }
-
+    if (!mounted) return;
     QuerySnapshot querySnapshot = await query.get();
     if (querySnapshot.docs.isNotEmpty) {
       lastDocument = querySnapshot.docs.last;
@@ -53,7 +53,7 @@ class _ReelsScreenState extends State<ReelsScreen> {
     } else {
       hasMore = false;
     }
-
+    if (!mounted) return;
     setState(() => isLoading = false);
   }
 
@@ -137,6 +137,7 @@ class _VideoTileState extends State<VideoTile> {
     );
     _controller = VideoPlayerController.network(widget.videoUrl)
       ..initialize().then((_) {
+        if (!mounted) return;
         setState(() {});
         _chewieController = ChewieController(
           videoPlayerController: _controller!,
@@ -155,7 +156,8 @@ class _VideoTileState extends State<VideoTile> {
   }
 
   void _updatePlayState() {
-    if (_controller == null) return;
+    if (!mounted || _controller == null) return;
+
     if (widget.isActive && !_controller!.value.isPlaying) {
       _controller!.play();
     } else if (!widget.isActive && _controller!.value.isPlaying) {

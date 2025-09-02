@@ -409,7 +409,7 @@ class _CarritoPageState extends State<CarritoPageVinos> {
       return sum + valorDescuento;
     });
     final double subtotal = total;
-    final double impuesto = subtotal * 0.04;
+    final double impuesto = subtotal * 0.00;
     final double totalFinal = subtotal + impuesto;
     return WillPopScope(
       onWillPop: () async {
