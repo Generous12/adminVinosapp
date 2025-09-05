@@ -59,6 +59,7 @@ class _MyAppState extends State<MyApp> {
 
   bool _isConnected = true;
   bool _verificacionCompleta = false;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -90,7 +91,6 @@ class _MyAppState extends State<MyApp> {
 
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         if (!_isConnected) {
-          // 🔹 Sin conexión → Pantalla NoInternet
           _navigatorKey.currentState?.pushReplacement(
             PageRouteBuilder(
               pageBuilder: (_, __, ___) => NoInternetScreen(),
@@ -100,7 +100,6 @@ class _MyAppState extends State<MyApp> {
             ),
           );
         } else {
-          // 🔹 Con conexión → Verificar membresía y navegar
           await _decidirPantalla();
         }
       });
@@ -109,13 +108,12 @@ class _MyAppState extends State<MyApp> {
 
   void _listenToAuthChanges() {
     _auth.authStateChanges().listen((user) async {
-      if (mounted) {
-        setState(() {
-          _verificacionCompleta = true;
-        });
-      }
+      if (mounted) setState(() => _verificacionCompleta = true);
+
       if (user != null && user.emailVerified) {
+        setState(() => _isLoading = true); // mostrar overlay
         await _decidirPantalla();
+        if (mounted) setState(() => _isLoading = false); // ocultar overlay
       } else {
         _navigatorKey.currentState?.pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => const SplashScreen()),
@@ -166,12 +164,11 @@ class _MyAppState extends State<MyApp> {
       return;
     }
 
-    // 🔹 Configurar el UID del carrito aquí
     final carrito = Provider.of<CarritoServiceVinos>(
       _navigatorKey.currentContext!,
       listen: false,
     );
-    carrito.setUsuario(user.uid); // <--- MUY IMPORTANTE
+    carrito.setUsuario(user.uid);
 
     final membresia = await _getUserMembership();
     if (membresia == "Administrador") {
@@ -211,14 +208,6 @@ class _MyAppState extends State<MyApp> {
           onSurface: Colors.black,
         ),
         scaffoldBackgroundColor: Color(0xFFFAFAFA),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFFFAFAFA),
-          foregroundColor: Colors.black,
-          elevation: 0,
-        ),
-        bottomAppBarTheme: BottomAppBarThemeData(color: Color(0xFFFAFAFA)),
-        iconTheme: const IconThemeData(color: Colors.black),
-        textTheme: const TextTheme(bodyMedium: TextStyle(color: Colors.black)),
       ),
       darkTheme: ThemeData(
         useMaterial3: true,
@@ -231,18 +220,24 @@ class _MyAppState extends State<MyApp> {
           onBackground: Colors.white,
         ),
         scaffoldBackgroundColor: Color(0xFF121212),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF121212),
-          foregroundColor: Colors.white,
-          elevation: 0,
-        ),
-        bottomAppBarTheme: BottomAppBarThemeData(color: Color(0xFF121212)),
-        iconTheme: const IconThemeData(color: Colors.white),
-        textTheme: const TextTheme(bodyMedium: TextStyle(color: Colors.white)),
       ),
-      home: !_verificacionCompleta
-          ? const SplashScreen()
-          : const SplashScreen(),
+      home: Stack(
+        children: [
+          !_verificacionCompleta ? const SplashScreen() : const SplashScreen(),
+          if (_isLoading)
+            Container(
+              color: Colors.black54,
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const CircularProgressIndicator(color: Colors.white),
+                  ],
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

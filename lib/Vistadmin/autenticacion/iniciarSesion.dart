@@ -31,11 +31,11 @@ class _LoginScreenState extends State<LoginScreen> {
       behavior: HitTestBehavior.translucent,
       child: Scaffold(
         backgroundColor: theme.scaffoldBackgroundColor,
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: Stack(
-              children: [
-                SingleChildScrollView(
+        body: Stack(
+          children: [
+            SafeArea(
+              child: SingleChildScrollView(
+                child: SingleChildScrollView(
                   child: Padding(
                     padding: const EdgeInsets.all(30.0),
                     child: Column(
@@ -67,11 +67,20 @@ class _LoginScreenState extends State<LoginScreen> {
                             LoadingOverlayButton(
                               text: 'Iniciar Sesión',
                               onPressedLogic: () async {
-                                AuthService().signInWithEmail(
-                                  context,
-                                  email: emailController.text.trim(),
-                                  password: passwordController.text.trim(),
-                                );
+                                setState(() => isLoading = true);
+                                try {
+                                  AuthService().signInWithEmail(
+                                    context,
+                                    email: emailController.text.trim(),
+                                    password: passwordController.text.trim(),
+                                  );
+                                } catch (e) {
+                                  print('Error: $e');
+                                } finally {
+                                  if (mounted) {
+                                    setState(() => isLoading = false);
+                                  }
+                                }
                               },
                             ),
                           ],
@@ -172,7 +181,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                   padding: const EdgeInsets.all(8.0),
                                 ),
                                 onPressed: () async {
-                                  await AuthService().signInWithGoogle(context);
+                                  setState(() => isLoading = true);
+
+                                  try {
+                                    await AuthService().signInWithGoogle(
+                                      context,
+                                    );
+                                  } catch (e) {
+                                    print('Error: $e');
+                                  } finally {
+                                    if (mounted) {
+                                      setState(() => isLoading = false);
+                                    }
+                                  }
                                 },
 
                                 child: Row(
@@ -203,9 +224,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
+            if (isLoading)
+              Container(
+                color: Colors.black54,
+                child: Center(
+                  child: CircularProgressIndicator(color: Colors.white),
+                ),
+              ),
+          ],
         ),
       ),
     );

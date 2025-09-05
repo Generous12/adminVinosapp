@@ -35,11 +35,11 @@ class _AccesScreenState extends State<AccesScreen> {
       behavior: HitTestBehavior.translucent,
       child: Scaffold(
         backgroundColor: theme.scaffoldBackgroundColor,
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: Stack(
-              children: [
-                Padding(
+        body: Stack(
+          children: [
+            SafeArea(
+              child: SingleChildScrollView(
+                child: Padding(
                   padding: const EdgeInsets.all(30.0),
                   child: Column(
                     children: [
@@ -269,7 +269,17 @@ class _AccesScreenState extends State<AccesScreen> {
                                 padding: const EdgeInsets.all(8.0),
                               ),
                               onPressed: () async {
-                                AuthService().signInWithGoogle(context);
+                                setState(() => isLoading = true);
+
+                                try {
+                                  await AuthService().signInWithGoogle(context);
+                                } catch (e) {
+                                  print('Error: $e');
+                                } finally {
+                                  if (mounted) {
+                                    setState(() => isLoading = false);
+                                  }
+                                }
                               },
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -298,9 +308,16 @@ class _AccesScreenState extends State<AccesScreen> {
                     ],
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
+            if (isLoading)
+              Container(
+                color: Colors.black54,
+                child: Center(
+                  child: CircularProgressIndicator(color: Colors.white),
+                ),
+              ),
+          ],
         ),
       ),
     );
