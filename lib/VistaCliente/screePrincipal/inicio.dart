@@ -161,10 +161,11 @@ class _InicioState extends State<InicioVinosC> {
                       ? Center(
                           child: Padding(
                             padding: const EdgeInsets.only(top: 10),
-                            child: LoadingAnimationWidget.staggeredDotsWave(
-                              color: const Color(0xFFA30000),
-                              size: 40,
-                            ),
+                            child:
+                                LoadingAnimationWidget.horizontalRotatingDots(
+                                  color: const Color(0xFFA30000),
+                                  size: 40,
+                                ),
                           ),
                         )
                       : const SizedBox.shrink();

@@ -48,91 +48,94 @@ class _ComentariosScreenState extends State<ComentariosScreen> {
 
     showMaterialModalBottomSheet(
       context: context,
-      backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        ),
-        height: 215,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Icon(Iconsax.trash, color: Colors.amber, size: 28),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    'Eliminar comentario',
-                    style: TextStyle(
-                      color: isDark ? Colors.white : Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+      backgroundColor:
+          Colors.transparent, // lo ponemos transparente para usar SafeArea
+      builder: (context) => SafeArea(
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          height: 215,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(Iconsax.trash, color: Colors.amber, size: 28),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'Eliminar comentario',
+                      style: TextStyle(
+                        color: isDark ? Colors.white : Colors.black,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Text(
-              '¿Estás seguro de que deseas eliminar este comentario? Esta acción no se puede deshacer.',
-              style: TextStyle(
-                color: isDark
-                    ? Colors.white.withOpacity(0.7)
-                    : Colors.black.withOpacity(0.7),
-                fontSize: 16,
+                ],
               ),
-            ),
-            const Spacer(),
-            Row(
-              children: [
-                TextButton.icon(
-                  onPressed: () => Navigator.pop(context),
-                  icon: Icon(
-                    Icons.close,
-                    color: isDark ? Colors.white : Colors.black,
-                  ),
-                  label: Text(
-                    'Cancelar',
-                    style: TextStyle(
+              const SizedBox(height: 10),
+              Text(
+                '¿Estás seguro de que deseas eliminar este comentario? Esta acción no se puede deshacer.',
+                style: TextStyle(
+                  color: isDark
+                      ? Colors.white.withOpacity(0.7)
+                      : Colors.black.withOpacity(0.7),
+                  fontSize: 16,
+                ),
+              ),
+              const Spacer(),
+              Row(
+                children: [
+                  TextButton.icon(
+                    onPressed: () => Navigator.pop(context),
+                    icon: Icon(
+                      Icons.close,
                       color: isDark ? Colors.white : Colors.black,
                     ),
-                  ),
-                ),
-                const Spacer(),
-                ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: isDark ? Colors.white : Colors.black,
-                    foregroundColor: isDark ? Colors.black : Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 10,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                    label: Text(
+                      'Cancelar',
+                      style: TextStyle(
+                        color: isDark ? Colors.white : Colors.black,
+                      ),
                     ),
                   ),
-                  icon: Icon(
-                    Iconsax.trash,
-                    size: 18,
-                    color: isDark ? Colors.black : Colors.white,
-                  ),
-                  label: Text(
-                    'Eliminar',
-                    style: TextStyle(
+                  const Spacer(),
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: isDark ? Colors.white : Colors.black,
+                      foregroundColor: isDark ? Colors.black : Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    icon: Icon(
+                      Iconsax.trash,
+                      size: 18,
                       color: isDark ? Colors.black : Colors.white,
                     ),
+                    label: Text(
+                      'Eliminar',
+                      style: TextStyle(
+                        color: isDark ? Colors.black : Colors.white,
+                      ),
+                    ),
+                    onPressed: () async {
+                      _eliminarComentario(comentarioId);
+                      Navigator.pop(context);
+                    },
                   ),
-                  onPressed: () async {
-                    _eliminarComentario(comentarioId);
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -154,15 +157,7 @@ class _ComentariosScreenState extends State<ComentariosScreen> {
         behavior: HitTestBehavior.translucent,
         child: Scaffold(
           backgroundColor: isDark ? Colors.black : Colors.white,
-          appBar: AppBar(
-            title: const Text("Comentarios"),
-            centerTitle: true,
-            backgroundColor: isDark ? Colors.grey[900] : Colors.white,
-            elevation: 0,
-            iconTheme: IconThemeData(
-              color: isDark ? Colors.white : Colors.black,
-            ),
-          ),
+
           body: Column(
             children: [
               Expanded(
@@ -171,7 +166,7 @@ class _ComentariosScreenState extends State<ComentariosScreen> {
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
                       return Center(
-                        child: LoadingAnimationWidget.staggeredDotsWave(
+                        child: LoadingAnimationWidget.horizontalRotatingDots(
                           color: const Color(0xFFA30000),
                           size: 40,
                         ),
@@ -194,7 +189,7 @@ class _ComentariosScreenState extends State<ComentariosScreen> {
                         vertical: 12,
                         horizontal: 12,
                       ),
-                      reverse: true, // Para que los nuevos aparezcan abajo
+                      reverse: true,
                       itemCount: docs.length,
                       separatorBuilder: (_, __) => const SizedBox(height: 12),
                       itemBuilder: (context, index) {
@@ -233,39 +228,56 @@ class _ComentariosScreenState extends State<ComentariosScreen> {
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  // Avatar del usuario
                                   CircleAvatar(
-                                    radius: 21,
+                                    radius: 22,
                                     backgroundImage: profileImageUrl != null
                                         ? NetworkImage(profileImageUrl)
                                         : null,
                                     backgroundColor: Colors.grey[300],
                                     child: profileImageUrl == null
-                                        ? const Icon(Icons.person, size: 22)
+                                        ? const Icon(
+                                            Icons.person,
+                                            size: 22,
+                                            color: Colors.white70,
+                                          )
                                         : null,
                                   ),
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 12),
+                                  // Contenedor del comentario
                                   Expanded(
                                     child: Container(
-                                      padding: const EdgeInsets.all(12),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 14,
+                                        vertical: 10,
+                                      ),
                                       decoration: BoxDecoration(
                                         color: isDark
                                             ? Colors.grey[850]
                                             : Colors.grey[100],
-                                        borderRadius: BorderRadius.circular(14),
+                                        borderRadius: BorderRadius.circular(16),
                                       ),
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
+                                          // Header: username + tiempo
                                           Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Text(
-                                                username,
-                                                style: const TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 11,
+                                              Expanded(
+                                                child: Text(
+                                                  username,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 13,
+                                                    color: isDark
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                  ),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                 ),
                                               ),
                                               Text(
@@ -274,32 +286,41 @@ class _ComentariosScreenState extends State<ComentariosScreen> {
                                                   locale: 'es',
                                                 ),
                                                 style: TextStyle(
-                                                  color: Colors.grey[600],
-                                                  fontSize: 8,
+                                                  color: Colors.grey[500],
+                                                  fontSize: 10,
                                                 ),
                                               ),
                                             ],
                                           ),
                                           const SizedBox(height: 6),
+                                          // Texto del comentario
                                           Text(
                                             data['texto'],
-                                            style: const TextStyle(
-                                              fontSize: 13,
-                                              height: 1.3,
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              height: 1.4,
+                                              color: isDark
+                                                  ? Colors.white70
+                                                  : Colors.black87,
                                             ),
                                           ),
-                                          const SizedBox(height: 6),
+                                          const SizedBox(height: 8),
+                                          // Acción de me gusta
                                           Row(
                                             children: [
                                               IconButton(
-                                                icon: const Icon(
+                                                icon: Icon(
                                                   Icons.favorite_border,
                                                   size: 20,
+                                                  color: isDark
+                                                      ? Colors.white70
+                                                      : Colors.black54,
                                                 ),
                                                 onPressed: () {
                                                   // Acción de Me gusta
                                                 },
                                               ),
+                                              // Aquí puedes agregar otros botones como responder o compartir
                                             ],
                                           ),
                                         ],
