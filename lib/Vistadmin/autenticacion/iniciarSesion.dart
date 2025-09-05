@@ -172,8 +172,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   padding: const EdgeInsets.all(8.0),
                                 ),
                                 onPressed: () async {
-                                  AuthService().signInWithGoogle(context);
+                                  await AuthService().signInWithGoogle(context);
                                 },
+
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [

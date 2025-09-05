@@ -171,30 +171,25 @@ class AuthService {
       UserCredential userCredential = await _auth.signInWithCredential(
         credential,
       );
-
       final user = userCredential.user!;
       String email = user.email!;
       String displayName = user.displayName ?? 'Usuario';
 
-      // Verificamos si el usuario ya existe en la colección
+      debugPrint("✅ Autenticado en Firebase: $email (uid: ${user.uid})");
+
+      // 🔎 Verificar si existe documento
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
           .collection('users')
           .doc(user.uid)
           .get();
 
-      String usernameWithNumber;
-
-      if (userDoc.exists) {
-        // 🔹 Usuario existente → validar membresía
-        usernameWithNumber = userDoc['username'];
-        await navegarSegunMembresia(context);
-      } else {
-        // 🔹 Usuario nuevo → crear doc y mandar a MainScreenVinosClientes
+      if (!userDoc.exists) {
+        // 🔹 Usuario nuevo → crear doc
         String randomNumber = Random()
             .nextInt(999999)
             .toString()
             .padLeft(6, '0');
-        usernameWithNumber = '$displayName#$randomNumber';
+        String usernameWithNumber = '$displayName#$randomNumber';
 
         String profileImageUrl = user.photoURL ?? '';
 
@@ -208,16 +203,33 @@ class AuthService {
           'membresia': 'Clientes',
         });
 
-        // 🔹 Navegar directo a Clientes
-        navegarConSlideDerecha(context, MainScreenVinosClientes(user: user));
+        debugPrint("🆕 Usuario nuevo creado en Firestore: $email");
+
+        // 👇 Confirmar que el doc ya existe en Firestore antes de continuar
+        DocumentSnapshot confirmDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+
+        if (confirmDoc.exists) {
+          debugPrint(
+            "📄 Documento confirmado en Firestore: ${confirmDoc.data()}",
+          );
+        } else {
+          debugPrint("⚠️ Documento no disponible aún en Firestore");
+        }
+      } else {
+        debugPrint("✅ Usuario existente: $email");
       }
 
+      // ❌ No navegamos aquí → lo maneja main.dart
       return true;
     } catch (e) {
-      print('Error en login: $e');
+      debugPrint('❌ Error en login: $e');
       if (e is PlatformException && e.code == 'sign_in_canceled') {
         return false;
       }
+      if (!context.mounted) return false;
       await showCustomDialog(
         context: context,
         title: 'Error de autenticación',

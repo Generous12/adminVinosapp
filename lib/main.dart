@@ -130,15 +130,25 @@ class _MyAppState extends State<MyApp> {
       final User? user = _auth.currentUser;
       if (user == null) return null;
 
-      final userDoc = await _firestore.collection('users').doc(user.uid).get();
-      if (!userDoc.exists) return null;
+      final userDocRef = _firestore.collection('users').doc(user.uid);
 
-      final data = userDoc.data();
-      final String? membresia = data?['membresia'];
+      int retries = 0;
+      while (retries < 3) {
+        final userDoc = await userDocRef.get();
+        if (userDoc.exists) {
+          final data = userDoc.data();
+          final String? membresia = data?['membresia'];
+          if (membresia == "Administrador" || membresia == "Clientes") {
+            debugPrint("📄 Membresía encontrada: $membresia");
+            return membresia;
+          }
+        }
 
-      if (membresia == "Administrador" || membresia == "Clientes") {
-        return membresia;
+        retries++;
+        debugPrint("⚠️ Membresía no encontrada, reintentando ($retries)...");
+        await Future.delayed(const Duration(seconds: 1));
       }
+
       return null;
     } catch (e) {
       debugPrint("❌ Error al obtener membresía: $e");
