@@ -34,27 +34,34 @@ class _ReelsScreenState extends State<ReelsScreen> {
 
   Future<void> _getVideos() async {
     if (isLoading || !hasMore) return;
-    if (!context.mounted) return;
+
     setState(() => isLoading = true);
 
-    Query query = _firestore
-        .collection('videos')
-        .orderBy('fechaSubida', descending: true)
-        .limit(documentLimit);
+    try {
+      Query query = _firestore
+          .collection('videos')
+          .orderBy('fechaSubida', descending: true)
+          .limit(documentLimit);
 
-    if (lastDocument != null) {
-      query = query.startAfterDocument(lastDocument!);
+      if (lastDocument != null) {
+        query = query.startAfterDocument(lastDocument!);
+      }
+
+      final querySnapshot = await query.get(
+        GetOptions(source: Source.serverAndCache),
+      );
+
+      if (querySnapshot.docs.isNotEmpty) {
+        lastDocument = querySnapshot.docs.last;
+        videos.addAll(querySnapshot.docs);
+      } else {
+        hasMore = false;
+      }
+    } catch (e) {
+      debugPrint('Error fetching videos: $e');
+    } finally {
+      if (mounted) setState(() => isLoading = false);
     }
-    if (!mounted) return;
-    QuerySnapshot querySnapshot = await query.get();
-    if (querySnapshot.docs.isNotEmpty) {
-      lastDocument = querySnapshot.docs.last;
-      videos.addAll(querySnapshot.docs);
-    } else {
-      hasMore = false;
-    }
-    if (!mounted) return;
-    setState(() => isLoading = false);
   }
 
   @override

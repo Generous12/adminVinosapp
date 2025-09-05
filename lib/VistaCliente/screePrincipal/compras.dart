@@ -260,7 +260,6 @@ class _ComprasPageState extends State<ComprasPageVinosC> {
       behavior: HitTestBehavior.translucent,
       child: RefreshIndicator(
         color: const Color(0xFFA30000),
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         onRefresh: () async {
           await cargarContenido();
         },
@@ -275,7 +274,7 @@ class _ComprasPageState extends State<ComprasPageVinosC> {
               scrolledUnderElevation: 0,
 
               automaticallyImplyLeading: false,
-              toolbarHeight: 70,
+              toolbarHeight: 65,
               title: Container(
                 height: 50,
                 decoration: BoxDecoration(
@@ -358,9 +357,9 @@ class _ComprasPageState extends State<ComprasPageVinosC> {
                 ),
               ),
               bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(45),
+                preferredSize: const Size.fromHeight(40),
                 child: Padding(
-                  padding: const EdgeInsets.only(bottom: 15.0),
+                  padding: const EdgeInsets.only(bottom: 10.0),
                   child: CategoriaSelectorVinos(
                     onCategoriaSelected: (categoria) {
                       selectedCategoria = categoria;
@@ -379,7 +378,7 @@ class _ComprasPageState extends State<ComprasPageVinosC> {
                 child: Center(
                   child: Padding(
                     padding: const EdgeInsets.only(top: 20),
-                    child: LoadingAnimationWidget.staggeredDotsWave(
+                    child: LoadingAnimationWidget.horizontalRotatingDots(
                       color: const Color(0xFFA30000),
                       size: 40,
                     ),
@@ -664,7 +663,7 @@ class _ComprasPageState extends State<ComprasPageVinosC> {
                 child: Center(
                   child: Padding(
                     padding: const EdgeInsets.only(top: 10),
-                    child: LoadingAnimationWidget.staggeredDotsWave(
+                    child: LoadingAnimationWidget.horizontalRotatingDots(
                       color: const Color(0xFFA30000),
                       size: 40,
                     ),

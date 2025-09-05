@@ -155,7 +155,7 @@ class _ContactochatVinosState extends State<ContactochatVinos> {
             if (perfilEmpresaUrl != null)
               CircleAvatar(
                 radius: 16,
-                backgroundImage: AssetImage('assets/images/logo.png'),
+                backgroundImage: AssetImage('assets/images/logo1.png'),
                 backgroundColor: Colors.transparent,
               ),
             const SizedBox(width: 10),
@@ -164,7 +164,7 @@ class _ContactochatVinosState extends State<ContactochatVinos> {
                 child: Text(
                   'La Casita del Pisco',
                   style: theme.textTheme.titleMedium?.copyWith(
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: theme.textTheme.bodyLarge?.color,
                   ),
@@ -202,7 +202,7 @@ class _ContactochatVinosState extends State<ContactochatVinos> {
                 theme: DefaultChatTheme(
                   inputBackgroundColor: const Color.fromARGB(255, 15, 116, 89),
                   primaryColor: const Color(0xFF142143),
-                  secondaryColor: const Color(0xFFFFAF00),
+                  secondaryColor: const Color(0xFFA30000),
                   backgroundColor: theme.scaffoldBackgroundColor,
                   messageInsetsVertical: 6,
                   messageInsetsHorizontal: 10,
@@ -235,7 +235,7 @@ class _ContactochatVinosState extends State<ContactochatVinos> {
                         ),
                         decoration: BoxDecoration(
                           color: isMe
-                              ? const Color.fromARGB(255, 240, 164, 0)
+                              ? const Color(0xFFA30000)
                               : const Color.fromARGB(255, 0, 0, 0),
                           borderRadius: BorderRadius.only(
                             topLeft: const Radius.circular(10),
@@ -309,8 +309,7 @@ class _ContactochatVinosState extends State<ContactochatVinos> {
                 maxLines: null,
                 minLines: 1,
                 style: TextStyle(
-                  fontFamily: 'Afacad',
-                  fontSize: 17,
+                  fontSize: 15,
                   color: theme.colorScheme.onBackground,
                 ),
                 decoration: InputDecoration(

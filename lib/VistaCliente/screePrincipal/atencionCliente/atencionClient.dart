@@ -97,8 +97,6 @@ class _AtencionClienteScreenState extends State<AtencionClienteScreenVinos> {
                 ),
               ),
               const SizedBox(height: 20),
-
-              // Opciones rápidas
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -107,8 +105,6 @@ class _AtencionClienteScreenState extends State<AtencionClienteScreenVinos> {
                 ],
               ),
               const SizedBox(height: 25),
-
-              // Dropdown motivos
               DropdownButtonFormField<String>(
                 initialValue: _motivoSeleccionado,
                 decoration: InputDecoration(
@@ -157,8 +153,6 @@ class _AtencionClienteScreenState extends State<AtencionClienteScreenVinos> {
                 },
               ),
               const SizedBox(height: 20),
-
-              // Campo mensaje
               CustomTextField(
                 controller: _mensajeController,
                 hintText: 'Escribe tu mensaje aquí...',
@@ -168,8 +162,6 @@ class _AtencionClienteScreenState extends State<AtencionClienteScreenVinos> {
                 showCounter: true,
               ),
               const SizedBox(height: 20),
-
-              // Campo correo opcional
               CustomTextField(
                 controller: _correoController,
                 hintText: 'ejemplo@correo.com',
@@ -246,12 +238,9 @@ class _AtencionClienteScreenState extends State<AtencionClienteScreenVinos> {
               .doc(chatId)
               .snapshots(),
           builder: (context, snapshot) {
-            // Mientras carga
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const SizedBox.shrink();
             }
-
-            // Si existe el chat, mostramos el botón
             if (snapshot.hasData && snapshot.data!.exists) {
               return FloatingActionButton(
                 backgroundColor: const Color(0xFFA30000),
@@ -263,11 +252,13 @@ class _AtencionClienteScreenState extends State<AtencionClienteScreenVinos> {
                     ),
                   );
                 },
-                child: const Icon(Iconsax.message),
+                child: const Icon(
+                  Iconsax.message,
+                  color: Color.fromARGB(255, 255, 255, 255),
+                ),
               );
             }
 
-            // Si no existe chat → no se muestra nada
             return const SizedBox.shrink();
           },
         ),
@@ -280,7 +271,9 @@ class _AtencionClienteScreenState extends State<AtencionClienteScreenVinos> {
       children: [
         Container(
           decoration: BoxDecoration(
-            color: isDark ? Colors.grey.shade900 : Colors.grey.shade100,
+            color: isDark
+                ? const Color.fromARGB(255, 167, 167, 167)
+                : Colors.grey.shade100,
             shape: BoxShape.circle,
             border: Border.all(color: const Color(0xFFA30000), width: 1.2),
           ),

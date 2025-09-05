@@ -140,9 +140,9 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                                             return child;
                                                           return Center(
                                                             child:
-                                                                LoadingAnimationWidget.staggeredDotsWave(
+                                                                LoadingAnimationWidget.horizontalRotatingDots(
                                                                   color: Color(
-                                                                    0xFFFFAF00,
+                                                                    0xFFA30000,
                                                                   ),
                                                                   size: 50,
                                                                 ),
@@ -176,7 +176,7 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                       controller: _pageController,
                                       count: imagenes.length,
                                       effect: ScaleEffect(
-                                        activeDotColor: Color(0xFFFFAF00),
+                                        activeDotColor: Color(0xFFA30000),
                                         dotColor: Colors.grey.shade400,
                                         dotHeight: 8,
                                         dotWidth: 8,
@@ -417,7 +417,7 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                       Text(
                                         "Danos tu opinión",
                                         style: TextStyle(
-                                          fontSize: 22,
+                                          fontSize: 20,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
@@ -521,7 +521,7 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                                           context,
                                                         ).brightness ==
                                                         Brightness.dark
-                                                    ? const Color(0xFF2C2C2C)
+                                                    ? const Color(0xFFA30000)
                                                     : Colors.black,
                                                 foregroundColor: Colors.white,
                                                 shape: RoundedRectangleBorder(
@@ -531,7 +531,7 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                               ),
                                               child: const Text(
                                                 "Enviar comentario",
-                                                style: TextStyle(fontSize: 18),
+                                                style: TextStyle(fontSize: 16),
                                               ),
                                             ),
                                           ),
@@ -542,7 +542,7 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                         "Valoracion y comentarios",
                                         style: theme.textTheme.titleMedium
                                             ?.copyWith(
-                                              fontSize: 22,
+                                              fontSize: 20,
                                               fontWeight: FontWeight.bold,
                                               color: theme
                                                   .textTheme
@@ -556,7 +556,7 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                         "Lee lo que otros usuarios opinan sobre este producto. Sus experiencias pueden ayudarte a decidir mejor tu compra.",
                                         style: theme.textTheme.titleMedium
                                             ?.copyWith(
-                                              fontSize: 13,
+                                              fontSize: 12,
                                               height: 1.4,
                                               color: theme
                                                   .textTheme
@@ -578,8 +578,8 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                     if (!snapshot.hasData) {
                                       return Center(
                                         child:
-                                            LoadingAnimationWidget.staggeredDotsWave(
-                                              color: Color(0xFFFFAF00),
+                                            LoadingAnimationWidget.horizontalRotatingDots(
+                                              color: Color(0xFFA30000),
                                               size: 50,
                                             ),
                                       );
@@ -657,7 +657,7 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                                     Row(
                                                       children: [
                                                         CircleAvatar(
-                                                          radius: 18,
+                                                          radius: 14,
                                                           backgroundImage:
                                                               profileImageUrl !=
                                                                   null
@@ -684,14 +684,14 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .w600,
-                                                                  fontSize: 14,
+                                                                  fontSize: 12,
                                                                 ),
                                                           ),
                                                         ),
                                                         Text(
                                                           fechaFormateada,
                                                           style: TextStyle(
-                                                            fontSize: 12,
+                                                            fontSize: 10,
                                                             color: Colors
                                                                 .grey[500],
                                                           ),
@@ -711,13 +711,13 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                                             color: Colors.amber,
                                                           ),
                                                       itemCount: 5,
-                                                      itemSize: 22,
+                                                      itemSize: 16,
                                                     ),
                                                     const SizedBox(height: 10),
                                                     Text(
                                                       comentario,
                                                       style: const TextStyle(
-                                                        fontSize: 16,
+                                                        fontSize: 14,
                                                         height: 1.4,
                                                       ),
                                                     ),
