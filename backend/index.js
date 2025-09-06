@@ -28,26 +28,20 @@ const app = express();
 app.use(cors());
   
 // 🔹 Ruta GET para que Mercado Pago pueda probar la URL
-app.get("/webhook/mercadopago", (req, res) => {
-  console.log("🔍 Prueba de Mercado Pago recibida:", req.query);
-  res.status(200).send("OK");
-});
-
-// 🔹 Ruta real para recibir notificaciones de pago
 app.post("/webhook/mercadopago", express.raw({ type: "*/*" }), (req, res) => {
   try {
     const signature = req.headers["x-signature"];
     const requestId = req.headers["x-request-id"];
     const url = new URL(req.protocol + "://" + req.get("host") + req.originalUrl);
-    const dataId = url.searchParams.get("data.id");
     const secret = process.env.MP_WEBHOOK_SECRET;
 
     console.log("🔔 Webhook recibido. Headers:", req.headers);
     console.log("🔔 Query:", url.searchParams.toString());
     console.log("🔔 Body:", req.body.toString());
 
-    res.sendStatus(200); 
-    if (!signature || !requestId || !dataId || !secret) {
+    res.sendStatus(200); // responder rápido
+
+    if (!signature || !requestId || !secret) {
       console.warn("⚠️ No se pudo validar firma");
       return;
     }
@@ -59,11 +53,10 @@ app.post("/webhook/mercadopago", express.raw({ type: "*/*" }), (req, res) => {
       return;
     }
 
+    const dataId = url.searchParams.get("data.id") || JSON.parse(req.body.toString())?.data?.id;
+
     const manifest = `id:${dataId};request-id:${requestId};ts:${ts};`;
-    const computedHmac = crypto
-      .createHmac("sha256", secret)
-      .update(manifest)
-      .digest("hex");
+    const computedHmac = crypto.createHmac("sha256", secret).update(manifest).digest("hex");
 
     if (computedHmac !== v1) {
       console.warn("⚠️ Firma inválida");
@@ -71,20 +64,19 @@ app.post("/webhook/mercadopago", express.raw({ type: "*/*" }), (req, res) => {
     }
 
     const event = JSON.parse(req.body.toString());
-    if (event.type === "payment") {
-      console.log(`✅ Pago confirmado: ${event.data.id}`);
-      // TODO: Guardar en tu base de datos
+    if (event.type === "payment" || event.action === "payment.updated") {
+      console.log(`✅ Pago confirmado/actualizado: ${event.data.id}`);
+      // TODO: Guardar en base de datos usando event.data.id y external_reference
     }
   } catch (error) {
     console.error("❌ Error procesando webhook:", error);
   }
 });
-
 app.post("/ipn/mercadopago", async (req, res) => {
   try {
     const { topic, id } = req.query;
 
-    // Responder rápido a Mercado Pago
+    // Responder rápido
     res.sendStatus(200);
 
     if (topic === "payment" && id) {
@@ -92,12 +84,12 @@ app.post("/ipn/mercadopago", async (req, res) => {
       const payment = await paymentClient.get({ id }).catch(err => null);
 
       if (!payment) {
-        console.warn(`⚠️ Payment no encontrado para id: ${id}`);
+        console.warn(`⚠️ Payment no encontrado para id: ${id}. Revisa si es sandbox o producción.`);
         return;
       }
 
       console.log(`✅ Pago confirmado (IPN): ${payment.id}`);
-      // TODO: Guardar en base de datos
+      // TODO: Guardar en DB con external_reference para correlacionar con tu pedido
     }
   } catch (err) {
     console.error("❌ Error procesando IPN:", err);
