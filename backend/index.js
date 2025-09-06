@@ -1,4 +1,3 @@
-
 import express from "express";
 import cors from "cors";
 import mercadopagoPkg from "mercadopago";
@@ -81,6 +80,42 @@ app.post("/webhook/mercadopago", express.raw({ type: "*/*" }), (req, res) => {
   }
 });
 
+// 🔹 Endpoint IPN de Mercado Pago
+app.post("/ipn/mercadopago", express.json(), express.urlencoded({ extended: true }), async (req, res) => {
+  try {
+    // Recibir datos de body o query para pruebas
+    const body = Object.keys(req.body).length ? req.body : req.query;
+    console.log("📥 IPN recibido:", body);
+
+    const topic = body.topic;
+    const id = body.id;
+    if (!topic || !id) return res.status(400).send("Faltan parámetros");
+
+    if (topic === "payment") {
+      // Obtener información del pago
+      const payment = await paymentClient.get({ id });
+      console.log("✅ Pago IPN:", {
+        id: payment.id,
+        status: payment.status,
+        status_detail: payment.status_detail,
+        amount: payment.transaction_amount,
+      });
+      // TODO: Guardar en base de datos
+    }
+
+    if (topic === "merchant_order") {
+      // Obtener información de la orden
+      const order = await mercadopagoPkg.merchant_orders.get(id);
+      console.log("✅ Orden IPN:", order);
+      // TODO: Guardar en base de datos
+    }
+
+    res.status(200).send("IPN recibido");
+  } catch (error) {
+    console.error("❌ Error procesando IPN:", error);
+    res.status(500).send("Error procesando IPN");
+  }
+});
 
 
 // 🔹 AHORA ponemos express.json() para el resto de endpoints
