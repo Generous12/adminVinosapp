@@ -5,7 +5,7 @@ import crypto from "crypto";
 
 const { MercadoPagoConfig, Preference, Payment } = mercadopagoPkg;
 
-// 🔹 Credenciales Mercado Pago (producción) desde variables de entorno
+// 🔹 Credenciales Mercado Pago desde variables de entorno
 const MP_CLIENT_ID = process.env.MP_CLIENT_ID;
 const MP_CLIENT_SECRET = process.env.MP_CLIENT_SECRET;
 const MP_REDIRECT_URI =
@@ -26,63 +26,70 @@ const paymentClient = new Payment(client);
 
 const app = express();
 app.use(cors());
-  
-// 🔹 Ruta GET para que Mercado Pago pueda probar la URL
+
+// 🔹 Ruta GET para pruebas de Mercado Pago
 app.get("/webhook/mercadopago", (req, res) => {
   console.log("🔍 Prueba de Mercado Pago recibida:", req.query);
   res.status(200).send("OK");
 });
 
-// 🔹 Ruta real para recibir notificaciones de pago
+// 🔹 Ruta POST para recibir notificaciones de pago reales (IPN)
 app.post("/webhook/mercadopago", express.raw({ type: "*/*" }), (req, res) => {
   try {
     const signature = req.headers["x-signature"];
     const requestId = req.headers["x-request-id"];
-    const url = new URL(req.protocol + "://" + req.get("host") + req.originalUrl);
-    const dataId = url.searchParams.get("data.id");
     const secret = process.env.MP_WEBHOOK_SECRET;
 
     console.log("🔔 Webhook recibido. Headers:", req.headers);
-    console.log("🔔 Query:", url.searchParams.toString());
     console.log("🔔 Body:", req.body.toString());
 
-    res.sendStatus(200); 
-    if (!signature || !requestId || !dataId || !secret) {
-      console.warn("⚠️ No se pudo validar firma");
+    // Responder rápido al webhook
+    res.sendStatus(200);
+
+    if (!signature || !requestId || !secret) {
+      console.warn("⚠️ No se pudo validar firma: faltan datos");
       return;
     }
 
+    // Parsear el body y obtener dataId desde el body
+    const event = JSON.parse(req.body.toString());
+    const dataId = event.data?.id;
+
+    if (!dataId) {
+      console.warn("⚠️ data.id no encontrado en el body");
+      return;
+    }
+
+    // Extraer ts y v1 del header
     const ts = signature.split(",").find((s) => s.includes("ts"))?.split("=")[1];
     const v1 = signature.split(",").find((s) => s.includes("v1"))?.split("=")[1];
+
     if (!ts || !v1) {
       console.warn("⚠️ Falta ts o v1");
       return;
     }
 
+    // Validar HMAC
     const manifest = `id:${dataId};request-id:${requestId};ts:${ts};`;
-    const computedHmac = crypto
-      .createHmac("sha256", secret)
-      .update(manifest)
-      .digest("hex");
+    const computedHmac = crypto.createHmac("sha256", secret).update(manifest).digest("hex");
 
     if (computedHmac !== v1) {
       console.warn("⚠️ Firma inválida");
       return;
     }
 
-    const event = JSON.parse(req.body.toString());
+    console.log("✅ Firma válida para el pago:", dataId);
+
     if (event.type === "payment") {
-      console.log(`✅ Pago confirmado: ${event.data.id}`);
-      // TODO: Guardar en tu base de datos
+      console.log(`💰 Pago confirmado: ${dataId}`);
+      // TODO: Guardar en tu base de datos si deseas
     }
   } catch (error) {
     console.error("❌ Error procesando webhook:", error);
   }
 });
 
-
-
-// 🔹 AHORA ponemos express.json() para el resto de endpoints
+// 🔹 Ahora ponemos express.json() para el resto de endpoints
 app.use(express.json());
 
 // 🔹 Crear preferencia
@@ -101,9 +108,9 @@ app.post("/crear-preferencia", async (req, res) => {
       },
       auto_return: "approved",
       payment_methods: {
-          installments: 1,
+        installments: 1,
       },
-       notification_url: "https://adminvinosapp-production.up.railway.app/webhook/mercadopago",
+      notification_url: "https://adminvinosapp-production.up.railway.app/webhook/mercadopago",
     };
 
     console.log("📦 Items enviados a Mercado Pago:", items);
