@@ -87,11 +87,18 @@ app.post("/webhook/mercadopago", express.raw({ type: "*/*" }), (req, res) => {
 app.post("/ipn/mercadopago", async (req, res) => {
   try {
     const { topic, id } = req.query;
-    res.sendStatus(200);
+    res.sendStatus(200); // siempre responder primero
 
     if (topic === "payment" && id) {
-      const payment = await paymentClient.get({ id });
-      console.log(`✅ Pago confirmado (IPN): ${payment.id}`);
+      // 1️⃣ Obtener la notificación desde Mercado Pago
+      const notification = await client.get(`/v1/payments/${id}`).catch(err => null);
+
+      if (!notification) {
+        console.warn(`⚠️ Payment not found para notification id: ${id}`);
+        return;
+      }
+
+      console.log(`✅ Pago confirmado (IPN): ${notification.body.id}`);
       // TODO: Guardar en base de datos
     }
   } catch (err) {
