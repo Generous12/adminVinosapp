@@ -84,7 +84,29 @@ app.post("/webhook/mercadopago", express.raw({ type: "*/*" }), (req, res) => {
   }
 });
 
+app.post("/ipn/mercadopago", async (req, res) => {
+  try {
+    const { topic, id } = req.query;
 
+    // Responder rápido a Mercado Pago
+    res.sendStatus(200);
+
+    if (topic === "payment" && id) {
+      // Consultar el pago real usando la API
+      const payment = await paymentClient.get({ id }).catch(err => null);
+
+      if (!payment) {
+        console.warn(`⚠️ Payment no encontrado para id: ${id}`);
+        return;
+      }
+
+      console.log(`✅ Pago confirmado (IPN): ${payment.id}`);
+      // TODO: Guardar en base de datos
+    }
+  } catch (err) {
+    console.error("❌ Error procesando IPN:", err);
+  }
+});
 
 // 🔹 AHORA ponemos express.json() para el resto de endpoints
 app.use(express.json());
