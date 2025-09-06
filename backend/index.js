@@ -26,6 +26,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// 🔹 URLs públicas de Railway
+const WEBHOOK_URL = "https://adminvinosapp-production.up.railway.app/webhook/mercadopago";
+const IPN_URL = "https://adminvinosapp-production.up.railway.app/ipn/mercadopago";
+
 // 🔹 Ruta GET para pruebas de Mercado Pago
 app.get("/webhook/mercadopago", (req, res) => {
   console.log("🔍 Prueba de Mercado Pago recibida:", req.query);
@@ -47,7 +51,6 @@ app.post("/webhook/mercadopago", express.raw({ type: "*/*" }), (req, res) => {
     res.sendStatus(200);
 
     if (signature && requestId && dataId) {
-      // Validar firma
       const ts = signature.split(",").find(s => s.includes("ts"))?.split("=")[1];
       const v1 = signature.split(",").find(s => s.includes("v1"))?.split("=")[1];
 
@@ -65,10 +68,15 @@ app.post("/webhook/mercadopago", express.raw({ type: "*/*" }), (req, res) => {
       }
     }
 
-    const event = JSON.parse(req.body.toString());
-    if (event.type === "payment") {
-      console.log(`✅ Pago confirmado (Webhook moderno): ${event.data.id}`);
-      // TODO: Guardar en base de datos
+    // Solo parsea JSON si el body no está vacío
+    if (req.body && req.body.length) {
+      const event = JSON.parse(req.body.toString());
+      if (event.type === "payment") {
+        console.log(`✅ Pago confirmado (Webhook moderno): ${event.data.id}`);
+        // TODO: Guardar en base de datos
+      }
+    } else {
+      console.log("⚠️ Webhook recibido con body vacío (IPN o prueba)");
     }
   } catch (error) {
     console.error("❌ Error procesando Webhook:", error);
@@ -115,13 +123,13 @@ app.post("/crear-preferencia", async (req, res) => {
     const preferenceData = {
       items,
       back_urls: {
-        success: "https://tusitio.com/success", // Reemplaza por URL real y accesible
+        success: "https://tusitio.com/success",
         failure: "https://tusitio.com/failure",
         pending: "https://tusitio.com/pending",
       },
       auto_return: "approved",
       payment_methods: { installments: 1 },
-      notification_url: "https://adminvinosapp-production.up.railway.app/webhook/mercadopago",
+      notification_url: WEBHOOK_URL,
     };
 
     console.log("📦 Items enviados a Mercado Pago:", items);
