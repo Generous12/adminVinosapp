@@ -13,18 +13,15 @@ const MP_REDIRECT_URI =
   "https://adminvinosapp-production.up.railway.app/webhook";
 
 const ACCESS_TOKEN = process.env.MP_ACCESS_TOKEN?.trim();
+const SECRET = process.env.MP_WEBHOOK_SECRET?.trim();
+
 if (!ACCESS_TOKEN) {
-  console.error(
-    "❌ ERROR: La variable MP_ACCESS_TOKEN no está definida o es vacía."
-  );
+  console.error("❌ ERROR: La variable MP_ACCESS_TOKEN no está definida o es vacía.");
   process.exit(1);
 }
 
-const SECRET = process.env.MP_WEBHOOK_SECRET;
 if (!SECRET) {
-  console.error(
-    "❌ ERROR: La variable MP_WEBHOOK_SECRET no está definida."
-  );
+  console.error("❌ ERROR: La variable MP_WEBHOOK_SECRET no está definida.");
   process.exit(1);
 }
 
@@ -37,14 +34,14 @@ const paymentClient = new Payment(client);
 const app = express();
 app.use(cors());
 
-// 🔹 GET para pruebas de Mercado Pago (no valida firma)
+// 🔹 Ruta GET para pruebas de Mercado Pago
 app.get("/webhook/mercadopago", (req, res) => {
   console.log("🔍 Prueba de Mercado Pago recibida:", req.query);
   res.status(200).send("OK");
 });
 
-// 🔹 POST para recibir notificaciones reales (IPN)
-app.post("/webhook/mercadopago", express.raw({ type: "*/*" }), (req, res) => {
+// 🔹 Ruta POST separada para IPN y validación de firma
+app.post("/ipn/mercadopago", express.raw({ type: "*/*" }), (req, res) => {
   try {
     const signature = req.headers["x-signature"];
     const requestId = req.headers["x-request-id"];
@@ -53,12 +50,11 @@ app.post("/webhook/mercadopago", express.raw({ type: "*/*" }), (req, res) => {
     res.sendStatus(200);
 
     if (!signature || !requestId) {
-      console.warn(
-        "⚠️ No se pudo validar firma: faltan headers"
-      );
+      console.warn("⚠️ No se pudo validar firma: faltan headers");
       return;
     }
 
+    // Parsear el body de la notificación
     const event = JSON.parse(req.body.toString());
     const dataId = event.data?.id;
 
@@ -67,6 +63,7 @@ app.post("/webhook/mercadopago", express.raw({ type: "*/*" }), (req, res) => {
       return;
     }
 
+    // Extraer ts y v1 del header
     const ts = signature.split(",").find((s) => s.includes("ts"))?.split("=")[1];
     const v1 = signature.split(",").find((s) => s.includes("v1"))?.split("=")[1];
 
@@ -75,11 +72,9 @@ app.post("/webhook/mercadopago", express.raw({ type: "*/*" }), (req, res) => {
       return;
     }
 
+    // Validar HMAC
     const manifest = `id:${dataId};request-id:${requestId};ts:${ts};`;
-    const computedHmac = crypto
-      .createHmac("sha256", SECRET)
-      .update(manifest)
-      .digest("hex");
+    const computedHmac = crypto.createHmac("sha256", SECRET).update(manifest).digest("hex");
 
     if (computedHmac !== v1) {
       console.warn("⚠️ Firma inválida");
@@ -90,10 +85,10 @@ app.post("/webhook/mercadopago", express.raw({ type: "*/*" }), (req, res) => {
 
     if (event.type === "payment") {
       console.log(`💰 Pago confirmado: ${dataId}`);
-      // TODO: Guardar en base de datos si deseas
+      // TODO: Guardar en tu base de datos si deseas
     }
   } catch (error) {
-    console.error("❌ Error procesando webhook:", error);
+    console.error("❌ Error procesando IPN:", error);
   }
 });
 
@@ -116,8 +111,7 @@ app.post("/crear-preferencia", async (req, res) => {
       },
       auto_return: "approved",
       payment_methods: { installments: 1 },
-      notification_url:
-        "https://adminvinosapp-production.up.railway.app/webhook/mercadopago",
+      notification_url: "https://adminvinosapp-production.up.railway.app/ipn/mercadopago",
     };
 
     console.log("📦 Items enviados a Mercado Pago:", items);
