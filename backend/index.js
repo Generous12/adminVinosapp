@@ -30,7 +30,7 @@ app.post("/ipn/mercadopago", express.urlencoded({ extended: false }), async (req
     const { id, topic } = req.query;
     console.log("📩 IPN recibido:", req.query);
 
-    res.sendStatus(200); // siempre responde rápido a MP
+    res.sendStatus(200); // responde rápido a MP
 
     if (!id || !topic) {
       console.warn("⚠️ IPN sin id o topic");
@@ -38,7 +38,7 @@ app.post("/ipn/mercadopago", express.urlencoded({ extended: false }), async (req
     }
 
     if (topic === "payment") {
-      // 🔹 Consultar pago
+      // 🔹 Consultar pago directo
       try {
         const pago = await paymentClient.get({ id });
         console.log("✅ Pago recibido:", pago.id, pago.status);
@@ -63,17 +63,28 @@ app.post("/ipn/mercadopago", express.urlencoded({ extended: false }), async (req
       console.log("✅ Merchant Order recibida:", order.id, order.status);
 
       if (order.payments && order.payments.length > 0) {
-        console.log("💰 Pagos asociados:");
-        order.payments.forEach((p) => {
+        console.log("💰 Pagos asociados a la orden:");
+        for (const p of order.payments) {
           console.log(`   - PaymentID: ${p.id}, Status: ${p.status}, Amount: ${p.total_paid_amount}`);
-        });
+
+          // 🔹 Consultar detalles del pago asociado
+          try {
+            const pago = await paymentClient.get({ id: p.id });
+            console.log(`   ✅ Detalle Payment ${p.id}: status=${pago.status}, detail=${pago.status_detail}`);
+            // TODO: Guardar en BD
+          } catch (e) {
+            console.warn(`⚠️ No se pudo consultar PaymentID ${p.id}`);
+          }
+        }
+      } else {
+        console.log("⚠️ La orden no tiene pagos asociados aún");
       }
-      // TODO: Guardar en BD
     }
   } catch (err) {
     console.error("❌ Error procesando IPN:", err);
   }
 });
+
 
 
 
