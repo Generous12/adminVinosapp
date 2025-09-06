@@ -14,11 +14,21 @@ const MP_REDIRECT_URI =
 
 const ACCESS_TOKEN = process.env.MP_ACCESS_TOKEN?.trim();
 if (!ACCESS_TOKEN) {
-  console.error("❌ ERROR: La variable MP_ACCESS_TOKEN no está definida o es vacía.");
+  console.error(
+    "❌ ERROR: La variable MP_ACCESS_TOKEN no está definida o es vacía."
+  );
   process.exit(1);
 }
 
-console.log("✅ MP_ACCESS_TOKEN cargado correctamente");
+const SECRET = process.env.MP_WEBHOOK_SECRET;
+if (!SECRET) {
+  console.error(
+    "❌ ERROR: La variable MP_WEBHOOK_SECRET no está definida."
+  );
+  process.exit(1);
+}
+
+console.log("✅ MP_ACCESS_TOKEN y MP_WEBHOOK_SECRET cargados correctamente");
 
 const client = new MercadoPagoConfig({ accessToken: ACCESS_TOKEN });
 const preferenceClient = new Preference(client);
@@ -27,31 +37,28 @@ const paymentClient = new Payment(client);
 const app = express();
 app.use(cors());
 
-// 🔹 Ruta GET para pruebas de Mercado Pago
+// 🔹 GET para pruebas de Mercado Pago (no valida firma)
 app.get("/webhook/mercadopago", (req, res) => {
   console.log("🔍 Prueba de Mercado Pago recibida:", req.query);
   res.status(200).send("OK");
 });
 
-// 🔹 Ruta POST para recibir notificaciones de pago reales (IPN)
+// 🔹 POST para recibir notificaciones reales (IPN)
 app.post("/webhook/mercadopago", express.raw({ type: "*/*" }), (req, res) => {
   try {
     const signature = req.headers["x-signature"];
     const requestId = req.headers["x-request-id"];
-    const secret = process.env.MP_WEBHOOK_SECRET;
-
-    console.log("🔔 Webhook recibido. Headers:", req.headers);
-    console.log("🔔 Body:", req.body.toString());
 
     // Responder rápido al webhook
     res.sendStatus(200);
 
-    if (!signature || !requestId || !secret) {
-      console.warn("⚠️ No se pudo validar firma: faltan datos");
+    if (!signature || !requestId) {
+      console.warn(
+        "⚠️ No se pudo validar firma: faltan headers"
+      );
       return;
     }
 
-    // Parsear el body y obtener dataId desde el body
     const event = JSON.parse(req.body.toString());
     const dataId = event.data?.id;
 
@@ -60,18 +67,19 @@ app.post("/webhook/mercadopago", express.raw({ type: "*/*" }), (req, res) => {
       return;
     }
 
-    // Extraer ts y v1 del header
     const ts = signature.split(",").find((s) => s.includes("ts"))?.split("=")[1];
     const v1 = signature.split(",").find((s) => s.includes("v1"))?.split("=")[1];
 
     if (!ts || !v1) {
-      console.warn("⚠️ Falta ts o v1");
+      console.warn("⚠️ Falta ts o v1 en la firma");
       return;
     }
 
-    // Validar HMAC
     const manifest = `id:${dataId};request-id:${requestId};ts:${ts};`;
-    const computedHmac = crypto.createHmac("sha256", secret).update(manifest).digest("hex");
+    const computedHmac = crypto
+      .createHmac("sha256", SECRET)
+      .update(manifest)
+      .digest("hex");
 
     if (computedHmac !== v1) {
       console.warn("⚠️ Firma inválida");
@@ -82,7 +90,7 @@ app.post("/webhook/mercadopago", express.raw({ type: "*/*" }), (req, res) => {
 
     if (event.type === "payment") {
       console.log(`💰 Pago confirmado: ${dataId}`);
-      // TODO: Guardar en tu base de datos si deseas
+      // TODO: Guardar en base de datos si deseas
     }
   } catch (error) {
     console.error("❌ Error procesando webhook:", error);
@@ -107,10 +115,9 @@ app.post("/crear-preferencia", async (req, res) => {
         pending: "https://tusitio.com/pending",
       },
       auto_return: "approved",
-      payment_methods: {
-        installments: 1,
-      },
-      notification_url: "https://adminvinosapp-production.up.railway.app/webhook/mercadopago",
+      payment_methods: { installments: 1 },
+      notification_url:
+        "https://adminvinosapp-production.up.railway.app/webhook/mercadopago",
     };
 
     console.log("📦 Items enviados a Mercado Pago:", items);
@@ -132,7 +139,7 @@ app.post("/crear-preferencia", async (req, res) => {
   }
 });
 
-// 🔹 Verificar pago
+// 🔹 Verificar pago o preferencia
 app.get("/verificar/:id", async (req, res) => {
   const { id } = req.params;
   if (!id) return res.status(400).json({ error: "ID requerido" });
