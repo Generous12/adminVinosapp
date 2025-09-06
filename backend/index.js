@@ -80,6 +80,42 @@ app.post("/webhook/mercadopago", express.raw({ type: "*/*" }), (req, res) => {
   }
 });
 
+// 🔹 Ruta para recibir notificaciones tipo IPN de Mercado Pago
+app.post("/ipn/mercadopago", express.json(), async (req, res) => {
+  try {
+    // Responder rápido a Mercado Pago
+    res.sendStatus(200);
+
+    // Los IPN llegan con query params: topic y id
+    const { topic, id } = req.query;
+
+    if (!topic || !id) {
+      console.warn("⚠️ IPN recibido sin topic o id");
+      return;
+    }
+
+    // Solo nos interesa topic=payment
+    if (topic === "payment") {
+      // Consultar el pago real usando la API de Mercado Pago
+      const payment = await paymentClient.get({ id }).catch((err) => null);
+
+      if (!payment) {
+        console.warn(`⚠️ Payment no encontrado para id: ${id}. Revisa si estás usando sandbox o producción.`);
+        return;
+      }
+
+      console.log(`✅ Pago confirmado (IPN): ${payment.id}`);
+      console.log("📌 Status:", payment.status, "-", payment.status_detail);
+      console.log("💳 Monto:", payment.transaction_amount, payment.currency_id);
+      console.log("🧾 Referencia externa:", payment.external_reference);
+
+      // TODO: Guardar en tu base de datos
+      // Puedes usar payment.external_reference para correlacionarlo con tu pedido
+    }
+  } catch (err) {
+    console.error("❌ Error procesando IPN:", err);
+  }
+});
 
 
 // 🔹 AHORA ponemos express.json() para el resto de endpoints
