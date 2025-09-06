@@ -1,3 +1,4 @@
+
 import express from "express";
 import cors from "cors";
 import mercadopagoPkg from "mercadopago";
@@ -26,14 +27,14 @@ const paymentClient = new Payment(client);
 
 const app = express();
 app.use(cors());
-
-// 🔹 Ruta GET de prueba para Webhook
+  
+// 🔹 Ruta GET para que Mercado Pago pueda probar la URL
 app.get("/webhook/mercadopago", (req, res) => {
-  console.log("🔍 Prueba de Webhook recibida:", req.query);
+  console.log("🔍 Prueba de Mercado Pago recibida:", req.query);
   res.status(200).send("OK");
 });
 
-// 🔹 Ruta POST real para Webhook
+// 🔹 Ruta real para recibir notificaciones de pago
 app.post("/webhook/mercadopago", express.raw({ type: "*/*" }), (req, res) => {
   try {
     const signature = req.headers["x-signature"];
@@ -72,50 +73,14 @@ app.post("/webhook/mercadopago", express.raw({ type: "*/*" }), (req, res) => {
 
     const event = JSON.parse(req.body.toString());
     if (event.type === "payment") {
-      console.log(`✅ Pago confirmado Webhook: ${event.data.id}`);
+      console.log(`✅ Pago confirmado: ${event.data.id}`);
       // TODO: Guardar en tu base de datos
     }
   } catch (error) {
-    console.error("❌ Error procesando Webhook:", error);
+    console.error("❌ Error procesando webhook:", error);
   }
 });
 
-// 🔹 Endpoint IPN de Mercado Pago
-app.post(
-  "/ipn/mercadopago",
-  express.json(),
-  express.urlencoded({ extended: true }),
-  async (req, res) => {
-    try {
-      const body = Object.keys(req.body).length ? req.body : req.query;
-      console.log("📥 IPN recibido:", body);
-
-      const topic = body.topic;
-      const id = body.id;
-      if (!topic || !id) return res.status(400).send("Faltan parámetros");
-
-      if (topic === "payment") {
-        const payment = await paymentClient.get({ id });
-        console.log("✅ Pago IPN:", {
-          id: payment.id,
-          status: payment.status,
-          status_detail: payment.status_detail,
-          amount: payment.transaction_amount,
-        });
-      }
-
-      if (topic === "merchant_order") {
-        const order = await mercadopagoPkg.merchant_orders.get(id);
-        console.log("✅ Orden IPN:", order);
-      }
-
-      res.status(200).send("IPN recibido");
-    } catch (error) {
-      console.error("❌ Error procesando IPN:", error);
-      res.status(500).send("Error procesando IPN");
-    }
-  }
-);
 
 
 // 🔹 AHORA ponemos express.json() para el resto de endpoints
@@ -137,9 +102,9 @@ app.post("/crear-preferencia", async (req, res) => {
       },
       auto_return: "approved",
       payment_methods: {
-        installments: 1,
+          installments: 1,
       },
-      notification_url: "https://adminvinosapp-production.up.railway.app/ipn/mercadopago",
+       notification_url: "https://adminvinosapp-production.up.railway.app/webhook/mercadopago",
     };
 
     console.log("📦 Items enviados a Mercado Pago:", items);
