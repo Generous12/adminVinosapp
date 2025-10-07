@@ -709,7 +709,6 @@ class _PublicacionesPageState extends State<PublicacionesPage> {
                                               ),
                                             ),
                                           ),
-                                          // Indicador de imagen seleccionada
                                           if (isSelected)
                                             const Positioned(
                                               top: 6,
@@ -725,7 +724,6 @@ class _PublicacionesPageState extends State<PublicacionesPage> {
                                                 size: 20,
                                               ),
                                             ),
-                                          // Botón eliminar
                                           Positioned(
                                             top: 6,
                                             left: 6,
@@ -763,7 +761,6 @@ class _PublicacionesPageState extends State<PublicacionesPage> {
                                         ],
                                       );
                                     } else {
-                                      // Botón agregar imagen
                                       return GestureDetector(
                                         onTap: _selectImageSource,
                                         child: Container(

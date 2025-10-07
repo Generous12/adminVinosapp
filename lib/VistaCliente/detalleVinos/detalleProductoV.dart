@@ -76,21 +76,21 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
     final double precioFinal = hayDescuento
         ? precioOriginal * (1 - descuento / 100)
         : precioOriginal;
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-        setState(() {
-          _mostrarBoton = false;
-        });
-      },
-      behavior: HitTestBehavior.translucent,
-      child: Scaffold(
-        appBar: ProductoAppBar(
-          nombreProducto: widget.producto['nombreProducto'] ?? 'Sin nombre',
-          ratingWidget: ratingResumen(widget.producto['id']),
-        ),
-        body: SafeArea(
-          child: Stack(
+    return SafeArea(
+      child: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+          setState(() {
+            _mostrarBoton = false;
+          });
+        },
+        behavior: HitTestBehavior.translucent,
+        child: Scaffold(
+          appBar: ProductoAppBar(
+            nombreProducto: widget.producto['nombreProducto'] ?? 'Sin nombre',
+            ratingWidget: ratingResumen(widget.producto['id']),
+          ),
+          body: Stack(
             children: [
               SingleChildScrollView(
                 child: Container(

@@ -24,9 +24,9 @@ class _MainScreenClienteState extends State<MainScreenVinosClientes> {
   Widget build(BuildContext context) {
     final isPerfilPage = _selectedIndex == 3;
 
-    return Scaffold(
-      body: SafeArea(
-        child: NotificationListener<ScrollNotification>(
+    return SafeArea(
+      child: Scaffold(
+        body: NotificationListener<ScrollNotification>(
           onNotification: (scrollNotification) {
             if (!isPerfilPage && scrollNotification is UserScrollNotification) {
               final direction = scrollNotification.direction;
@@ -52,19 +52,20 @@ class _MainScreenClienteState extends State<MainScreenVinosClientes> {
             ),
           ),
         ),
-      ),
-      bottomNavigationBar: SafeArea(
-        child: CustomBottomNavBarCliente(
-          currentIndex: _selectedIndex,
-          user: widget.user,
-          onTap: (index) {
-            setState(() {
-              _selectedIndex = index;
-              if (index == 3) {
-                _showBottomBar = true;
-              }
-            });
-          },
+
+        bottomNavigationBar: SafeArea(
+          child: CustomBottomNavBarCliente(
+            currentIndex: _selectedIndex,
+            user: widget.user,
+            onTap: (index) {
+              setState(() {
+                _selectedIndex = index;
+                if (index == 3) {
+                  _showBottomBar = true;
+                }
+              });
+            },
+          ),
         ),
       ),
     );

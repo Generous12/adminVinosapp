@@ -97,8 +97,6 @@ class _LoadingOverlayButtonState extends State<LoadingOverlayButton> {
   }
 }
 
-//botones anchos:
-
 class MenuOption {
   final String title;
   final String? description;
