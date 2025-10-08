@@ -125,166 +125,171 @@ class _PasswordScreenState extends State<PasswordScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: AppBar(
+    return SafeArea(
+      child: Scaffold(
         backgroundColor: theme.scaffoldBackgroundColor,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        centerTitle: true,
-        surfaceTintColor: Colors.transparent,
-        leading: IconButton(
-          icon: Icon(
-            Iconsax.arrow_left,
-            color: theme.iconTheme.color,
-            size: 25,
+        appBar: AppBar(
+          backgroundColor: theme.scaffoldBackgroundColor,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          centerTitle: true,
+          surfaceTintColor: Colors.transparent,
+          leading: IconButton(
+            icon: Icon(
+              Iconsax.arrow_left,
+              color: theme.iconTheme.color,
+              size: 25,
+            ),
+            onPressed: () {
+              FocusScope.of(context).unfocus();
+              Navigator.pop(context);
+            },
           ),
-          onPressed: () {
-            FocusScope.of(context).unfocus();
-            Navigator.pop(context);
-          },
-        ),
-        title: Text(
-          'Contraseña',
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontSize: 20,
-            color: theme.textTheme.bodyLarge?.color,
+          title: Text(
+            'Contraseña',
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontSize: 20,
+              color: theme.textTheme.bodyLarge?.color,
+            ),
           ),
         ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Correo Electrónico',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontSize: 14,
-                    color: theme.textTheme.bodyLarge?.color,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8.0),
-              TextField(
-                controller: TextEditingController(text: widget.email),
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontSize: 16,
-                  color: theme.textTheme.bodyLarge?.color,
-                ),
-                readOnly: true,
-                decoration: InputDecoration(
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: const Color.fromARGB(255, 30, 30, 30),
-                      width: 0.0,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10.0),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Nombre de usuario',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontSize: 14,
-                    color: theme.textTheme.bodyLarge?.color,
-                  ),
-                ),
-              ),
-              TextField(
-                controller: TextEditingController(text: widget.username),
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontSize: 16,
-                  color: theme.textTheme.bodyLarge?.color,
-                ),
-                readOnly: true,
-                decoration: InputDecoration(
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: const Color.fromARGB(255, 30, 30, 30),
-                      width: 0.0,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10.0),
-              const SizedBox(height: 8.0),
-              CustomTextField(
-                controller: passwordController,
-                label: "Ingrese una contraseña",
-                prefixIcon: Iconsax.lock,
-                obscureText: true,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Checkbox(value: hasMinLength, onChanged: null),
-                      Text('Min 8 caracteres', style: TextStyle()),
-                      const SizedBox(width: 12),
-                      Checkbox(value: hasLowercase, onChanged: null),
-                      Text('Una minúscula', style: TextStyle()),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Checkbox(value: hasUppercase, onChanged: null),
-                      Text('Una mayúscula', style: TextStyle()),
-                      const SizedBox(width: 20),
-                      Checkbox(value: hasNumber, onChanged: null),
-                      Text('Un número', style: TextStyle()),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10.0),
-              const SizedBox(height: 8.0),
-              CustomTextField(
-                controller: repeatPasswordController,
-                label: "Repita la contraseña",
-                prefixIcon: Iconsax.lock5,
-                obscureText: true,
-              ),
-              if (repeatPasswordController.text.isNotEmpty) ...[
-                const SizedBox(height: 8.0),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: [
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    arePasswordsEqual
-                        ? 'Las contraseñas son idénticas'
-                        : 'Las contraseñas no coinciden',
-                    style: TextStyle(
-                      color: arePasswordsEqual
-                          ? const Color.fromARGB(255, 0, 0, 0)
-                          : const Color.fromARGB(255, 255, 17, 0),
-                      fontSize: 12.0,
+                    'Correo Electrónico',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontSize: 14,
+                      color: theme.textTheme.bodyLarge?.color,
                     ),
                   ),
                 ),
-              ],
-              const SizedBox(height: 28.0),
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  LoadingOverlayButton(
-                    text: 'Verificar correo',
-                    onPressedLogic: () async {
-                      FocusScope.of(context).unfocus();
-                      await Future.delayed(Duration(milliseconds: 500));
-                      signUpWithEmail(context);
-                    },
+                const SizedBox(height: 8.0),
+                TextField(
+                  controller: TextEditingController(text: widget.email),
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontSize: 16,
+                    color: theme.textTheme.bodyLarge?.color,
+                  ),
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: const Color.fromARGB(255, 30, 30, 30),
+                        width: 0.0,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10.0),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Nombre de usuario',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontSize: 14,
+                      color: theme.textTheme.bodyLarge?.color,
+                    ),
+                  ),
+                ),
+                TextField(
+                  controller: TextEditingController(text: widget.username),
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontSize: 16,
+                    color: theme.textTheme.bodyLarge?.color,
+                  ),
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: const Color.fromARGB(255, 30, 30, 30),
+                        width: 0.0,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10.0),
+                const SizedBox(height: 8.0),
+                CustomTextField(
+                  controller: passwordController,
+                  label: "Ingrese una contraseña",
+                  prefixIcon: Iconsax.lock,
+                  obscureText: true,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Checkbox(value: hasMinLength, onChanged: null),
+                        Text(
+                          'Min 8 caracteres',
+                          style: TextStyle(fontSize: 12),
+                        ),
+                        const SizedBox(width: 12),
+                        Checkbox(value: hasLowercase, onChanged: null),
+                        Text('Una minúscula', style: TextStyle(fontSize: 12)),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Checkbox(value: hasUppercase, onChanged: null),
+                        Text('Una mayúscula', style: TextStyle(fontSize: 12)),
+                        const SizedBox(width: 20),
+                        Checkbox(value: hasNumber, onChanged: null),
+                        Text('Un número', style: TextStyle(fontSize: 12)),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10.0),
+                const SizedBox(height: 8.0),
+                CustomTextField(
+                  controller: repeatPasswordController,
+                  label: "Repita la contraseña",
+                  prefixIcon: Iconsax.lock5,
+                  obscureText: true,
+                ),
+                if (repeatPasswordController.text.isNotEmpty) ...[
+                  const SizedBox(height: 8.0),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      arePasswordsEqual
+                          ? 'Las contraseñas son idénticas'
+                          : 'Las contraseñas no coinciden',
+                      style: TextStyle(
+                        color: arePasswordsEqual
+                            ? const Color.fromARGB(255, 0, 0, 0)
+                            : const Color.fromARGB(255, 255, 17, 0),
+                        fontSize: 12.0,
+                      ),
+                    ),
                   ),
                 ],
-              ),
-              const SizedBox(height: 5.0),
-            ],
+                const SizedBox(height: 28.0),
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    LoadingOverlayButton(
+                      text: 'Verificar correo',
+                      onPressedLogic: () async {
+                        FocusScope.of(context).unfocus();
+                        await Future.delayed(Duration(milliseconds: 500));
+                        signUpWithEmail(context);
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 5.0),
+              ],
+            ),
           ),
         ),
       ),

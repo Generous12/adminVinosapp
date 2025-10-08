@@ -9,8 +9,7 @@ import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 
 class ReelsScreen extends StatefulWidget {
-  final bool isVisible; // 👈 Nuevo: saber si está visible
-
+  final bool isVisible;
   const ReelsScreen({Key? key, required this.isVisible}) : super(key: key);
 
   @override
@@ -135,11 +134,10 @@ class _VideoTileState extends State<VideoTile> {
     super.initState();
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
-        statusBarColor: Colors.black, // Barra superior negra
-        statusBarIconBrightness: Brightness.light, // Iconos de arriba blancos
-        systemNavigationBarColor: Colors.black, // Barra inferior negra
-        systemNavigationBarIconBrightness:
-            Brightness.light, // Iconos de abajo blancos
+        statusBarColor: Colors.black,
+        statusBarIconBrightness: Brightness.light,
+        systemNavigationBarColor: Colors.black,
+        systemNavigationBarIconBrightness: Brightness.light,
       ),
     );
     _controller = VideoPlayerController.network(widget.videoUrl)

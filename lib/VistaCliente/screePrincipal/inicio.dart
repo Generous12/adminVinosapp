@@ -172,9 +172,6 @@ class _InicioState extends State<InicioVinosC> {
                 }
 
                 final publicacion = _publicaciones[index];
-                // ignore: unused_local_variable
-                final empresaData = publicacion['empresa'];
-
                 final publicacionId = publicacion['docRef'].id;
                 final _leDioLike = _publicacionesConLike.contains(
                   publicacionId,

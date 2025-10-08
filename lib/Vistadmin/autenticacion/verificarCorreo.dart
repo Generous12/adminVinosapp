@@ -203,153 +203,137 @@ class _VerificarCorreoPageState extends State<VerificarCorreoPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 248, 248, 248),
-        elevation: 0, // Sin sombra para evitar cambios de tonalidad
-        scrolledUnderElevation:
-            0, // Importante en versiones recientes de Flutter
-        surfaceTintColor:
-            Colors.transparent, // Evita cualquier efecto dinámico de color
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new),
-          onPressed: () {
-            _deleteUnverifiedUser();
-            Navigator.pop(context);
-          },
-        ),
-      ),
-      backgroundColor: const Color.fromARGB(255, 248, 248, 248),
-      body: Center(
-        child: Container(
-          height:
-              MediaQuery.of(context).size.height *
-              0.8, // El 80% del tamaño de la pantalla
-          width: double.infinity,
-          margin: const EdgeInsets.symmetric(
-            horizontal: 17.0,
-            vertical: 20.0,
-          ), // Márgenes solo a los lados
-          padding: const EdgeInsets.all(24.0),
-          decoration: BoxDecoration(
-            color: const Color(0xFFFFC800), // Fondo amarillo
-            borderRadius: BorderRadius.circular(
-              20.0,
-            ), // Bordes redondeados para el doblez
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2), // Sombra suave
-                blurRadius: 10.0, // Desenfoque de la sombra
-                offset: Offset(5, 5), // Desplazamiento de la sombra
-              ),
-            ],
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: const Color.fromARGB(255, 248, 248, 248),
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          surfaceTintColor: Colors.transparent,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios_new),
+            onPressed: () {
+              _deleteUnverifiedUser();
+              Navigator.pop(context);
+            },
           ),
-          child: Column(
-            mainAxisAlignment:
-                MainAxisAlignment.center, // Centra los elementos verticalmente
-            crossAxisAlignment: CrossAxisAlignment
-                .center, // Centra los elementos horizontalmente
-            children: [
-              // Icono de email
-              Icon(Icons.email_outlined, size: 90, color: Colors.black),
-              SizedBox(height: 20),
-              Text(
-                'Hemos enviado un correo de verificación a tu email. Por favor, revisa tu bandeja de entrada y confirma tu cuenta.',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18, color: Colors.black),
-              ),
-              SizedBox(height: 30),
-              ElevatedButton(
-                onPressed: _isChecking ? null : _checkIfEmailVerified,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  minimumSize: const Size(double.infinity, 50.0),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50.0),
-                  ),
+        ),
+        backgroundColor: const Color.fromARGB(255, 248, 248, 248),
+        body: Center(
+          child: Container(
+            height: MediaQuery.of(context).size.height * 0.8,
+            width: double.infinity,
+            margin: const EdgeInsets.symmetric(
+              horizontal: 17.0,
+              vertical: 20.0,
+            ),
+            padding: const EdgeInsets.all(24.0),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFC800),
+              borderRadius: BorderRadius.circular(20.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 10.0,
+                  offset: Offset(5, 5),
                 ),
-                child: _isChecking
+              ],
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(Icons.email_outlined, size: 90, color: Colors.black),
+                SizedBox(height: 20),
+                Text(
+                  'Hemos enviado un correo de verificación a tu email. Por favor, revisa tu bandeja de entrada y confirma tu cuenta.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 18, color: Colors.black),
+                ),
+                SizedBox(height: 30),
+                ElevatedButton(
+                  onPressed: _isChecking ? null : _checkIfEmailVerified,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    minimumSize: const Size(double.infinity, 50.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50.0),
+                    ),
+                  ),
+                  child: _isChecking
+                      ? SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            color: const Color.fromARGB(255, 0, 0, 0),
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : Text(
+                          'Correo confirmado',
+                          style: TextStyle(fontSize: 18, color: Colors.white),
+                        ),
+                ),
+                SizedBox(height: 20),
+                _isResending
                     ? SizedBox(
-                        height: 20,
-                        width: 20,
+                        width: 24,
+                        height: 24,
                         child: CircularProgressIndicator(
                           color: const Color.fromARGB(255, 0, 0, 0),
                           strokeWidth: 2,
                         ),
                       )
-                    : Text(
-                        'Correo confirmado',
-                        style: TextStyle(fontSize: 18, color: Colors.white),
-                      ),
-              ),
-              SizedBox(height: 20),
-              _isResending
-                  ? SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        color: const Color.fromARGB(255, 0, 0, 0),
-                        strokeWidth: 2,
-                      ),
-                    )
-                  : GestureDetector(
-                      onTap: _canResend ? _resendVerificationEmail : null,
-                      child: Text(
-                        _canResend
-                            ? 'Reenviar código'
-                            : 'Reenviar código (${_secondsRemaining}s)',
-                        style: TextStyle(
-                          color: _canResend ? Colors.black : Colors.grey,
-                          fontSize: 20,
-                          decoration: TextDecoration.underline,
+                    : GestureDetector(
+                        onTap: _canResend ? _resendVerificationEmail : null,
+                        child: Text(
+                          _canResend
+                              ? 'Reenviar código'
+                              : 'Reenviar código (${_secondsRemaining}s)',
+                          style: TextStyle(
+                            color: _canResend ? Colors.black : Colors.grey,
+                            fontSize: 20,
+                            decoration: TextDecoration.underline,
+                          ),
                         ),
                       ),
-                    ),
-              SizedBox(height: 30),
-              TextButton.icon(
-                onPressed: () {
-                  _deleteUnverifiedUser();
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    PageRouteBuilder(
-                      pageBuilder: (context, animation, secondaryAnimation) =>
-                          SplashScreen(),
-                      transitionsBuilder:
-                          (context, animation, secondaryAnimation, child) {
-                            return FadeTransition(
-                              opacity: animation.drive(
-                                Tween(
-                                  begin: 0.0,
-                                  end: 1.0,
-                                ).chain(CurveTween(curve: Curves.easeIn)),
-                              ),
-                              child: child,
-                            );
-                          },
-                      transitionDuration: Duration(milliseconds: 500),
-                    ),
-                    (route) =>
-                        false, // 🔒 Borra todo el historial de navegación
-                  );
-                },
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: const Color.fromARGB(
-                    255,
-                    0,
-                    0,
-                    0,
-                  ), // Cambia el color del icono a amarillo
+                SizedBox(height: 30),
+                TextButton.icon(
+                  onPressed: () {
+                    _deleteUnverifiedUser();
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            SplashScreen(),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                              return FadeTransition(
+                                opacity: animation.drive(
+                                  Tween(
+                                    begin: 0.0,
+                                    end: 1.0,
+                                  ).chain(CurveTween(curve: Curves.easeIn)),
+                                ),
+                                child: child,
+                              );
+                            },
+                        transitionDuration: Duration(milliseconds: 500),
+                      ),
+                      (route) => false,
+                    );
+                  },
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: const Color.fromARGB(255, 0, 0, 0),
+                  ),
+                  label: Text(
+                    'Volver al login',
+                    style: TextStyle(color: Colors.black, fontSize: 18),
+                  ),
                 ),
-                label: Text(
-                  'Volver al login',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18,
-                  ), // Tamaño de la fuente ajustado
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

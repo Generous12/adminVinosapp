@@ -19,11 +19,10 @@ class _SplashPageState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Stack(
+    return SafeArea(
+      child: Scaffold(
+        body: Stack(
           children: [
-            // Fondo degradado
             Positioned.fill(
               child: Container(
                 decoration: const BoxDecoration(
