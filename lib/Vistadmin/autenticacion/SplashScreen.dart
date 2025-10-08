@@ -37,7 +37,6 @@ class _SplashPageState extends State<SplashScreen> {
                 ),
               ),
             ),
-
             Align(
               alignment: Alignment.topCenter,
               child: Padding(
@@ -55,7 +54,6 @@ class _SplashPageState extends State<SplashScreen> {
                 ),
               ),
             ),
-
             Positioned(
               bottom: 30,
               left: 0,

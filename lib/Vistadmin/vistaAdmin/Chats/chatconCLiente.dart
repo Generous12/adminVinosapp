@@ -43,7 +43,6 @@ class _ContactoEmpresaScreenState extends State<ContactoEmpresaScreen> {
 
   Future<void> _inicializarChat() async {
     setState(() => _isLoading = true);
-    // Obtener chat existente con el cliente
     _chatId = await ChatServiceEmpresaVinos.obtenerChatConCliente(
       widget.userIdVisitante,
     );
@@ -55,7 +54,6 @@ class _ContactoEmpresaScreenState extends State<ContactoEmpresaScreen> {
       return;
     }
 
-    // Escuchar mensajes
     ChatServiceEmpresaVinos.escucharMensajes(_chatId!).listen((mensajes) {
       if (!mounted) return;
       setState(() {
@@ -101,6 +99,7 @@ class _ContactoEmpresaScreenState extends State<ContactoEmpresaScreen> {
         backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         titleSpacing: 0,
+        scrolledUnderElevation: 0,
         toolbarHeight: 48,
         foregroundColor: Colors.black,
         leading: IconButton(
