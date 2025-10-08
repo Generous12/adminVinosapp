@@ -22,64 +22,66 @@ class VerBoletaScreen extends StatelessWidget {
         : const Color.fromARGB(255, 237, 237, 237);
     final pdfViewerBgColor = isDarkMode ? Colors.black : Colors.white;
 
-    return Scaffold(
-      backgroundColor: backgroundColor,
-      appBar: AppBar(
+    return SafeArea(
+      child: Scaffold(
         backgroundColor: backgroundColor,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        surfaceTintColor: Colors.transparent,
-        toolbarHeight: 40,
-        automaticallyImplyLeading: false,
-        titleSpacing: 12,
-        leading: IconButton(
-          icon: Icon(Iconsax.arrow_left, color: iconColor, size: 25),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        iconTheme: IconThemeData(color: iconColor),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.share, color: iconColor),
-            onPressed: () async {
-              try {
-                final file = File(filePath);
-                if (await file.exists()) {
-                  await Share.shareXFiles([
-                    XFile(file.path),
-                  ], text: 'Te envío esta boleta PDF 📄');
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Archivo no encontrado')),
-                  );
-                }
-              } catch (e) {
-                print('Error al compartir archivo: $e');
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('No se pudo compartir el archivo'),
-                  ),
-                );
-              }
+        appBar: AppBar(
+          backgroundColor: backgroundColor,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          surfaceTintColor: Colors.transparent,
+          toolbarHeight: 40,
+          automaticallyImplyLeading: false,
+          titleSpacing: 12,
+          leading: IconButton(
+            icon: Icon(Iconsax.arrow_left, color: iconColor, size: 25),
+            onPressed: () {
+              Navigator.pop(context);
             },
           ),
-        ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1.0),
-          child: Container(height: 1.0, color: borderColor),
-        ),
-      ),
-      body: Container(
-        color: backgroundColor,
-        width: double.infinity,
-        height: double.infinity,
-        child: SfPdfViewerTheme(
-          data: SfPdfViewerThemeData(
-            progressBarColor: const Color.fromARGB(255, 255, 174, 0),
-            backgroundColor: pdfViewerBgColor,
+          iconTheme: IconThemeData(color: iconColor),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.share, color: iconColor),
+              onPressed: () async {
+                try {
+                  final file = File(filePath);
+                  if (await file.exists()) {
+                    await Share.shareXFiles([
+                      XFile(file.path),
+                    ], text: 'Te envío esta boleta PDF 📄');
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Archivo no encontrado')),
+                    );
+                  }
+                } catch (e) {
+                  print('Error al compartir archivo: $e');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('No se pudo compartir el archivo'),
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(1.0),
+            child: Container(height: 1.0, color: borderColor),
           ),
-          child: SfPdfViewer.file(File(filePath)),
+        ),
+        body: Container(
+          color: backgroundColor,
+          width: double.infinity,
+          height: double.infinity,
+          child: SfPdfViewerTheme(
+            data: SfPdfViewerThemeData(
+              progressBarColor: const Color.fromARGB(255, 255, 174, 0),
+              backgroundColor: pdfViewerBgColor,
+            ),
+            child: SfPdfViewer.file(File(filePath)),
+          ),
         ),
       ),
     );

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
@@ -179,17 +180,11 @@ class PDFGeneratorBoleta {
         : DateTime.tryParse(fechaRaw.toString()) ?? DateTime.now();
     final dateString = DateFormat('dd/MM/yyyy - hh:mm a').format(fecha);
 
-    // Cargar imagen de perfil de la empresa
-    pw.ImageProvider? perfilEmpresaImage;
-    final perfilUrl = data['perfilEmpresa'];
-    if (perfilUrl != null && perfilUrl.toString().isNotEmpty) {
-      try {
-        final response = await http.get(Uri.parse(perfilUrl));
-        if (response.statusCode == 200) {
-          perfilEmpresaImage = pw.MemoryImage(response.bodyBytes);
-        }
-      } catch (_) {}
-    }
+    // Cargar imagen de perfil de la empresa (LOCAL)
+    final bytes = await rootBundle.load('assets/images/logo.png');
+    final pw.ImageProvider perfilEmpresaImage = pw.MemoryImage(
+      bytes.buffer.asUint8List(),
+    );
 
     // Preparar productos con imagen
     final productosConImagen = await Future.wait(
@@ -239,14 +234,14 @@ class PDFGeneratorBoleta {
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
                       children: [
                         pw.Text(
-                          data['nombre'] ?? 'Nombre de la Empresa',
+                          data['nombre'] ?? 'La Casita del Pisco',
                           style: pw.TextStyle(
                             fontSize: 16,
                             fontWeight: pw.FontWeight.bold,
                           ),
                         ),
                         pw.Text(
-                          data['ruc'] ?? 'Ruc de la empresa',
+                          data['ruc'] ?? '1245678912',
                           style: pw.TextStyle(fontSize: 14),
                         ),
                         pw.Text(
