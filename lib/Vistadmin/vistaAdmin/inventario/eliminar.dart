@@ -61,9 +61,9 @@ class _EliminarPageProductoState extends State<EliminarPageProducto> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final theme = Theme.of(context);
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
+    return SafeArea(
+      child: Scaffold(
+        body: Column(
           children: [
             PreferredSize(
               preferredSize: const Size.fromHeight(50),
@@ -73,14 +73,12 @@ class _EliminarPageProductoState extends State<EliminarPageProducto> {
                   vertical: 10,
                 ),
                 alignment: Alignment.bottomLeft,
-
                 child: Row(
                   children: [
                     IconButton(
                       icon: const Icon(Iconsax.arrow_left),
                       onPressed: () => Navigator.pop(context),
                     ),
-
                     const SizedBox(width: 8),
                     Expanded(
                       child: _isSearching
@@ -265,11 +263,10 @@ class _EliminarPageProductoState extends State<EliminarPageProducto> {
                                 ),
                                 IconButton(
                                   icon: const Icon(
-                                    Icons.delete,
+                                    Iconsax.trash, // 👈 Usa un icono válido
                                     size: 20,
                                     color: Colors.red,
                                   ),
-
                                   onPressed: () =>
                                       showCustomDialog(
                                         context: context,
@@ -281,8 +278,7 @@ class _EliminarPageProductoState extends State<EliminarPageProducto> {
                                         confirmButtonColor: Colors.red,
                                         cancelButtonColor: Colors.blue,
                                       ).then((confirmed) async {
-                                        if (confirmed != null && confirmed) {
-                                          // Llamamos al método async fuera de setState
+                                        if (confirmed == true) {
                                           await _eliminarProductoFromMap(
                                             producto,
                                           );

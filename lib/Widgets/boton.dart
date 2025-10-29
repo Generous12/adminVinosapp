@@ -4,11 +4,10 @@ class LoadingOverlayButton extends StatefulWidget {
   final Future<void> Function() onPressedLogic;
   final String text;
   final IconData? icon;
-
   final Color? backgroundColor;
   final Color? textColor;
   final Color? foregroundColor;
-  final Color? color; // <-- nuevo parámetro opcional
+  final Color? color;
 
   const LoadingOverlayButton({
     Key? key,
@@ -75,7 +74,7 @@ class _LoadingOverlayButtonState extends State<LoadingOverlayButton> {
                   ],
                   Text(
                     widget.text,
-                    style: TextStyle(fontSize: 16.7, color: textColor),
+                    style: TextStyle(fontSize: 20, color: textColor),
                   ),
                 ],
               ),
@@ -271,8 +270,6 @@ class _FullWidthMenuTileState extends State<FullWidthMenuTile> {
   }
 }
 
-//otor diseño de boton chevere:
-
 class FullWidthActionButton extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
@@ -329,7 +326,7 @@ class FullWidthActionButton extends StatelessWidget {
                     Text(
                       subtitle,
                       style: TextStyle(
-                        fontSize: 10,
+                        fontSize: 12,
                         color: isDark ? Colors.white70 : Colors.black54,
                       ),
                     ),

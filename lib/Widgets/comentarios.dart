@@ -48,8 +48,7 @@ class _ComentariosScreenState extends State<ComentariosScreen> {
 
     showMaterialModalBottomSheet(
       context: context,
-      backgroundColor:
-          Colors.transparent, // lo ponemos transparente para usar SafeArea
+      backgroundColor: Colors.transparent,
       builder: (context) => SafeArea(
         child: Container(
           padding: const EdgeInsets.all(20),
@@ -228,7 +227,6 @@ class _ComentariosScreenState extends State<ComentariosScreen> {
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  // Avatar del usuario
                                   CircleAvatar(
                                     radius: 22,
                                     backgroundImage: profileImageUrl != null
@@ -244,7 +242,6 @@ class _ComentariosScreenState extends State<ComentariosScreen> {
                                         : null,
                                   ),
                                   const SizedBox(width: 12),
-                                  // Contenedor del comentario
                                   Expanded(
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(
@@ -261,7 +258,6 @@ class _ComentariosScreenState extends State<ComentariosScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          // Header: username + tiempo
                                           Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
@@ -293,7 +289,6 @@ class _ComentariosScreenState extends State<ComentariosScreen> {
                                             ],
                                           ),
                                           const SizedBox(height: 6),
-                                          // Texto del comentario
                                           Text(
                                             data['texto'],
                                             style: TextStyle(
@@ -305,7 +300,6 @@ class _ComentariosScreenState extends State<ComentariosScreen> {
                                             ),
                                           ),
                                           const SizedBox(height: 8),
-                                          // Acción de me gusta
                                           Row(
                                             children: [
                                               IconButton(
@@ -316,11 +310,8 @@ class _ComentariosScreenState extends State<ComentariosScreen> {
                                                       ? Colors.white70
                                                       : Colors.black54,
                                                 ),
-                                                onPressed: () {
-                                                  // Acción de Me gusta
-                                                },
+                                                onPressed: () {},
                                               ),
-                                              // Aquí puedes agregar otros botones como responder o compartir
                                             ],
                                           ),
                                         ],

@@ -111,7 +111,6 @@ class _PublicacionesPageState extends State<PublicacionesPage> {
           body: SafeArea(
             child: Stack(
               children: [
-                // 💫 FILTRO DIFUSO (esto desenfoca lo anterior)
                 Positioned.fill(
                   child: BackdropFilter(
                     filter: ui.ImageFilter.blur(sigmaX: 20.0, sigmaY: 20.0),
@@ -448,142 +447,144 @@ class _PublicacionesPageState extends State<PublicacionesPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return WillPopScope(
-      onWillPop: () async {
-        if (_isLoading) {
-          return false;
-        }
-        final hayDescripcion = _descripcionController.text.trim().isNotEmpty;
-        final hayImagenPrincipal = _mainImage != null;
-        final hayImagenesSeleccionadas = _selectedImages.isNotEmpty;
+    return SafeArea(
+      child: WillPopScope(
+        onWillPop: () async {
+          if (_isLoading) {
+            return false;
+          }
+          final hayDescripcion = _descripcionController.text.trim().isNotEmpty;
+          final hayImagenPrincipal = _mainImage != null;
+          final hayImagenesSeleccionadas = _selectedImages.isNotEmpty;
 
-        if (hayDescripcion || hayImagenPrincipal || hayImagenesSeleccionadas) {
-          bool? result = await showCustomDialog(
-            context: context,
-            title: 'Aviso',
-            message: '¿Estás seguro? Si sales ahora, perderás tu progreso.',
-            confirmButtonText: 'Sí, salir',
-            cancelButtonText: 'No',
-            confirmButtonColor: Colors.red,
-            cancelButtonColor: const Color.fromARGB(255, 0, 0, 0),
-          );
+          if (hayDescripcion ||
+              hayImagenPrincipal ||
+              hayImagenesSeleccionadas) {
+            bool? result = await showCustomDialog(
+              context: context,
+              title: 'Aviso',
+              message: '¿Estás seguro? Si sales ahora, perderás tu progreso.',
+              confirmButtonText: 'Sí, salir',
+              cancelButtonText: 'No',
+              confirmButtonColor: Colors.red,
+              cancelButtonColor: const Color.fromARGB(255, 0, 0, 0),
+            );
 
-          if (result == true) {
-            if (mounted) {
-              FocusScope.of(context).unfocus();
-              Navigator.pop(context);
+            if (result == true) {
+              if (mounted) {
+                FocusScope.of(context).unfocus();
+                Navigator.pop(context);
+              }
             }
+
+            return false;
           }
 
-          return false;
-        }
-
-        return true;
-      },
-      child: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
+          return true;
         },
-        behavior: HitTestBehavior.translucent,
-        child: Scaffold(
-          backgroundColor: theme.scaffoldBackgroundColor,
-          appBar: AppBar(
+        child: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          behavior: HitTestBehavior.translucent,
+          child: Scaffold(
             backgroundColor: theme.scaffoldBackgroundColor,
-            elevation: 0,
-            scrolledUnderElevation: 0,
-            surfaceTintColor: Colors.transparent,
-            leading: IconButton(
-              icon: Icon(
-                Iconsax.arrow_left,
-                size: 24,
-                color: theme.iconTheme.color,
-              ),
-              onPressed: () async {
-                if (!_isLoading) {
-                  final hayDescripcion = _descripcionController.text
-                      .trim()
-                      .isNotEmpty;
-                  final hayImagenPrincipal = _mainImage != null;
-                  final hayImagenesSeleccionadas = _selectedImages.isNotEmpty;
+            appBar: AppBar(
+              backgroundColor: theme.scaffoldBackgroundColor,
+              elevation: 0,
+              scrolledUnderElevation: 0,
+              surfaceTintColor: Colors.transparent,
+              leading: IconButton(
+                icon: Icon(
+                  Iconsax.arrow_left,
+                  size: 24,
+                  color: theme.iconTheme.color,
+                ),
+                onPressed: () async {
+                  if (!_isLoading) {
+                    final hayDescripcion = _descripcionController.text
+                        .trim()
+                        .isNotEmpty;
+                    final hayImagenPrincipal = _mainImage != null;
+                    final hayImagenesSeleccionadas = _selectedImages.isNotEmpty;
 
-                  if (hayDescripcion ||
-                      hayImagenPrincipal ||
-                      hayImagenesSeleccionadas) {
-                    bool? result = await showCustomDialog(
-                      context: context,
-                      title: 'Aviso',
-                      message:
-                          '¿Estás seguro? Si sales ahora, perderás tu progreso.',
-                      confirmButtonText: 'Sí, salir',
-                      cancelButtonText: 'No',
-                      confirmButtonColor: Colors.red,
-                      cancelButtonColor: const Color.fromARGB(255, 0, 0, 0),
-                    );
+                    if (hayDescripcion ||
+                        hayImagenPrincipal ||
+                        hayImagenesSeleccionadas) {
+                      bool? result = await showCustomDialog(
+                        context: context,
+                        title: 'Aviso',
+                        message:
+                            '¿Estás seguro? Si sales ahora, perderás tu progreso.',
+                        confirmButtonText: 'Sí, salir',
+                        cancelButtonText: 'No',
+                        confirmButtonColor: Colors.red,
+                        cancelButtonColor: const Color.fromARGB(255, 0, 0, 0),
+                      );
 
-                    if (result == true) {
-                      if (mounted) {
-                        FocusScope.of(context).unfocus();
-                        Navigator.pop(context);
+                      if (result == true) {
+                        if (mounted) {
+                          FocusScope.of(context).unfocus();
+                          Navigator.pop(context);
+                        }
                       }
+                    } else {
+                      FocusScope.of(context).unfocus();
+                      Navigator.pop(context);
                     }
-                  } else {
-                    FocusScope.of(context).unfocus();
-                    Navigator.pop(context);
-                  }
-                }
-              },
-            ),
-            title: Text('Publicaciones', style: TextStyle(fontSize: 18)),
-            actions: [
-              ElevatedButton(
-                onPressed: () {
-                  if (_descripcionController.text.isEmpty) {
-                    showCustomDialog(
-                      context: context,
-                      title: 'Campos vacios',
-                      message: 'Cajas de texto vacias',
-                      confirmButtonText: 'Cerrar',
-                    );
-                  } else {
-                    _uploadPublicationImages(_user!.uid);
                   }
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: _isLoading
-                      ? const Color.fromARGB(255, 185, 185, 185)
-                      : const ui.Color(0xFFA30000),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+              ),
+              title: Text('Publicaciones', style: TextStyle(fontSize: 18)),
+              actions: [
+                ElevatedButton(
+                  onPressed: () {
+                    if (_descripcionController.text.isEmpty) {
+                      showCustomDialog(
+                        context: context,
+                        title: 'Campos vacios',
+                        message: 'Cajas de texto vacias',
+                        confirmButtonText: 'Cerrar',
+                      );
+                    } else {
+                      _uploadPublicationImages(_user!.uid);
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _isLoading
+                        ? const Color.fromARGB(255, 185, 185, 185)
+                        : const ui.Color(0xFFA30000),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 30,
+                      vertical: 8,
+                    ),
                   ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 30,
-                    vertical: 8,
-                  ),
-                ),
-                child: _isLoading
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Color.fromARGB(255, 115, 115, 115),
+                  child: _isLoading
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Color.fromARGB(255, 115, 115, 115),
+                            ),
+                          ),
+                        )
+                      : Text(
+                          'Publicar',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: const ui.Color.fromARGB(255, 255, 255, 255),
                           ),
                         ),
-                      )
-                    : Text(
-                        'Publicar',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: const ui.Color.fromARGB(255, 255, 255, 255),
-                        ),
-                      ),
-              ),
-            ],
-          ),
-          body: SafeArea(
-            child: Stack(
+                ),
+              ],
+            ),
+            body: Stack(
               children: [
                 SingleChildScrollView(
                   child: Padding(

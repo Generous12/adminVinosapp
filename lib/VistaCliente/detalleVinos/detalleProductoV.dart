@@ -86,10 +86,6 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
         },
         behavior: HitTestBehavior.translucent,
         child: Scaffold(
-          appBar: ProductoAppBar(
-            nombreProducto: widget.producto['nombreProducto'] ?? 'Sin nombre',
-            ratingWidget: ratingResumen(widget.producto['id']),
-          ),
           body: Stack(
             children: [
               SingleChildScrollView(
@@ -112,6 +108,7 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                               child: Stack(
                                 alignment: Alignment.bottomCenter,
                                 children: [
+                                  // --- Imagen del producto ---
                                   imagenes.isNotEmpty
                                       ? PageView.builder(
                                           controller: _pageController,
@@ -121,7 +118,6 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                           },
                                           itemBuilder: (context, index) {
                                             final imageUrl = imagenes[index];
-
                                             return imageUrl
                                                     .toString()
                                                     .isNotEmpty
@@ -139,13 +135,13 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                                               null)
                                                             return child;
                                                           return Center(
-                                                            child:
-                                                                LoadingAnimationWidget.horizontalRotatingDots(
-                                                                  color: Color(
+                                                            child: LoadingAnimationWidget.horizontalRotatingDots(
+                                                              color:
+                                                                  const Color(
                                                                     0xFFA30000,
                                                                   ),
-                                                                  size: 50,
-                                                                ),
+                                                              size: 50,
+                                                            ),
                                                           );
                                                         },
                                                     errorBuilder:
@@ -170,18 +166,50 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                           },
                                         )
                                       : Container(color: Colors.grey[300]),
+
                                   Positioned(
                                     bottom: 12,
                                     child: SmoothPageIndicator(
                                       controller: _pageController,
                                       count: imagenes.length,
                                       effect: ScaleEffect(
-                                        activeDotColor: Color(0xFFA30000),
+                                        activeDotColor: const Color(0xFFA30000),
                                         dotColor: Colors.grey.shade400,
                                         dotHeight: 8,
                                         dotWidth: 8,
                                         spacing: 6,
                                         scale: 1.4,
+                                      ),
+                                    ),
+                                  ),
+
+                                  // --- Flecha de retroceso ---
+                                  Positioned(
+                                    top: 12,
+                                    left: 12,
+                                    child: GestureDetector(
+                                      onTap: () => Navigator.pop(context),
+                                      child: Container(
+                                        width: 40,
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.circle,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black.withOpacity(
+                                                0.3,
+                                              ),
+                                              blurRadius: 4,
+                                              offset: const Offset(0, 2),
+                                            ),
+                                          ],
+                                        ),
+                                        child: const Icon(
+                                          Icons.arrow_back,
+                                          color: Colors.black,
+                                          size: 22,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -191,6 +219,7 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                           ),
                         ),
                       ),
+
                       Container(
                         padding: EdgeInsets.symmetric(
                           horizontal: 15,
@@ -422,8 +451,6 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                         ),
                                       ),
                                       const SizedBox(height: 10),
-
-                                      // ⭐ RATING BAR
                                       RatingBar.builder(
                                         initialRating: _rating,
                                         minRating: 1,
@@ -537,7 +564,6 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                           ),
                                         ),
                                       const SizedBox(height: 24),
-
                                       Text(
                                         "Valoracion y comentarios",
                                         style: theme.textTheme.titleMedium
@@ -551,7 +577,6 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                             ),
                                       ),
                                       const SizedBox(height: 6),
-
                                       Text(
                                         "Lee lo que otros usuarios opinan sobre este producto. Sus experiencias pueden ayudarte a decidir mejor tu compra.",
                                         style: theme.textTheme.titleMedium
@@ -586,7 +611,6 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                     }
 
                                     final comentarios = snapshot.data!.docs;
-
                                     if (comentarios.isEmpty) {
                                       return const Padding(
                                         padding: EdgeInsets.symmetric(
@@ -596,7 +620,6 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                         child: Text("Aún no hay comentarios."),
                                       );
                                     }
-
                                     return Column(
                                       children: List.generate(comentarios.length, (
                                         index,
@@ -749,28 +772,47 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
 
   Widget buildCamposAdicionales() {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
-    Widget buildCampo(String titulo, String? valor) {
+    Widget buildCampo(String titulo, String? valor, IconData icon) {
       if (valor == null || valor.isEmpty) return const SizedBox.shrink();
+
       return Padding(
-        padding: const EdgeInsets.only(bottom: 12.0),
-        child: Column(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "$titulo:",
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: theme.textTheme.bodyLarge?.color,
+            Container(
+              decoration: BoxDecoration(
+                color: isDark ? Colors.white10 : const Color(0xFFF4F4F4),
+                borderRadius: BorderRadius.circular(8),
               ),
+              padding: const EdgeInsets.all(6),
+              child: Icon(icon, size: 18, color: const Color(0xFFA30000)),
             ),
-            const SizedBox(height: 4),
-            Text(
-              valor,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontSize: 13,
-                color: theme.textTheme.bodyLarge?.color,
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    titulo,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: theme.textTheme.bodyLarge?.color?.withOpacity(0.8),
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    valor,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontSize: 15,
+                      color: theme.textTheme.bodyLarge?.color,
+                      height: 1.3,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -778,101 +820,64 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
       );
     }
 
-    List<Widget> infoWidgets = [
-      buildCampo("Descripción", widget.producto['descripcion']),
-      buildCampo("Marca", widget.producto['marca']),
-      buildCampo("Volumen", widget.producto['volumen']),
-    ].where((w) => w is! SizedBox).toList();
-
-    if (infoWidgets.isEmpty) return const SizedBox.shrink();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [const SizedBox(height: 10), ...infoWidgets],
-    );
-  }
-}
-
-class ProductoAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final String nombreProducto;
-  final Widget ratingWidget;
-
-  const ProductoAppBar({
-    super.key,
-    required this.nombreProducto,
-    required this.ratingWidget,
-  });
-
-  @override
-  Size get preferredSize => const Size.fromHeight(75);
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return AppBar(
-      automaticallyImplyLeading: false,
+    return Card(
       elevation: 0,
-      scrolledUnderElevation: 0,
-      toolbarHeight: 30,
-      flexibleSpace: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 5, 8),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(40),
-                child: Material(
-                  color: isDark
-                      ? const Color(0xFFA30000)
-                      : const Color(0xFFA30000),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(12),
-                    onTap: () {
-                      if (Navigator.canPop(context)) {
-                        Navigator.of(context).pop();
-                      }
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Icon(
-                        Iconsax.arrow_left,
-                        size: 24,
-                        color: Colors.white,
-                      ),
+      shadowColor: Colors.black26,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(10, 8, 10, 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Detalles del Producto",
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white : Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Text(
+                    widget.producto['nombreProducto'] ?? '',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w700,
+                      color: isDark ? Colors.white : Colors.black,
                     ),
                   ),
                 ),
-              ),
-
-              const SizedBox(width: 16),
-
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      nombreProducto.isNotEmpty ? nombreProducto : 'Sin nombre',
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontSize: 17,
-
-                        color: Theme.of(context).colorScheme.onBackground,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                    const SizedBox(height: 1),
-                    ratingWidget,
-                  ],
+                ratingResumen(
+                  widget.producto['id'],
+                  direction: Axis.horizontal,
+                  mostrarTexto: true,
+                  itemSize: 18.0,
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
+            const Divider(height: 25, thickness: 0.8),
+            buildCampo(
+              "Descripción",
+              widget.producto['descripcion'],
+              Icons.description_outlined,
+            ),
+            buildCampo(
+              "Marca",
+              widget.producto['marca'],
+              Icons.local_offer_outlined,
+            ),
+            buildCampo(
+              "Volumen",
+              widget.producto['volumen'],
+              Icons.local_drink_outlined,
+            ),
+            const SizedBox(height: 6),
+          ],
         ),
       ),
     );

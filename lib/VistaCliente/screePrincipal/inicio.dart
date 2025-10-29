@@ -22,7 +22,6 @@ class _InicioState extends State<InicioVinosC> {
   List<Map<String, dynamic>> _publicaciones = [];
 
   List<String> _idsMostrados = [];
-  //PAGINACION
   bool _isLoadingMore = false;
   bool _hasMore = true;
   bool _isInitialLoading = true;
@@ -121,407 +120,419 @@ class _InicioState extends State<InicioVinosC> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    return RefreshIndicator(
-      color: const Color(0xFFA30000),
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-      onRefresh: () async {
-        final userId = FirebaseAuth.instance.currentUser?.uid;
-        if (userId != null) {
-          await cargarContenido(userId);
-        }
-      },
-      child: CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          SliverAppBar(
-            pinned: true,
-            floating: false,
-            snap: false,
-            elevation: 0,
-            scrolledUnderElevation: 0,
-            backgroundColor: theme.scaffoldBackgroundColor,
-            automaticallyImplyLeading: false,
-            toolbarHeight: 40,
-            title: const Text(
-              'Publicaciones',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFFA30000),
+    return SafeArea(
+      child: RefreshIndicator(
+        color: const Color(0xFFA30000),
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        onRefresh: () async {
+          final userId = FirebaseAuth.instance.currentUser?.uid;
+          if (userId != null) {
+            await cargarContenido(userId);
+          }
+        },
+        child: CustomScrollView(
+          controller: _scrollController,
+          slivers: [
+            SliverAppBar(
+              pinned: true,
+              floating: false,
+              snap: false,
+              elevation: 0,
+              scrolledUnderElevation: 0,
+              backgroundColor: theme.scaffoldBackgroundColor,
+              automaticallyImplyLeading: false,
+              toolbarHeight: 40,
+              title: const Text(
+                'Publicaciones',
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFFA30000),
+                ),
               ),
             ),
-          ),
-          if (_isInitialLoading)
-            SliverToBoxAdapter(child: const RedactedPublicacion())
-          else
-            SliverList(
-              delegate: SliverChildBuilderDelegate((context, index) {
-                if (index == _publicaciones.length) {
-                  return _isLoadingMore
-                      ? Center(
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child:
-                                LoadingAnimationWidget.horizontalRotatingDots(
-                                  color: const Color(0xFFA30000),
-                                  size: 40,
-                                ),
-                          ),
-                        )
-                      : const SizedBox.shrink();
-                }
+            if (_isInitialLoading)
+              SliverToBoxAdapter(child: const RedactedPublicacion())
+            else
+              SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  if (index == _publicaciones.length) {
+                    return _isLoadingMore
+                        ? Center(
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child:
+                                  LoadingAnimationWidget.horizontalRotatingDots(
+                                    color: const Color(0xFFA30000),
+                                    size: 40,
+                                  ),
+                            ),
+                          )
+                        : const SizedBox.shrink();
+                  }
 
-                final publicacion = _publicaciones[index];
-                final publicacionId = publicacion['docRef'].id;
-                final _leDioLike = _publicacionesConLike.contains(
-                  publicacionId,
-                );
-                final userId = FirebaseAuth.instance.currentUser?.uid;
-
-                final publicacionCard = Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(0),
-                  ),
-                  elevation: 0,
-                  color: theme.scaffoldBackgroundColor,
-                  margin: EdgeInsets.symmetric(horizontal: 0.0, vertical: 5.0),
-                  child: Stack(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(0.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(height: 10),
-                            Row(
-                              children: [
-                                CircleAvatar(
-                                  radius: 20,
-                                  backgroundColor:
-                                      theme.scaffoldBackgroundColor,
-                                  child: ClipOval(
-                                    child: Image.asset(
-                                      'assets/images/logo1.png',
-                                      fit: BoxFit.cover,
-                                      width: 40,
-                                      height: 40,
+                  final publicacion = _publicaciones[index];
+                  final publicacionId = publicacion['docRef'].id;
+                  final _leDioLike = _publicacionesConLike.contains(
+                    publicacionId,
+                  );
+                  final userId = FirebaseAuth.instance.currentUser?.uid;
+                  final publicacionCard = Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(0),
+                    ),
+                    elevation: 0,
+                    color: theme.scaffoldBackgroundColor,
+                    margin: EdgeInsets.symmetric(
+                      horizontal: 0.0,
+                      vertical: 5.0,
+                    ),
+                    child: Stack(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(0.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: 10),
+                              Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 20,
+                                    backgroundColor:
+                                        theme.scaffoldBackgroundColor,
+                                    child: ClipOval(
+                                      child: Image.asset(
+                                        'assets/images/logo1.png',
+                                        fit: BoxFit.cover,
+                                        width: 40,
+                                        height: 40,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                SizedBox(width: 12),
-                                Expanded(
-                                  child: InkWell(
-                                    onTap: () {},
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'La Casita del Pisco',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.normal,
-                                            fontSize: 16,
+                                  SizedBox(width: 12),
+                                  Expanded(
+                                    child: InkWell(
+                                      onTap: () {},
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'La Casita del Pisco',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.normal,
+                                              fontSize: 18,
+                                            ),
                                           ),
-                                        ),
-                                        const SizedBox(height: 2),
-                                        Row(
-                                          children: [
-                                            Text(
-                                              publicacion['fecha'] != null
-                                                  ? timeago.format(
-                                                      publicacion['fecha'],
-                                                      locale: 'es',
-                                                    )
-                                                  : 'Sin fecha',
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                color: const Color(0xFF757575),
-                                              ),
-                                            ),
-                                            const SizedBox(width: 6),
-                                            const Icon(
-                                              Iconsax.global,
-                                              size: 20,
-                                              color: Color(0xFF757575),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              publicacion['descripcion'] ?? '',
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                fontSize: 14,
-                                color: theme.textTheme.bodyLarge?.color,
-                              ),
-                            ),
-                            SizedBox(height: 2),
-                            if (publicacion['imagenes'] != null &&
-                                publicacion['imagenes'] is List &&
-                                (publicacion['imagenes'] as List).isNotEmpty)
-                              Builder(
-                                builder: (context) {
-                                  final List imagenes = publicacion['imagenes'];
-                                  final PageController _pageController =
-                                      PageController();
-                                  final ratio =
-                                      publicacion['imageRatio'] ??
-                                      {'width': 1.0, 'height': 1.0};
-                                  final aspectRatio =
-                                      (ratio['width'] ?? 1.0) /
-                                      (ratio['height'] ?? 1.0);
-
-                                  return Column(
-                                    children: [
-                                      AspectRatio(
-                                        aspectRatio: aspectRatio,
-                                        child: Stack(
-                                          children: [
-                                            PageView.builder(
-                                              controller: _pageController,
-                                              itemCount: imagenes.length,
-                                              itemBuilder: (context, imgIndex) {
-                                                final String imageUrl =
-                                                    imagenes[imgIndex];
-
-                                                return ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(0),
-                                                  child: imageUrl.isNotEmpty
-                                                      ? Image.network(
-                                                          imageUrl,
-                                                          fit: BoxFit.cover,
-                                                          loadingBuilder:
-                                                              (
-                                                                context,
-                                                                child,
-                                                                loadingProgress,
-                                                              ) {
-                                                                if (loadingProgress ==
-                                                                    null)
-                                                                  return child;
-                                                                return const Center(
-                                                                  child: CircularProgressIndicator(
-                                                                    color: Color(
-                                                                      0xFFA30000,
-                                                                    ),
-                                                                    strokeWidth:
-                                                                        2.5,
-                                                                  ),
-                                                                );
-                                                              },
-                                                          errorBuilder:
-                                                              (
-                                                                context,
-                                                                error,
-                                                                stackTrace,
-                                                              ) {
-                                                                return Image.asset(
-                                                                  'assets/images/empresa.png',
-                                                                  fit: BoxFit
-                                                                      .cover,
-                                                                );
-                                                              },
-                                                        )
-                                                      : Image.asset(
-                                                          'assets/images/empresa.png',
-                                                          fit: BoxFit.cover,
-                                                        ),
-                                                );
-                                              },
-                                            ),
-                                            Positioned(
-                                              bottom: 12,
-                                              left: 0,
-                                              right: 0,
-                                              child: Center(
-                                                child: SmoothPageIndicator(
-                                                  controller: _pageController,
-                                                  count: imagenes.length,
-                                                  effect: JumpingDotEffect(
-                                                    activeDotColor: Color(
-                                                      0xFFA30000,
-                                                    ),
-                                                    dotColor: Color.fromARGB(
-                                                      255,
-                                                      126,
-                                                      126,
-                                                      126,
-                                                    ),
-                                                    dotHeight: 8,
-                                                    dotWidth: 8,
-                                                    spacing: 6,
-                                                    jumpScale: 1.5,
+                                          const SizedBox(height: 2),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                publicacion['fecha'] != null
+                                                    ? timeago.format(
+                                                        publicacion['fecha'],
+                                                        locale: 'es',
+                                                      )
+                                                    : 'Sin fecha',
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: const Color(
+                                                    0xFF757575,
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
+                                              const SizedBox(width: 6),
+                                              const Icon(
+                                                Iconsax.global,
+                                                size: 20,
+                                                color: Color(0xFF757575),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
                                       ),
-                                      const SizedBox(height: 12),
-                                      Material(
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 16,
-                                            vertical: 0,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color:
-                                                theme.scaffoldBackgroundColor,
-                                            borderRadius: BorderRadius.circular(
-                                              12,
-                                            ),
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              // Botón de Like
-                                              GestureDetector(
-                                                onTap: () async {
-                                                  if (userId == null ||
-                                                      publicacionId == null)
-                                                    return;
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 5),
+                              Text(
+                                publicacion['descripcion'] ?? '',
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  fontSize: 14,
+                                  color: theme.textTheme.bodyLarge?.color,
+                                ),
+                              ),
+                              SizedBox(height: 2),
+                              if (publicacion['imagenes'] != null &&
+                                  publicacion['imagenes'] is List &&
+                                  (publicacion['imagenes'] as List).isNotEmpty)
+                                Builder(
+                                  builder: (context) {
+                                    final List imagenes =
+                                        publicacion['imagenes'];
+                                    final PageController _pageController =
+                                        PageController();
+                                    final ratio =
+                                        publicacion['imageRatio'] ??
+                                        {'width': 1.0, 'height': 1.0};
+                                    final aspectRatio =
+                                        (ratio['width'] ?? 1.0) /
+                                        (ratio['height'] ?? 1.0);
 
-                                                  final dioLike =
+                                    return Column(
+                                      children: [
+                                        AspectRatio(
+                                          aspectRatio: aspectRatio,
+                                          child: Stack(
+                                            children: [
+                                              PageView.builder(
+                                                controller: _pageController,
+                                                itemCount: imagenes.length,
+                                                itemBuilder: (context, imgIndex) {
+                                                  final String imageUrl =
+                                                      imagenes[imgIndex];
+
+                                                  return ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          0,
+                                                        ),
+                                                    child: imageUrl.isNotEmpty
+                                                        ? Image.network(
+                                                            imageUrl,
+                                                            fit: BoxFit.cover,
+                                                            loadingBuilder:
+                                                                (
+                                                                  context,
+                                                                  child,
+                                                                  loadingProgress,
+                                                                ) {
+                                                                  if (loadingProgress ==
+                                                                      null)
+                                                                    return child;
+                                                                  return const Center(
+                                                                    child: CircularProgressIndicator(
+                                                                      color: Color(
+                                                                        0xFFA30000,
+                                                                      ),
+                                                                      strokeWidth:
+                                                                          2.5,
+                                                                    ),
+                                                                  );
+                                                                },
+                                                            errorBuilder:
+                                                                (
+                                                                  context,
+                                                                  error,
+                                                                  stackTrace,
+                                                                ) {
+                                                                  return Image.asset(
+                                                                    'assets/images/empresa.png',
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                  );
+                                                                },
+                                                          )
+                                                        : Image.asset(
+                                                            'assets/images/empresa.png',
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                  );
+                                                },
+                                              ),
+                                              Positioned(
+                                                bottom: 12,
+                                                left: 0,
+                                                right: 0,
+                                                child: Center(
+                                                  child: SmoothPageIndicator(
+                                                    controller: _pageController,
+                                                    count: imagenes.length,
+                                                    effect: JumpingDotEffect(
+                                                      activeDotColor: Color(
+                                                        0xFFA30000,
+                                                      ),
+                                                      dotColor: Color.fromARGB(
+                                                        255,
+                                                        126,
+                                                        126,
+                                                        126,
+                                                      ),
+                                                      dotHeight: 8,
+                                                      dotWidth: 8,
+                                                      spacing: 6,
+                                                      jumpScale: 1.5,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(height: 12),
+                                        Material(
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 16,
+                                              vertical: 0,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  theme.scaffoldBackgroundColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                // Botón de Like
+                                                GestureDetector(
+                                                  onTap: () async {
+                                                    if (userId == null ||
+                                                        publicacionId == null)
+                                                      return;
+
+                                                    final dioLike =
+                                                        await _firestoreService
+                                                            .haDadoMeGusta(
+                                                              publicacionId,
+                                                              userId,
+                                                            );
+
+                                                    if (dioLike) {
                                                       await _firestoreService
-                                                          .haDadoMeGusta(
+                                                          .quitarMeGusta(
                                                             publicacionId,
                                                             userId,
                                                           );
+                                                      _publicacionesConLike
+                                                          .remove(
+                                                            publicacionId,
+                                                          );
+                                                      _publicaciones[index]['cantidadMeGustas']--;
+                                                      _publicaciones[index]['dioLike'] =
+                                                          false;
+                                                    } else {
+                                                      await _firestoreService
+                                                          .darMeGusta(
+                                                            publicacionId,
+                                                            userId,
+                                                          );
+                                                      _publicacionesConLike.add(
+                                                        publicacionId,
+                                                      );
+                                                      _publicaciones[index]['cantidadMeGustas']++;
+                                                      _publicaciones[index]['dioLike'] =
+                                                          true;
+                                                    }
 
-                                                  if (dioLike) {
-                                                    await _firestoreService
-                                                        .quitarMeGusta(
-                                                          publicacionId,
-                                                          userId,
-                                                        );
-                                                    _publicacionesConLike
-                                                        .remove(publicacionId);
-                                                    _publicaciones[index]['cantidadMeGustas']--;
-                                                    _publicaciones[index]['dioLike'] =
-                                                        false;
-                                                  } else {
-                                                    await _firestoreService
-                                                        .darMeGusta(
-                                                          publicacionId,
-                                                          userId,
-                                                        );
-                                                    _publicacionesConLike.add(
-                                                      publicacionId,
+                                                    setState(() {});
+                                                  },
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        Iconsax.flash,
+                                                        size: 28,
+                                                        color: _leDioLike
+                                                            ? colorScheme
+                                                                  .primary
+                                                            : colorScheme
+                                                                  .onBackground,
+                                                      ),
+                                                      const SizedBox(width: 6),
+                                                      Text(
+                                                        _publicaciones[index]['cantidadMeGustas']
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                          color: colorScheme
+                                                              .onBackground,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+
+                                                const SizedBox(width: 32),
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    showBarModalBottomSheet(
+                                                      context: context,
+                                                      expand: true,
+                                                      builder: (context) =>
+                                                          ComentariosScreen(
+                                                            publicacionId:
+                                                                publicacionId,
+                                                            userId: userId!,
+                                                          ),
                                                     );
-                                                    _publicaciones[index]['cantidadMeGustas']++;
-                                                    _publicaciones[index]['dioLike'] =
-                                                        true;
-                                                  }
-
-                                                  setState(() {});
-                                                },
-                                                child: Row(
-                                                  children: [
-                                                    Icon(
-                                                      Iconsax.flash,
-                                                      size: 28,
-                                                      color: _leDioLike
-                                                          ? colorScheme.primary
-                                                          : colorScheme
-                                                                .onBackground,
-                                                    ),
-                                                    const SizedBox(width: 6),
-                                                    Text(
-                                                      _publicaciones[index]['cantidadMeGustas']
-                                                          .toString(),
-                                                      style: TextStyle(
-                                                        fontSize: 16,
+                                                  },
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        LucideIcons
+                                                            .messageCircle,
+                                                        size: 28,
                                                         color: colorScheme
                                                             .onBackground,
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
+                                                      const SizedBox(width: 6),
+                                                      StreamBuilder<
+                                                        QuerySnapshot
+                                                      >(
+                                                        stream: FirebaseFirestore
+                                                            .instance
+                                                            .collection(
+                                                              'publicaciones',
+                                                            )
+                                                            .doc(publicacionId)
+                                                            .collection(
+                                                              'comentarios',
+                                                            )
+                                                            .snapshots(),
+                                                        builder: (context, snapshot) {
+                                                          if (!snapshot
+                                                              .hasData) {
+                                                            return Text(
+                                                              '...',
+                                                              style: TextStyle(
+                                                                fontSize: 16,
+                                                                color: colorScheme
+                                                                    .onBackground,
+                                                              ),
+                                                            );
+                                                          }
 
-                                              const SizedBox(width: 32),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  showBarModalBottomSheet(
-                                                    context: context,
-                                                    expand: true,
-                                                    builder: (context) =>
-                                                        ComentariosScreen(
-                                                          publicacionId:
-                                                              publicacionId,
-                                                          userId: userId!,
-                                                        ),
-                                                  );
-                                                },
-                                                child: Row(
-                                                  children: [
-                                                    Icon(
-                                                      LucideIcons.messageCircle,
-                                                      size: 28,
-                                                      color: colorScheme
-                                                          .onBackground,
-                                                    ),
-                                                    const SizedBox(width: 6),
-                                                    StreamBuilder<
-                                                      QuerySnapshot
-                                                    >(
-                                                      stream: FirebaseFirestore
-                                                          .instance
-                                                          .collection(
-                                                            'publicaciones',
-                                                          )
-                                                          .doc(publicacionId)
-                                                          .collection(
-                                                            'comentarios',
-                                                          )
-                                                          .snapshots(),
-                                                      builder: (context, snapshot) {
-                                                        if (!snapshot.hasData) {
+                                                          final cantidadComentarios =
+                                                              snapshot
+                                                                  .data!
+                                                                  .docs
+                                                                  .length;
+
                                                           return Text(
-                                                            '...',
+                                                            cantidadComentarios
+                                                                .toString(),
                                                             style: TextStyle(
                                                               fontSize: 16,
                                                               color: colorScheme
                                                                   .onBackground,
                                                             ),
                                                           );
-                                                        }
-
-                                                        final cantidadComentarios =
-                                                            snapshot
-                                                                .data!
-                                                                .docs
-                                                                .length;
-
-                                                        return Text(
-                                                          cantidadComentarios
-                                                              .toString(),
-                                                          style: TextStyle(
-                                                            fontSize: 16,
-                                                            color: colorScheme
-                                                                .onBackground,
-                                                          ),
-                                                        );
-                                                      },
-                                                    ),
-                                                  ],
+                                                        },
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
 
-                                              const SizedBox(width: 32),
+                                                const SizedBox(width: 32),
 
-                                              // Botón de Productos
-                                              GestureDetector(
-                                                onTap: () {
-                                                  /*navegarConSlideDerecha(
+                                                // Botón de Productos
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    /*navegarConSlideDerecha(
                                                         context,
                                                         TodosLosProductosPage(
                                                           empresaUserId:
@@ -533,44 +544,45 @@ class _InicioState extends State<InicioVinosC> {
                                                               true,
                                                         ),
                                                       );*/
-                                                },
-                                                child: Row(
-                                                  children: [
-                                                    Icon(
-                                                      Iconsax.tag,
-                                                      size: 28,
-                                                      color: colorScheme
-                                                          .onBackground,
-                                                    ),
-                                                    const SizedBox(width: 6),
-                                                  ],
+                                                  },
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        Iconsax.tag,
+                                                        size: 28,
+                                                        color: colorScheme
+                                                            .onBackground,
+                                                      ),
+                                                      const SizedBox(width: 6),
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      const SizedBox(height: 10),
-                                    ],
-                                  );
-                                },
-                              ),
-                          ],
+                                        const SizedBox(height: 10),
+                                      ],
+                                    );
+                                  },
+                                ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                );
-                if (index == 0) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [publicacionCard, _filaDeProductos(context)],
+                      ],
+                    ),
                   );
-                }
-                return publicacionCard;
-              }, childCount: _publicaciones.length + 1),
-            ),
-        ],
+                  if (index == 0) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [publicacionCard, _filaDeProductos(context)],
+                    );
+                  }
+                  return publicacionCard;
+                }, childCount: _publicaciones.length + 1),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -580,7 +592,7 @@ class _InicioState extends State<InicioVinosC> {
   Widget _filaDeProductos(BuildContext context) {
     final theme = Theme.of(context);
     return SizedBox(
-      height: 315,
+      height: 300,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: _productos.length > 6 ? 6 : _productos.length,
@@ -605,7 +617,7 @@ class _InicioState extends State<InicioVinosC> {
               );
             },
             child: Container(
-              width: 165,
+              width: 150,
               margin: const EdgeInsets.symmetric(horizontal: 5),
               decoration: BoxDecoration(
                 color: theme.cardColor,
@@ -662,7 +674,7 @@ class _InicioState extends State<InicioVinosC> {
                           Text(
                             producto['descripcion'] ?? '',
                             style: theme.textTheme.titleMedium?.copyWith(
-                              fontSize: 12,
+                              fontSize: 13,
                               color: theme.textTheme.bodyLarge?.color,
                             ),
                             maxLines: 2,

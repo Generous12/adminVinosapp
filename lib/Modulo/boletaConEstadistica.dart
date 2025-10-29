@@ -213,22 +213,21 @@ class PDFGeneratorBoleta {
           return pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              // Cabecera empresa
+              // ignore: unnecessary_null_comparison
               if (perfilEmpresaImage != null || data['nombre'] != null) ...[
                 pw.Row(
                   children: [
-                    if (perfilEmpresaImage != null)
-                      pw.Container(
-                        width: 50,
-                        height: 50,
-                        decoration: pw.BoxDecoration(
-                          shape: pw.BoxShape.circle,
-                          image: pw.DecorationImage(
-                            image: perfilEmpresaImage,
-                            fit: pw.BoxFit.cover,
-                          ),
+                    pw.Container(
+                      width: 50,
+                      height: 50,
+                      decoration: pw.BoxDecoration(
+                        shape: pw.BoxShape.circle,
+                        image: pw.DecorationImage(
+                          image: perfilEmpresaImage,
+                          fit: pw.BoxFit.cover,
                         ),
                       ),
+                    ),
                     pw.SizedBox(width: 12),
                     pw.Column(
                       crossAxisAlignment: pw.CrossAxisAlignment.start,

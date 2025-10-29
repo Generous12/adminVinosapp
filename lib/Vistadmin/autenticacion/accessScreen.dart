@@ -172,7 +172,7 @@ class _AccesScreenState extends State<AccesScreen> {
                           child: Text(
                             'Continuar',
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 20,
                               color: const Color.fromARGB(255, 255, 255, 255),
                             ),
                           ),
@@ -208,7 +208,7 @@ class _AccesScreenState extends State<AccesScreen> {
                           child: Text(
                             'Ya tengo una cuenta. Iniciar Sesion',
                             style: theme.textTheme.titleMedium?.copyWith(
-                              fontSize: 14,
+                              fontSize: 16,
                               color: theme.textTheme.bodyLarge?.color,
                             ),
                           ),
@@ -299,7 +299,7 @@ class _AccesScreenState extends State<AccesScreen> {
                                     Text(
                                       'Iniciar sesión con Google',
                                       style: TextStyle(
-                                        fontSize: 18.0,
+                                        fontSize: 20.0,
                                         color: isDarkMode
                                             ? Colors.white
                                             : Colors.black,

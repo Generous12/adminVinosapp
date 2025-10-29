@@ -2,6 +2,7 @@ import 'package:app_bootsup/Modulo/authService.dart';
 import 'package:app_bootsup/Vistadmin/autenticacion/SplashScreen.dart';
 import 'package:app_bootsup/Widgets/boton.dart';
 import 'package:app_bootsup/Widgets/cajasdetexto.dart';
+import 'package:app_bootsup/Widgets/navegator.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -89,40 +90,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           const SizedBox(height: 20.0),
                           InkWell(
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                PageRouteBuilder(
-                                  pageBuilder:
-                                      (
-                                        context,
-                                        animation,
-                                        secondaryAnimation,
-                                      ) => SplashScreen(),
-                                  transitionDuration: Duration(
-                                    milliseconds: 200,
-                                  ),
-                                  reverseTransitionDuration: Duration(
-                                    milliseconds: 200,
-                                  ),
-                                  transitionsBuilder:
-                                      (
-                                        context,
-                                        animation,
-                                        secondaryAnimation,
-                                        child,
-                                      ) {
-                                        return FadeTransition(
-                                          opacity: animation,
-                                          child: child,
-                                        );
-                                      },
-                                ),
-                              );
+                              navegarConFade(context, SplashScreen());
                             },
                             child: Text(
                               '¿No tiene una cuenta? Registrarme',
                               style: theme.textTheme.titleMedium?.copyWith(
-                                fontSize: 14,
+                                fontSize: 16,
                                 color: theme.textTheme.bodyLarge?.color,
                               ),
                             ),
@@ -214,7 +187,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       Text(
                                         'Iniciar sesión con Google',
                                         style: TextStyle(
-                                          fontSize: 18.0,
+                                          fontSize: 20,
                                           color: isDarkMode
                                               ? Colors.white
                                               : Colors.black,

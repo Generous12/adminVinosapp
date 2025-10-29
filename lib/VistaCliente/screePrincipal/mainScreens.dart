@@ -5,7 +5,6 @@ import 'package:app_bootsup/VistaCliente/screePrincipal/promo.dart';
 import 'package:app_bootsup/Widgets/bottombar.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/rendering.dart';
 
 class MainScreenVinosClientes extends StatefulWidget {
   final User? user;
@@ -18,41 +17,20 @@ class MainScreenVinosClientes extends StatefulWidget {
 
 class _MainScreenClienteState extends State<MainScreenVinosClientes> {
   int _selectedIndex = 0;
-  bool _showBottomBar = true;
 
   @override
   Widget build(BuildContext context) {
-    final isPerfilPage = _selectedIndex == 3;
-
     return SafeArea(
       child: Scaffold(
-        body: NotificationListener<ScrollNotification>(
-          onNotification: (scrollNotification) {
-            if (!isPerfilPage && scrollNotification is UserScrollNotification) {
-              final direction = scrollNotification.direction;
-              if (direction == ScrollDirection.forward && !_showBottomBar) {
-                setState(() => _showBottomBar = true);
-              } else if (direction == ScrollDirection.reverse &&
-                  _showBottomBar) {
-                setState(() => _showBottomBar = false);
-              }
-            }
-            return false;
-          },
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            child: IndexedStack(
-              index: _selectedIndex,
-              children: [
-                InicioVinosC(),
-                ComprasPageVinosC(),
-                ReelsScreen(isVisible: _selectedIndex == 2),
-                PerfilPageVinosC(),
-              ],
-            ),
-          ),
+        body: IndexedStack(
+          index: _selectedIndex,
+          children: [
+            InicioVinosC(),
+            ComprasPageVinosC(),
+            ReelsScreen(isVisible: _selectedIndex == 2),
+            PerfilPageVinosC(),
+          ],
         ),
-
         bottomNavigationBar: SafeArea(
           child: CustomBottomNavBarCliente(
             currentIndex: _selectedIndex,
@@ -60,9 +38,6 @@ class _MainScreenClienteState extends State<MainScreenVinosClientes> {
             onTap: (index) {
               setState(() {
                 _selectedIndex = index;
-                if (index == 3) {
-                  _showBottomBar = true;
-                }
               });
             },
           ),

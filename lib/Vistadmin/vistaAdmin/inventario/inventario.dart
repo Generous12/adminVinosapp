@@ -197,7 +197,7 @@ class _InventarioPageState extends State<InventarioPage> {
 
                   return SingleChildScrollView(
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(12, 5, 12, 0),
+                      padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
                       child: GridView.builder(
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
@@ -205,7 +205,7 @@ class _InventarioPageState extends State<InventarioPage> {
                             const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
                               crossAxisSpacing: 7,
-                              mainAxisSpacing: 5,
+                              mainAxisSpacing: 10,
                               childAspectRatio: 1.2,
                             ),
                         itemCount: productosPorCategoria.keys.length,

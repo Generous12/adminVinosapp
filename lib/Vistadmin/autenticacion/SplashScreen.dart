@@ -85,7 +85,7 @@ class _SplashPageState extends State<SplashScreen> {
                       child: Text(
                         'Empezar',
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 22,
                           color: const Color.fromARGB(255, 255, 255, 255),
                         ),
                       ),
@@ -116,7 +116,7 @@ class _SplashPageState extends State<SplashScreen> {
                       child: Text(
                         'Iniciar Sesión',
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 22,
                           color: Color.fromARGB(255, 255, 255, 255),
                         ),
                       ),

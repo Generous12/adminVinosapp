@@ -89,3 +89,17 @@ void navegarConSlideArriba(BuildContext context, Widget page) {
     ),
   );
 }
+
+void navegarConFade(BuildContext context, Widget pantalla) {
+  Navigator.push(
+    context,
+    PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => pantalla,
+      transitionDuration: const Duration(milliseconds: 200),
+      reverseTransitionDuration: const Duration(milliseconds: 200),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(opacity: animation, child: child);
+      },
+    ),
+  );
+}

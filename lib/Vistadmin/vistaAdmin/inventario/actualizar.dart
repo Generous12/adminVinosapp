@@ -59,9 +59,9 @@ class _ActualizarProductoPageState extends State<ActualizarProductoPage> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final theme = Theme.of(context);
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
+    return SafeArea(
+      child: Scaffold(
+        body: Column(
           children: [
             PreferredSize(
               preferredSize: const Size.fromHeight(50),

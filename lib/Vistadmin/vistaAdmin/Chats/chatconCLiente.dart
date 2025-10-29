@@ -92,57 +92,57 @@ class _ContactoEmpresaScreenState extends State<ContactoEmpresaScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(
+    return SafeArea(
+      child: Scaffold(
         backgroundColor: theme.scaffoldBackgroundColor,
-        elevation: 0,
-        titleSpacing: 0,
-        scrolledUnderElevation: 0,
-        toolbarHeight: 48,
-        foregroundColor: Colors.black,
-        leading: IconButton(
-          icon: Icon(
-            Iconsax.arrow_left,
-            color: theme.iconTheme.color,
-            size: 25,
+        resizeToAvoidBottomInset: true,
+        appBar: AppBar(
+          backgroundColor: theme.scaffoldBackgroundColor,
+          elevation: 0,
+          titleSpacing: 0,
+          scrolledUnderElevation: 0,
+          toolbarHeight: 48,
+          foregroundColor: Colors.black,
+          leading: IconButton(
+            icon: Icon(
+              Iconsax.arrow_left,
+              color: theme.iconTheme.color,
+              size: 25,
+            ),
+            onPressed: () {
+              FocusScope.of(context).unfocus();
+              Navigator.pop(context);
+            },
           ),
-          onPressed: () {
-            FocusScope.of(context).unfocus();
-            Navigator.pop(context);
-          },
-        ),
-        title: Row(
-          children: [
-            if (clienteFoto != null)
-              CircleAvatar(
-                radius: 16,
-                backgroundImage: NetworkImage(clienteFoto!),
-                backgroundColor: Colors.transparent,
-              ),
-            const SizedBox(width: 10),
-            if (clienteNombre != null)
-              Expanded(
-                child: Text(
-                  clienteNombre!,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: theme.textTheme.bodyLarge?.color,
-                  ),
-                  overflow: TextOverflow.ellipsis,
+          title: Row(
+            children: [
+              if (clienteFoto != null)
+                CircleAvatar(
+                  radius: 16,
+                  backgroundImage: NetworkImage(clienteFoto!),
+                  backgroundColor: Colors.transparent,
                 ),
-              ),
-          ],
+              const SizedBox(width: 10),
+              if (clienteNombre != null)
+                Expanded(
+                  child: Text(
+                    clienteNombre!,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: theme.textTheme.bodyLarge?.color,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+            ],
+          ),
         ),
-      ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _chatId == null
-          ? const Center(child: Text('No se encontró chat con este cliente'))
-          : SafeArea(
-              child: Column(
+        body: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : _chatId == null
+            ? const Center(child: Text('No se encontró chat con este cliente'))
+            : Column(
                 children: [
                   Expanded(
                     child: Chat(
@@ -175,7 +175,7 @@ class _ContactoEmpresaScreenState extends State<ContactoEmpresaScreen> {
                   ),
                 ],
               ),
-            ),
+      ),
     );
   }
 

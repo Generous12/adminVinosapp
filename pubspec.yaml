@@ -103,15 +103,12 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   fonts:
-    - family: MontserratAlternates
+    - family: Afacad
       fonts:
-        - asset: assets/assets/fonts/MontserratAlternates-Bold.ttf
-        - asset: assets/assets/fonts/MontserratAlternates-BoldItalic.ttf
-        - asset: assets/assets/fonts/MontserratAlternates-Regular.ttf
-
+        - asset: assets/assets/fonts/Afacad-Italic-VariableFont_wght.ttf
+        - asset: assets/assets/fonts/Afacad-VariableFont_wght.ttf
 
         
-        #ARREGLAAR ACA
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

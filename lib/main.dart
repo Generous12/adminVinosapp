@@ -113,9 +113,9 @@ class _MyAppState extends State<MyApp> {
       if (mounted) setState(() => _verificacionCompleta = true);
 
       if (user != null && user.emailVerified) {
-        setState(() => _isLoading = true); // mostrar overlay
+        setState(() => _isLoading = true);
         await _decidirPantalla();
-        if (mounted) setState(() => _isLoading = false); // ocultar overlay
+        if (mounted) setState(() => _isLoading = false);
       } else {
         _navigatorKey.currentState?.pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => const SplashScreen()),
@@ -201,7 +201,7 @@ class _MyAppState extends State<MyApp> {
       themeMode: themeProvider.themeMode,
       theme: ThemeData(
         useMaterial3: true,
-        fontFamily: 'MontserratAlternates',
+        fontFamily: 'Afacad',
         brightness: Brightness.light,
         colorScheme: const ColorScheme.light(
           primary: Color(0xFFA30000),
@@ -213,7 +213,7 @@ class _MyAppState extends State<MyApp> {
       ),
       darkTheme: ThemeData(
         useMaterial3: true,
-        fontFamily: 'MontserratAlternates',
+        fontFamily: 'Afacad',
         brightness: Brightness.dark,
         colorScheme: const ColorScheme.dark(
           primary: Color(0xFFA30000),

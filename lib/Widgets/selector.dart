@@ -41,7 +41,7 @@ class _CategoriaSelectorState extends State<CategoriaSelector> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return SizedBox(
-      height: 35,
+      height: 40,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -82,7 +82,7 @@ class _CategoriaSelectorState extends State<CategoriaSelector> {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               decoration: BoxDecoration(
                 color: backgroundColor,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(8),
 
                 border: Border.all(
                   color: isSelected
@@ -101,7 +101,7 @@ class _CategoriaSelectorState extends State<CategoriaSelector> {
                     style: TextStyle(
                       color: textColor,
                       fontWeight: FontWeight.w600,
-                      fontSize: 11,
+                      fontSize: 13,
                     ),
                   ),
                 ],
@@ -294,7 +294,7 @@ class PedidoFiltroSelectorState extends State<PedidoFiltroSelector> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return SizedBox(
-      height: 35, // igual que CategoriaSelector
+      height: 40,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -326,7 +326,7 @@ class PedidoFiltroSelectorState extends State<PedidoFiltroSelector> {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               decoration: BoxDecoration(
                 color: backgroundColor,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: isSelected
                       ? const Color(0xFFA30000)
@@ -344,7 +344,7 @@ class PedidoFiltroSelectorState extends State<PedidoFiltroSelector> {
                     style: TextStyle(
                       color: textColor,
                       fontWeight: FontWeight.w600,
-                      fontSize: 11,
+                      fontSize: 13,
                     ),
                   ),
                 ],
@@ -389,13 +389,12 @@ class _ChatFiltroSelectorState extends State<ChatFiltroSelector> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return SizedBox(
-      height: 35, // igual que CategoriaSelector
+      height: 40,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 0),
         itemCount: filtros.length,
-        separatorBuilder: (_, __) =>
-            const SizedBox(width: 5), // igual que CategoriaSelector
+        separatorBuilder: (_, __) => const SizedBox(width: 5),
         itemBuilder: (context, index) {
           final filtro = filtros[index]['label'];
           final icon = filtros[index]['icon'];
@@ -422,7 +421,7 @@ class _ChatFiltroSelectorState extends State<ChatFiltroSelector> {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               decoration: BoxDecoration(
                 color: backgroundColor,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: isSelected
                       ? const Color(0xFFA30000)
@@ -440,7 +439,7 @@ class _ChatFiltroSelectorState extends State<ChatFiltroSelector> {
                     style: TextStyle(
                       color: textColor,
                       fontWeight: FontWeight.w600,
-                      fontSize: 11,
+                      fontSize: 13,
                     ),
                   ),
                 ],

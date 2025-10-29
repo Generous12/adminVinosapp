@@ -5,11 +5,11 @@ import 'package:iconsax/iconsax.dart';
 
 class CustomTextField extends StatefulWidget {
   final TextEditingController controller;
-  final String? label; // Etiqueta arriba (opcional)
-  final String? hintText; // Hint dentro
-  final IconData? prefixIcon; // Icono al inicio (opcional)
-  final bool obscureText; // Si es contraseña (oculta texto)
-  final bool isNumeric; // Para teclado numérico
+  final String? label;
+  final String? hintText;
+  final IconData? prefixIcon;
+  final bool obscureText;
+  final bool isNumeric;
   final int? maxLength;
   final int? maxLines;
   final int? minLines;
@@ -77,18 +77,18 @@ class _CustomTextFieldState extends State<CustomTextField> {
           onChanged: widget.onChanged,
           focusNode: widget.focusNode,
           cursorColor: colorScheme.onBackground,
-          style: TextStyle(fontSize: 12, color: colorScheme.onBackground),
+          style: TextStyle(fontSize: 16, color: colorScheme.onBackground),
           decoration: InputDecoration(
             labelText: widget.label,
             labelStyle: TextStyle(
-              fontSize: 12,
+              fontSize: 16,
               color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
             ),
             floatingLabelBehavior: FloatingLabelBehavior.auto,
             alignLabelWithHint: isMultiline,
             hintText: widget.hintText,
             hintStyle: TextStyle(
-              fontSize: 12,
+              fontSize: 16,
               color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
             ),
             filled: true,
@@ -207,8 +207,8 @@ String mesAbreviado(int mes) {
 class EditableCard extends StatelessWidget {
   final TextEditingController controller;
   final Future<void> Function() onSave;
-  final bool isNumeric; // Nuevo parámetro
-  final int? maxLength; // Nuevo parámetro
+  final bool isNumeric;
+  final int? maxLength;
   final String label;
   final String hintText;
 
