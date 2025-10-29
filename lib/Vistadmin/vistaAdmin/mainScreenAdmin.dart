@@ -5,7 +5,6 @@ import 'package:app_bootsup/Vistadmin/vistaAdmin/perfiladmin.dart';
 import 'package:app_bootsup/Widgets/bottombar.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 class MainScreenVinosAdmin extends StatefulWidget {
@@ -19,13 +18,13 @@ class MainScreenVinosAdmin extends StatefulWidget {
 
 class _MainScreenAdminState extends State<MainScreenVinosAdmin> {
   int _selectedIndex = 0;
-  bool _showBottomBar = true;
 
   late final List<Widget> _screens;
 
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(
@@ -37,8 +36,7 @@ class _MainScreenAdminState extends State<MainScreenVinosAdmin> {
         ),
       );
     });
-    _showBottomBar = true;
-    _selectedIndex = 0;
+
     _screens = [
       InventarioPage(),
       PedidosPage(),
@@ -49,28 +47,9 @@ class _MainScreenAdminState extends State<MainScreenVinosAdmin> {
 
   @override
   Widget build(BuildContext context) {
-    final isPerfilPage = _selectedIndex == 3;
-
     return SafeArea(
       child: Scaffold(
-        body: NotificationListener<ScrollNotification>(
-          onNotification: (scrollNotification) {
-            if (!isPerfilPage && scrollNotification is UserScrollNotification) {
-              final direction = scrollNotification.direction;
-              if (direction == ScrollDirection.forward && !_showBottomBar) {
-                setState(() => _showBottomBar = true);
-              } else if (direction == ScrollDirection.reverse &&
-                  _showBottomBar) {
-                setState(() => _showBottomBar = false);
-              }
-            }
-            return false;
-          },
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            child: IndexedStack(index: _selectedIndex, children: _screens),
-          ),
-        ),
+        body: IndexedStack(index: _selectedIndex, children: _screens),
 
         bottomNavigationBar: SafeArea(
           child: CustomBottomNavBar(
@@ -79,9 +58,6 @@ class _MainScreenAdminState extends State<MainScreenVinosAdmin> {
             onTap: (index) {
               setState(() {
                 _selectedIndex = index;
-                if (index == 3) {
-                  _showBottomBar = true;
-                }
               });
             },
           ),

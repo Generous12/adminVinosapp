@@ -178,7 +178,7 @@ class CustomDropdownSelector extends StatelessWidget {
           .toList(),
       onChanged: (value) {
         if (value != null) {
-          onChanged(value); // acción general
+          onChanged(value);
           if (itemActions != null && itemActions!.containsKey(value)) {
             itemActions![value]!();
           }

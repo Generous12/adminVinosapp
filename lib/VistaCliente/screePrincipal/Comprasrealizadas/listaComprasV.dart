@@ -23,10 +23,8 @@ class _HistorialComprasScreenState extends State<HistorialComprasScreenVinos> {
 
     return SafeArea(
       child: Scaffold(
-        backgroundColor: theme.scaffoldBackgroundColor,
         appBar: AppBar(
           centerTitle: true,
-          backgroundColor: theme.scaffoldBackgroundColor,
           elevation: 0,
           scrolledUnderElevation: 0,
           surfaceTintColor: Colors.transparent,
@@ -72,12 +70,12 @@ class _HistorialComprasScreenState extends State<HistorialComprasScreenVinos> {
                       data: Theme.of(context).copyWith(
                         colorScheme: isDark
                             ? const ColorScheme.dark(
-                                primary: Color(0xFFFFAF00),
+                                primary: Color(0xFFA30000),
                                 onPrimary: Colors.black,
                                 onSurface: Colors.white,
                               )
                             : const ColorScheme.light(
-                                primary: Color(0xFFFFAF00),
+                                primary: Color(0xFFA30000),
                                 onPrimary: Colors.white,
                                 onSurface: Colors.black,
                               ),
@@ -107,15 +105,6 @@ class _HistorialComprasScreenState extends State<HistorialComprasScreenVinos> {
                 },
               ),
           ],
-          bottom: PreferredSize(
-            preferredSize: Size.fromHeight(1.0),
-            child: Container(
-              height: 1.0,
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.grey[800]
-                  : Colors.grey[300],
-            ),
-          ),
         ),
         body: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance.collection('compras').snapshots(),

@@ -37,8 +37,8 @@ class _IdentidadScreenState extends State<IdentidadScreen> {
             .get();
 
         setState(() {
-          dniUsuario = userData['dni'] ?? ''; // Cargar el DNI del usuario
-          _dniController.text = ''; // Dejar vacío para que ingrese un nuevo DNI
+          dniUsuario = userData['dni'] ?? '';
+          _dniController.text = '';
         });
       }
     } catch (e) {
@@ -123,85 +123,87 @@ class _IdentidadScreenState extends State<IdentidadScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: AppBar(
-        centerTitle: true,
-        titleSpacing: 0,
+    return SafeArea(
+      child: Scaffold(
         backgroundColor: theme.scaffoldBackgroundColor,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        surfaceTintColor: Colors.transparent,
-        toolbarHeight: 48,
-        leading: IconButton(
-          icon: Icon(
-            Iconsax.arrow_left,
-            color: theme.iconTheme.color,
-            size: 25,
+        appBar: AppBar(
+          centerTitle: true,
+          titleSpacing: 0,
+          backgroundColor: theme.scaffoldBackgroundColor,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          surfaceTintColor: Colors.transparent,
+          toolbarHeight: 48,
+          leading: IconButton(
+            icon: Icon(
+              Iconsax.arrow_left,
+              color: theme.iconTheme.color,
+              size: 25,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: Text(
-          'Numero de identidad',
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontSize: 20,
-            color: theme.textTheme.bodyLarge?.color,
+          title: Text(
+            'Numero de identidad',
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontSize: 20,
+              color: theme.textTheme.bodyLarge?.color,
+            ),
+          ),
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(1.0),
+            child: Container(
+              height: 1.0,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.grey[800]
+                  : Colors.grey[300],
+            ),
           ),
         ),
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1.0),
-          child: Container(
-            height: 1.0,
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.grey[800]
-                : Colors.grey[300],
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(25.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '¿Cuál es su número de DNI?',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontSize: 30,
-                  color: theme.textTheme.bodyLarge?.color,
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(25.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '¿Cuál es su número de DNI?',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontSize: 30,
+                    color: theme.textTheme.bodyLarge?.color,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8.0),
-              Text(
-                'Por favor proporcione su nuevo número de DNI.',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontSize: 18,
-                  color: theme.textTheme.bodyLarge?.color,
+                const SizedBox(height: 8.0),
+                Text(
+                  'Por favor proporcione su nuevo número de DNI.',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontSize: 18,
+                    color: theme.textTheme.bodyLarge?.color,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 24.0),
-              InfoCard(
-                label: "Numero de identidad",
-                value: dniUsuario,
-                isEditable: false,
-              ),
-              const SizedBox(height: 16.0),
-              EditableCard(
-                controller: _dniController,
-                onSave: () async {
-                  final numero = _dniController.text.trim();
-                  if (numero.isNotEmpty) {
-                    guardarDNI();
-                  }
-                },
-                label: "Numero de identidad",
-                hintText: "ingresar du numero de identidad",
-                isNumeric: true,
-                maxLength: 8,
-              ),
-            ],
+                const SizedBox(height: 24.0),
+                InfoCard(
+                  label: "Numero de identidad",
+                  value: dniUsuario,
+                  isEditable: false,
+                ),
+                const SizedBox(height: 16.0),
+                EditableCard(
+                  controller: _dniController,
+                  onSave: () async {
+                    final numero = _dniController.text.trim();
+                    if (numero.isNotEmpty) {
+                      guardarDNI();
+                    }
+                  },
+                  label: "Numero de identidad",
+                  hintText: "ingresar du numero de identidad",
+                  isNumeric: true,
+                  maxLength: 8,
+                ),
+              ],
+            ),
           ),
         ),
       ),

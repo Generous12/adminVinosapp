@@ -142,202 +142,204 @@ class _PasswordScreenState extends State<PasswordScreen1> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: AppBar(
-        centerTitle: true,
+    return SafeArea(
+      child: Scaffold(
         backgroundColor: theme.scaffoldBackgroundColor,
-        elevation: 0,
-        titleSpacing: 0,
-        scrolledUnderElevation: 0,
-        toolbarHeight: 48,
-        surfaceTintColor: Colors.transparent,
-        leading: IconButton(
-          icon: Icon(
-            Iconsax.arrow_left,
-            color: theme.iconTheme.color,
-            size: 25,
+        appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: theme.scaffoldBackgroundColor,
+          elevation: 0,
+          titleSpacing: 0,
+          scrolledUnderElevation: 0,
+          toolbarHeight: 48,
+          surfaceTintColor: Colors.transparent,
+          leading: IconButton(
+            icon: Icon(
+              Iconsax.arrow_left,
+              color: theme.iconTheme.color,
+              size: 25,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: Text(
-          'Cambiar contraseña',
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontSize: 20,
-            color: theme.textTheme.bodyLarge?.color,
+          title: Text(
+            'Cambiar contraseña',
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontSize: 20,
+              color: theme.textTheme.bodyLarge?.color,
+            ),
+          ),
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(1.0),
+            child: Container(
+              height: 1.0,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.grey[800]
+                  : Colors.grey[300],
+            ),
           ),
         ),
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1.0),
-          child: Container(
-            height: 1.0,
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.grey[800]
-                : Colors.grey[300],
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            Text(
-              '¿Actualizaras nueva contraseña?',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontSize: 30,
-                color: theme.textTheme.bodyLarge?.color,
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: [
+              Text(
+                '¿Actualizaras nueva contraseña?',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontSize: 30,
+                  color: theme.textTheme.bodyLarge?.color,
+                ),
               ),
-            ),
-            const SizedBox(height: 8.0),
-            Text(
-              'Por favor proporcione su nueva contraseña actualizada',
-              style: TextStyle(fontSize: 18, color: Colors.grey),
-            ),
-            const SizedBox(height: 24.0),
-            CustomTextField(
-              controller: currentPasswordController,
-              label: "Ingrese su contraseña actual",
-              prefixIcon: Icons.lock,
-              obscureText: true,
-            ),
-            const SizedBox(height: 10.0),
-            CustomTextField(
-              controller: passwordController,
-              label: "Ingrese una nueva contraseña",
-              prefixIcon: Icons.lock,
-              obscureText: true,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Checkbox(
-                      value: hasMinLength,
-                      onChanged: null,
-                      checkColor: Colors.white,
-                      fillColor: MaterialStateProperty.resolveWith<Color>(
-                        (states) =>
-                            Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white
-                            : Colors.black,
-                      ),
-                    ),
-                    Text(
-                      'Min 8 caracteres',
-                      style: TextStyle(
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white
-                            : Colors.black,
-                        fontSize: 11,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Checkbox(
-                      value: hasLowercase,
-                      onChanged: null,
-                      checkColor: Colors.white,
-                      fillColor: MaterialStateProperty.resolveWith<Color>(
-                        (states) =>
-                            Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white
-                            : Colors.black,
-                      ),
-                    ),
-                    Text(
-                      'Una minúscula',
-                      style: TextStyle(
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white
-                            : Colors.black,
-                        fontSize: 11,
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Checkbox(
-                      value: hasUppercase,
-                      onChanged: null,
-                      checkColor: Colors.white,
-                      fillColor: MaterialStateProperty.resolveWith<Color>(
-                        (states) =>
-                            Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white
-                            : Colors.black,
-                      ),
-                    ),
-                    Text(
-                      'Una mayúscula',
-                      style: TextStyle(
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white
-                            : Colors.black,
-                        fontSize: 11,
-                      ),
-                    ),
-                    const SizedBox(width: 20),
-                    Checkbox(
-                      value: hasNumber,
-                      onChanged: null,
-                      checkColor: Colors.white,
-                      fillColor: MaterialStateProperty.resolveWith<Color>(
-                        (states) =>
-                            Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white
-                            : Colors.black,
-                      ),
-                    ),
-                    Text(
-                      'Un número',
-                      style: TextStyle(
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white
-                            : Colors.black,
-                        fontSize: 11,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 10.0),
-            CustomTextField(
-              controller: repeatPasswordController,
-              label: "Repita la nueva contraseña",
-              prefixIcon: Icons.lock_outline,
-              obscureText: true,
-            ),
-            if (repeatPasswordController.text.isNotEmpty) ...[
               const SizedBox(height: 8.0),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  arePasswordsEqual
-                      ? 'Las contraseñas son idénticas'
-                      : 'Las contraseñas no coinciden',
-                  style: TextStyle(
-                    color: arePasswordsEqual
-                        ? const Color.fromARGB(255, 0, 0, 0)
-                        : const Color.fromARGB(255, 255, 17, 0),
-                    fontSize: 12.0,
+              Text(
+                'Por favor proporcione su nueva contraseña actualizada',
+                style: TextStyle(fontSize: 18, color: Colors.grey),
+              ),
+              const SizedBox(height: 24.0),
+              CustomTextField(
+                controller: currentPasswordController,
+                label: "Ingrese su contraseña actual",
+                prefixIcon: Icons.lock,
+                obscureText: true,
+              ),
+              const SizedBox(height: 10.0),
+              CustomTextField(
+                controller: passwordController,
+                label: "Ingrese una nueva contraseña",
+                prefixIcon: Icons.lock,
+                obscureText: true,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Checkbox(
+                        value: hasMinLength,
+                        onChanged: null,
+                        checkColor: Colors.white,
+                        fillColor: MaterialStateProperty.resolveWith<Color>(
+                          (states) =>
+                              Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black,
+                        ),
+                      ),
+                      Text(
+                        'Min 8 caracteres',
+                        style: TextStyle(
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black,
+                          fontSize: 11,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Checkbox(
+                        value: hasLowercase,
+                        onChanged: null,
+                        checkColor: Colors.white,
+                        fillColor: MaterialStateProperty.resolveWith<Color>(
+                          (states) =>
+                              Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black,
+                        ),
+                      ),
+                      Text(
+                        'Una minúscula',
+                        style: TextStyle(
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black,
+                          fontSize: 11,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Checkbox(
+                        value: hasUppercase,
+                        onChanged: null,
+                        checkColor: Colors.white,
+                        fillColor: MaterialStateProperty.resolveWith<Color>(
+                          (states) =>
+                              Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black,
+                        ),
+                      ),
+                      Text(
+                        'Una mayúscula',
+                        style: TextStyle(
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black,
+                          fontSize: 11,
+                        ),
+                      ),
+                      const SizedBox(width: 20),
+                      Checkbox(
+                        value: hasNumber,
+                        onChanged: null,
+                        checkColor: Colors.white,
+                        fillColor: MaterialStateProperty.resolveWith<Color>(
+                          (states) =>
+                              Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black,
+                        ),
+                      ),
+                      Text(
+                        'Un número',
+                        style: TextStyle(
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black,
+                          fontSize: 11,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10.0),
+              CustomTextField(
+                controller: repeatPasswordController,
+                label: "Repita la nueva contraseña",
+                prefixIcon: Icons.lock_outline,
+                obscureText: true,
+              ),
+              if (repeatPasswordController.text.isNotEmpty) ...[
+                const SizedBox(height: 8.0),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    arePasswordsEqual
+                        ? 'Las contraseñas son idénticas'
+                        : 'Las contraseñas no coinciden',
+                    style: TextStyle(
+                      color: arePasswordsEqual
+                          ? const Color.fromARGB(255, 0, 0, 0)
+                          : const Color.fromARGB(255, 255, 17, 0),
+                      fontSize: 12.0,
+                    ),
                   ),
                 ),
+              ],
+              const SizedBox(height: 28.0),
+              LoadingOverlayButton(
+                text: 'Actualizar contraseña',
+                onPressedLogic: () async {
+                  _changePassword();
+                },
               ),
             ],
-            const SizedBox(height: 28.0),
-            LoadingOverlayButton(
-              text: 'Actualizar contraseña',
-              onPressedLogic: () async {
-                _changePassword();
-              },
-            ),
-          ],
+          ),
         ),
       ),
     );

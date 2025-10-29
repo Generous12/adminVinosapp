@@ -78,26 +78,18 @@ class _PerfilState extends State<PerfilPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
       body: _user != null
           ? SafeArea(
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 400),
                 child: SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildProfileContainer(),
-                      Divider(
-                        thickness: 0.5,
-                        height: 20,
-                        color: Theme.of(context).dividerColor.withOpacity(0.2),
-                      ),
+
                       const SizedBox(height: 5),
                       Text(
                         "Estadística general",
@@ -138,8 +130,6 @@ class _PerfilState extends State<PerfilPage> {
                         'S/ ${_subtotalPromedio.toStringAsFixed(2)}',
                       ),
                       const SizedBox(height: 20),
-
-                      // 🔹 Tops
                       buildTopList(
                         context,
                         'Top productos vendidos',
@@ -161,7 +151,7 @@ class _PerfilState extends State<PerfilPage> {
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 0),
+      margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 10),
       padding: const EdgeInsets.fromLTRB(5, 0, 0, 5),
       decoration: BoxDecoration(
         color: theme.cardColor,

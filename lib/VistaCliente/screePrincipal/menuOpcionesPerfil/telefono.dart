@@ -45,9 +45,7 @@ class _TelefonoScreenState extends State<TelefonoScreen> {
   }
 
   Future<void> _updateUserData() async {
-    setState(() {
-      // Iniciar la carga
-    });
+    setState(() {});
 
     try {
       User? user = _auth.currentUser;
@@ -55,12 +53,10 @@ class _TelefonoScreenState extends State<TelefonoScreen> {
       if (user != null) {
         String nuevoTelefono = _telefonoController.text.trim();
 
-        // Actualizar los datos del usuario en Firestore
         await _firestore.collection('users').doc(user.uid).update({
           'telefono': nuevoTelefono,
         });
         await _loadUserData();
-        // Mostrar alerta de éxito
         SnackBarUtil.mostrarSnackBarPersonalizado(
           context: context,
           mensaje: 'Registro exitoso',
@@ -85,84 +81,86 @@ class _TelefonoScreenState extends State<TelefonoScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: AppBar(
-        centerTitle: true,
-        toolbarHeight: 48,
+    return SafeArea(
+      child: Scaffold(
         backgroundColor: theme.scaffoldBackgroundColor,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        surfaceTintColor: Colors.transparent,
-        leading: IconButton(
-          icon: Icon(
-            Iconsax.arrow_left,
-            color: theme.iconTheme.color,
-            size: 25,
+        appBar: AppBar(
+          centerTitle: true,
+          toolbarHeight: 48,
+          backgroundColor: theme.scaffoldBackgroundColor,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          surfaceTintColor: Colors.transparent,
+          leading: IconButton(
+            icon: Icon(
+              Iconsax.arrow_left,
+              color: theme.iconTheme.color,
+              size: 25,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: Text(
-          'Numero de telefono',
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontSize: 20,
-            color: theme.textTheme.bodyLarge?.color,
+          title: Text(
+            'Numero de telefono',
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontSize: 20,
+              color: theme.textTheme.bodyLarge?.color,
+            ),
+          ),
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(1.0),
+            child: Container(
+              height: 1.0,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.grey[800]
+                  : Colors.grey[300],
+            ),
           ),
         ),
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1.0),
-          child: Container(
-            height: 1.0,
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.grey[800]
-                : Colors.grey[300],
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(30.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '¿Cuál es su número de teléfono?',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontSize: 30,
-                  color: theme.textTheme.bodyLarge?.color,
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(30.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '¿Cuál es su número de teléfono?',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontSize: 30,
+                    color: theme.textTheme.bodyLarge?.color,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8.0),
-              Text(
-                'Por favor proporcione su nuevo número de teléfono.',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontSize: 18,
-                  color: theme.textTheme.bodyLarge?.color,
+                const SizedBox(height: 8.0),
+                Text(
+                  'Por favor proporcione su nuevo número de teléfono.',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontSize: 18,
+                    color: theme.textTheme.bodyLarge?.color,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 24.0),
-              InfoCard(
-                label: "Numero de telefono actual",
-                value: telefonoUsuario,
-                isEditable: false,
-              ),
-              const SizedBox(height: 16.0),
-              EditableCard(
-                controller: _telefonoController,
-                onSave: () async {
-                  final numero = _telefonoController.text.trim();
-                  if (numero.isNotEmpty) {
-                    _updateUserData();
-                  }
-                },
-                label: "Numero de telefono",
-                hintText: "Ingresar numero de telefono",
-                isNumeric: true,
-                maxLength: 9,
-              ),
-            ],
+                const SizedBox(height: 24.0),
+                InfoCard(
+                  label: "Numero de telefono actual",
+                  value: telefonoUsuario,
+                  isEditable: false,
+                ),
+                const SizedBox(height: 16.0),
+                EditableCard(
+                  controller: _telefonoController,
+                  onSave: () async {
+                    final numero = _telefonoController.text.trim();
+                    if (numero.isNotEmpty) {
+                      _updateUserData();
+                    }
+                  },
+                  label: "Numero de telefono",
+                  hintText: "Ingresar numero de telefono",
+                  isNumeric: true,
+                  maxLength: 9,
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -31,82 +31,84 @@ class _ConfAvanzadaState extends State<ConfAvanzada> {
       onWillPop: () async {
         return !_isLoading;
       },
-      child: Scaffold(
-        backgroundColor: theme.scaffoldBackgroundColor,
-        appBar: AppBar(
-          centerTitle: true,
-          toolbarHeight: 48,
-          titleSpacing: 0,
+      child: SafeArea(
+        child: Scaffold(
           backgroundColor: theme.scaffoldBackgroundColor,
-          elevation: 0,
-          scrolledUnderElevation: 0,
-          surfaceTintColor: Colors.transparent,
-          leading: IconButton(
-            icon: Icon(
-              Iconsax.arrow_left,
-              color: theme.iconTheme.color,
-              size: 25,
+          appBar: AppBar(
+            centerTitle: true,
+            toolbarHeight: 48,
+            titleSpacing: 0,
+            backgroundColor: theme.scaffoldBackgroundColor,
+            elevation: 0,
+            scrolledUnderElevation: 0,
+            surfaceTintColor: Colors.transparent,
+            leading: IconButton(
+              icon: Icon(
+                Iconsax.arrow_left,
+                color: theme.iconTheme.color,
+                size: 25,
+              ),
+              onPressed: () {
+                if (!_isLoading) {
+                  Navigator.pop(context);
+                }
+              },
             ),
-            onPressed: () {
-              if (!_isLoading) {
-                Navigator.pop(context);
+            title: Text(
+              'Configuracion avanzada',
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontSize: 20,
+                color: theme.textTheme.bodyLarge?.color,
+              ),
+            ),
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(1.0),
+              child: Container(
+                height: 1.0,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.grey[800]
+                    : Colors.grey[300],
+              ),
+            ),
+          ),
+          body: StreamBuilder<DocumentSnapshot>(
+            stream: _getUserDataStream(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
               }
+
+              if (snapshot.hasError) {
+                return Center(child: Text('Error al cargar los datos'));
+              }
+
+              if (!snapshot.hasData || !snapshot.data!.exists) {
+                return Center(child: Text(''));
+              }
+
+              var userData = snapshot.data!;
+              var nombreUsuario = userData['username'] ?? '';
+
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      buildInfoContainer(
+                        'Nombre de usuario',
+                        nombreUsuario,
+                        Icons.person,
+                        context,
+                      ),
+                      const SizedBox(height: 16.0),
+                      buildDeleteAccountButton(context),
+                    ],
+                  ),
+                ),
+              );
             },
           ),
-          title: Text(
-            'Configuracion avanzada',
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontSize: 20,
-              color: theme.textTheme.bodyLarge?.color,
-            ),
-          ),
-          bottom: PreferredSize(
-            preferredSize: Size.fromHeight(1.0),
-            child: Container(
-              height: 1.0,
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.grey[800]
-                  : Colors.grey[300],
-            ),
-          ),
-        ),
-        body: StreamBuilder<DocumentSnapshot>(
-          stream: _getUserDataStream(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            }
-
-            if (snapshot.hasError) {
-              return Center(child: Text('Error al cargar los datos'));
-            }
-
-            if (!snapshot.hasData || !snapshot.data!.exists) {
-              return Center(child: Text(''));
-            }
-
-            var userData = snapshot.data!;
-            var nombreUsuario = userData['username'] ?? '';
-
-            return SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    buildInfoContainer(
-                      'Nombre de usuario',
-                      nombreUsuario,
-                      Icons.person,
-                      context,
-                    ),
-                    const SizedBox(height: 16.0),
-                    buildDeleteAccountButton(context),
-                  ],
-                ),
-              ),
-            );
-          },
         ),
       ),
     );
@@ -154,8 +156,7 @@ class _ConfAvanzadaState extends State<ConfAvanzada> {
 
   Widget buildDeleteAccountButton(BuildContext context) {
     return AbsorbPointer(
-      // Desactiva la interacción con todo el contenido dentro
-      absorbing: _isLoading, // Si está en carga, se desactiva la interacción
+      absorbing: _isLoading,
       child: ElevatedButton(
         onPressed: () async {
           if (_user == null) {
@@ -165,9 +166,6 @@ class _ConfAvanzadaState extends State<ConfAvanzada> {
             return;
           }
 
-          // Mostrar cuadro de confirmación de eliminación
-
-          // ignore: unused_local_variable
           bool? result =
               await showCustomDialog(
                 context: context,

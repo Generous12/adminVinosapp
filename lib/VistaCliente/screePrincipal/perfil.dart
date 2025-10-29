@@ -162,17 +162,14 @@ class _PerfilState extends State<PerfilPageVinosC> {
   Widget _buildProfileContainer() {
     final theme = Theme.of(context);
 
-    // Texto seguro para Initicon
     final String initText = (_firestoreUsername?.trim().isNotEmpty ?? false)
         ? _firestoreUsername!
         : (_user?.displayName?.trim().isNotEmpty ?? false)
         ? _user!.displayName!
         : 'C';
 
-    // URL de imagen si existe
     final String? imageUrl = _firestoreProfileImageUrl ?? _user?.photoURL;
 
-    // Color aleatorio para el CircleAvatar / Initicon
     final Color avatarColor = Color(
       (Random().nextDouble() * 0xFFFFFF).toInt(),
     ).withOpacity(1.0);
@@ -196,8 +193,7 @@ class _PerfilState extends State<PerfilPageVinosC> {
                     tag: 'profile-image-hero',
                     child: CircleAvatar(
                       radius: 40,
-                      backgroundColor:
-                          avatarColor, // color aleatorio solo para el avatar
+                      backgroundColor: avatarColor,
                       child: imageUrl != null
                           ? CachedNetworkImage(
                               imageUrl: imageUrl,
@@ -210,7 +206,7 @@ class _PerfilState extends State<PerfilPageVinosC> {
                                 width: 40,
                                 height: 40,
                                 child: CircularProgressIndicator(
-                                  color: Color(0xFFFFAF00),
+                                  color: Color(0xFFA30000),
                                   strokeWidth: 3,
                                 ),
                               ),
@@ -218,15 +214,14 @@ class _PerfilState extends State<PerfilPageVinosC> {
                                 text: initText,
                                 size: 80,
 
-                                backgroundColor:
-                                    avatarColor, // usa el mismo color aleatorio
+                                backgroundColor: avatarColor,
                               ),
                             )
                           : Initicon(
                               text: initText,
                               size: 80,
 
-                              backgroundColor: avatarColor, // color aleatorio
+                              backgroundColor: avatarColor,
                             ),
                     ),
                   ),
@@ -241,7 +236,7 @@ class _PerfilState extends State<PerfilPageVinosC> {
                         ),
                         child: const Icon(
                           Icons.photo_camera_outlined,
-                          color: Color(0xFFFFAF00),
+                          color: Color(0xFFA30000),
                         ),
                       ),
                     ),

@@ -253,348 +253,370 @@ class _ComprasPageState extends State<ComprasPageVinosC> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-      },
-      behavior: HitTestBehavior.translucent,
-      child: RefreshIndicator(
-        color: const Color(0xFFA30000),
-        onRefresh: () async {
-          await cargarContenido();
+    return SafeArea(
+      child: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
         },
-        child: CustomScrollView(
-          controller: _scrollController,
-          slivers: [
-            SliverAppBar(
-              pinned: true,
-              floating: false,
-              snap: false,
-              elevation: 0,
-              scrolledUnderElevation: 0,
+        behavior: HitTestBehavior.translucent,
+        child: RefreshIndicator(
+          color: const Color(0xFFA30000),
+          onRefresh: () async {
+            await cargarContenido();
+          },
+          child: CustomScrollView(
+            controller: _scrollController,
+            slivers: [
+              SliverAppBar(
+                pinned: true,
+                floating: false,
+                snap: false,
+                elevation: 0,
+                scrolledUnderElevation: 0,
 
-              automaticallyImplyLeading: false,
-              toolbarHeight: 65,
-              title: Container(
-                height: 50,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Row(
-                  children: [
-                    Icon(Icons.search, color: theme.iconTheme.color),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: TextField(
-                        controller: _searchController,
-                        onChanged: (_) => setState(() {}),
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          fontSize: 16,
-                        ),
-                        decoration: const InputDecoration(
-                          hintText: 'Buscar productos...',
-                          hintStyle: TextStyle(
-                            color: Colors.grey,
+                automaticallyImplyLeading: false,
+                toolbarHeight: 65,
+                title: Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Row(
+                    children: [
+                      Icon(Icons.search, color: theme.iconTheme.color),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: TextField(
+                          controller: _searchController,
+                          onChanged: (_) => setState(() {}),
+                          style: theme.textTheme.bodyMedium?.copyWith(
                             fontSize: 16,
                           ),
-                          border: InputBorder.none,
+                          decoration: const InputDecoration(
+                            hintText: 'Buscar productos...',
+                            hintStyle: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 16,
+                            ),
+                            border: InputBorder.none,
+                          ),
                         ),
                       ),
-                    ),
-                    if (_searchController.text.isNotEmpty)
-                      GestureDetector(
-                        onTap: () => setState(() => _searchController.clear()),
-                        child: Icon(
-                          Iconsax.close_circle,
-                          color: theme.iconTheme.color,
+                      if (_searchController.text.isNotEmpty)
+                        GestureDetector(
+                          onTap: () =>
+                              setState(() => _searchController.clear()),
+                          child: Icon(
+                            Iconsax.close_circle,
+                            color: theme.iconTheme.color,
+                          ),
                         ),
-                      ),
-                    IconButton(
-                      icon: const Icon(Icons.tune_rounded),
-                      onPressed: () {
-                        showModalBottomSheet(
-                          context: context,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(18),
-                            ),
-                          ),
-                          builder: (context) => FiltrosAdicionalesSheet(
-                            onFiltroSeleccionado: (criterio) {
-                              Navigator.pop(context);
-                              _filtraravanzado(
-                                criterio: criterio,
-                                categoria: _categoriaSeleccionada,
-                              );
-                              FocusScope.of(context).unfocus();
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                    Consumer<CarritoServiceVinos>(
-                      builder: (context, carritoService, _) {
-                        if (carritoService.obtenerCarrito().isEmpty) {
-                          return const SizedBox.shrink();
-                        }
-                        return Padding(
-                          padding: const EdgeInsets.only(left: 4),
-                          child: IconoCarritoConBadgeVinos(
-                            usarEstiloBoton: true,
-                            altura: 48,
-                            iconSize: 22,
-                            iconColor:
-                                Theme.of(context).brightness == Brightness.dark
-                                ? Colors.white
-                                : Colors.black,
-                            borderRadius: 8,
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(40),
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 10.0),
-                  child: CategoriaSelectorVinos(
-                    onCategoriaSelected: (categoria) {
-                      selectedCategoria = categoria;
-                      _productosAleatorios.clear();
-                      FocusScope.of(context).unfocus();
-                      _todosCargados = false;
-                      _isCargandoMas = false;
-                      _fetchAndRedactProductos(categoria: selectedCategoria);
-                    },
-                  ),
-                ),
-              ),
-            ),
-            if (_isRedacted)
-              SliverToBoxAdapter(
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: LoadingAnimationWidget.horizontalRotatingDots(
-                      color: const Color(0xFFA30000),
-                      size: 40,
-                    ),
-                  ),
-                ),
-              )
-            else if (_productosAleatorios.isEmpty)
-              SliverToBoxAdapter(
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 250),
-                    child: Text(
-                      'No hay productos disponibles.',
-                      style: TextStyle(fontSize: 16, color: Colors.grey),
-                    ),
-                  ),
-                ),
-              )
-            else
-              SliverPadding(
-                padding: const EdgeInsets.all(10),
-                sliver: SliverGrid(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    if (index >= _productosAleatorios.length) {
-                      return const SizedBox();
-                    }
-
-                    if (index == _productosAleatorios.length - 1 &&
-                        !_todosCargados &&
-                        !_isCargandoMas) {
-                      WidgetsBinding.instance.addPostFrameCallback(
-                        (_) => _cargarMasProductos(),
-                      );
-                    }
-
-                    var productoDoc = _productosAleatorios[index];
-
-                    var producto =
-                        _productosAleatorios[index].data()
-                            as Map<String, dynamic>;
-                    producto['id'] = productoDoc.id;
-
-                    var imagenes = List<String>.from(
-                      producto['imagenes'] ?? [],
-                    );
-                    final precioRaw = producto['precio'];
-                    final descuentoRaw = producto['descuento'];
-
-                    double precioOriginal = 0.0;
-                    if (precioRaw is String) {
-                      precioOriginal = double.tryParse(precioRaw) ?? 0.0;
-                    } else if (precioRaw is int) {
-                      precioOriginal = precioRaw.toDouble();
-                    } else if (precioRaw is double) {
-                      precioOriginal = precioRaw;
-                    }
-
-                    double descuento = 0.0;
-                    if (descuentoRaw is String) {
-                      descuento = double.tryParse(descuentoRaw) ?? 0.0;
-                    } else if (descuentoRaw is int) {
-                      descuento = descuentoRaw.toDouble();
-                    } else if (descuentoRaw is double) {
-                      descuento = descuentoRaw;
-                    }
-
-                    final bool hayDescuento = descuento > 0;
-                    return GestureDetector(
-                      onTap: () {
-                        FocusScope.of(context).unfocus();
-                        navegarConSlideIzquierda(
-                          context,
-                          DetalleProductoPageVinos(producto: producto),
-                        );
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: theme.cardColor,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: theme.brightness == Brightness.dark
-                                  ? Colors.black.withOpacity(0.4)
-                                  : Colors.grey.withOpacity(0.1),
-                              blurRadius: 6,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Hero(
-                              tag: 'producto_${producto['id']}_$index',
-                              child: AspectRatio(
-                                aspectRatio: 1,
-                                child: ClipRRect(
-                                  borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(12),
-                                  ),
-                                  child:
-                                      (imagenes.isNotEmpty &&
-                                          imagenes[0].isNotEmpty
-                                      ? Image.network(
-                                          imagenes[0],
-                                          fit: BoxFit.cover,
-                                          width: double.infinity,
-                                          errorBuilder:
-                                              (context, error, stackTrace) {
-                                                return Image.asset(
-                                                  'assets/images/empresa.png',
-                                                  fit: BoxFit.cover,
-                                                  width: double.infinity,
-                                                ).redacted(
-                                                  context: context,
-                                                  redact: _isRedacted,
-                                                );
-                                              },
-                                        ).redacted(
-                                          context: context,
-                                          redact: _isRedacted,
-                                        )
-                                      : Image.asset(
-                                          'assets/images/empresa.png',
-                                          fit: BoxFit.cover,
-                                          width: double.infinity,
-                                        ).redacted(
-                                          context: context,
-                                          redact: _isRedacted,
-                                        )),
-                                ),
+                      IconButton(
+                        icon: const Icon(Icons.tune_rounded),
+                        onPressed: () {
+                          showModalBottomSheet(
+                            context: context,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(18),
                               ),
                             ),
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                      ),
-                                      child:
-                                          Text(
-                                            (() {
-                                              final desc =
-                                                  producto['nombreProducto'] ??
-                                                  '';
-                                              final trimmed = desc.length > 18
-                                                  ? desc.substring(0, 18) +
-                                                        '...'
-                                                  : desc;
-                                              return trimmed;
-                                            })(),
-                                            style: theme.textTheme.titleMedium
-                                                ?.copyWith(
-                                                  fontSize: 13,
-                                                  color: theme
-                                                      .textTheme
-                                                      .bodyLarge
-                                                      ?.color,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                            overflow: TextOverflow.ellipsis,
+                            builder: (context) => FiltrosAdicionalesSheet(
+                              onFiltroSeleccionado: (criterio) {
+                                Navigator.pop(context);
+                                _filtraravanzado(
+                                  criterio: criterio,
+                                  categoria: _categoriaSeleccionada,
+                                );
+                                FocusScope.of(context).unfocus();
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                      Consumer<CarritoServiceVinos>(
+                        builder: (context, carritoService, _) {
+                          if (carritoService.obtenerCarrito().isEmpty) {
+                            return const SizedBox.shrink();
+                          }
+                          return Padding(
+                            padding: const EdgeInsets.only(left: 4),
+                            child: IconoCarritoConBadgeVinos(
+                              usarEstiloBoton: true,
+                              altura: 48,
+                              iconSize: 22,
+                              iconColor:
+                                  Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Colors.white
+                                  : Colors.black,
+                              borderRadius: 8,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                bottom: PreferredSize(
+                  preferredSize: const Size.fromHeight(40),
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: CategoriaSelectorVinos(
+                      onCategoriaSelected: (categoria) {
+                        selectedCategoria = categoria;
+                        _productosAleatorios.clear();
+                        FocusScope.of(context).unfocus();
+                        _todosCargados = false;
+                        _isCargandoMas = false;
+                        _fetchAndRedactProductos(categoria: selectedCategoria);
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              if (_isRedacted)
+                SliverToBoxAdapter(
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: LoadingAnimationWidget.horizontalRotatingDots(
+                        color: const Color(0xFFA30000),
+                        size: 40,
+                      ),
+                    ),
+                  ),
+                )
+              else if (_productosAleatorios.isEmpty)
+                SliverToBoxAdapter(
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 250),
+                      child: Text(
+                        'No hay productos disponibles.',
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                      ),
+                    ),
+                  ),
+                )
+              else
+                SliverPadding(
+                  padding: const EdgeInsets.all(10),
+                  sliver: SliverGrid(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      if (index >= _productosAleatorios.length) {
+                        return const SizedBox();
+                      }
+
+                      if (index == _productosAleatorios.length - 1 &&
+                          !_todosCargados &&
+                          !_isCargandoMas) {
+                        WidgetsBinding.instance.addPostFrameCallback(
+                          (_) => _cargarMasProductos(),
+                        );
+                      }
+
+                      var productoDoc = _productosAleatorios[index];
+
+                      var producto =
+                          _productosAleatorios[index].data()
+                              as Map<String, dynamic>;
+                      producto['id'] = productoDoc.id;
+
+                      var imagenes = List<String>.from(
+                        producto['imagenes'] ?? [],
+                      );
+                      final precioRaw = producto['precio'];
+                      final descuentoRaw = producto['descuento'];
+
+                      double precioOriginal = 0.0;
+                      if (precioRaw is String) {
+                        precioOriginal = double.tryParse(precioRaw) ?? 0.0;
+                      } else if (precioRaw is int) {
+                        precioOriginal = precioRaw.toDouble();
+                      } else if (precioRaw is double) {
+                        precioOriginal = precioRaw;
+                      }
+
+                      double descuento = 0.0;
+                      if (descuentoRaw is String) {
+                        descuento = double.tryParse(descuentoRaw) ?? 0.0;
+                      } else if (descuentoRaw is int) {
+                        descuento = descuentoRaw.toDouble();
+                      } else if (descuentoRaw is double) {
+                        descuento = descuentoRaw;
+                      }
+
+                      final bool hayDescuento = descuento > 0;
+                      return GestureDetector(
+                        onTap: () {
+                          FocusScope.of(context).unfocus();
+                          navegarConSlideIzquierda(
+                            context,
+                            DetalleProductoPageVinos(producto: producto),
+                          );
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: theme.cardColor,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: theme.brightness == Brightness.dark
+                                    ? Colors.black.withOpacity(0.4)
+                                    : Colors.grey.withOpacity(0.1),
+                                blurRadius: 6,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Hero(
+                                tag: 'producto_${producto['id']}_$index',
+                                child: AspectRatio(
+                                  aspectRatio: 1,
+                                  child: ClipRRect(
+                                    borderRadius: const BorderRadius.vertical(
+                                      top: Radius.circular(12),
+                                    ),
+                                    child:
+                                        (imagenes.isNotEmpty &&
+                                            imagenes[0].isNotEmpty
+                                        ? Image.network(
+                                            imagenes[0],
+                                            fit: BoxFit.cover,
+                                            width: double.infinity,
+                                            errorBuilder:
+                                                (context, error, stackTrace) {
+                                                  return Image.asset(
+                                                    'assets/images/empresa.png',
+                                                    fit: BoxFit.cover,
+                                                    width: double.infinity,
+                                                  ).redacted(
+                                                    context: context,
+                                                    redact: _isRedacted,
+                                                  );
+                                                },
                                           ).redacted(
                                             context: context,
                                             redact: _isRedacted,
-                                          ),
-                                    ),
-                                    if (!_isRedacted)
+                                          )
+                                        : Image.asset(
+                                            'assets/images/empresa.png',
+                                            fit: BoxFit.cover,
+                                            width: double.infinity,
+                                          ).redacted(
+                                            context: context,
+                                            redact: _isRedacted,
+                                          )),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
                                       Padding(
                                         padding: const EdgeInsets.symmetric(
                                           horizontal: 8,
                                         ),
-                                        child: Text(
-                                          formatText(
-                                            producto['descripcion'] ?? '',
-                                            maxLength: 50,
-                                          ),
-                                          style: theme.textTheme.titleMedium
-                                              ?.copyWith(
-                                                fontSize: 11,
-                                                color: theme
-                                                    .textTheme
-                                                    .bodyLarge
-                                                    ?.color,
-                                              ),
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
+                                        child:
+                                            Text(
+                                              (() {
+                                                final desc =
+                                                    producto['nombreProducto'] ??
+                                                    '';
+                                                final trimmed = desc.length > 18
+                                                    ? desc.substring(0, 18) +
+                                                          '...'
+                                                    : desc;
+                                                return trimmed;
+                                              })(),
+                                              style: theme.textTheme.titleMedium
+                                                  ?.copyWith(
+                                                    fontSize: 13,
+                                                    color: theme
+                                                        .textTheme
+                                                        .bodyLarge
+                                                        ?.color,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                              overflow: TextOverflow.ellipsis,
+                                            ).redacted(
+                                              context: context,
+                                              redact: _isRedacted,
+                                            ),
                                       ),
+                                      if (!_isRedacted)
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                          ),
+                                          child: Text(
+                                            formatText(
+                                              producto['descripcion'] ?? '',
+                                              maxLength: 50,
+                                            ),
+                                            style: theme.textTheme.titleMedium
+                                                ?.copyWith(
+                                                  fontSize: 11,
+                                                  color: theme
+                                                      .textTheme
+                                                      .bodyLarge
+                                                      ?.color,
+                                                ),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
 
-                                    Spacer(),
-                                    if (!_isRedacted)
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              if (hayDescuento)
+                                      Spacer(),
+                                      if (!_isRedacted)
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                if (hayDescuento)
+                                                  Text(
+                                                    'S/ ${precioOriginal.toStringAsFixed(2)}',
+                                                    style: theme
+                                                        .textTheme
+                                                        .titleMedium
+                                                        ?.copyWith(
+                                                          fontSize: 11,
+                                                          decoration:
+                                                              TextDecoration
+                                                                  .lineThrough,
+                                                          color: theme
+                                                              .textTheme
+                                                              .bodyLarge
+                                                              ?.color,
+                                                        ),
+                                                  ).redacted(
+                                                    context: context,
+                                                    redact: _isRedacted,
+                                                  ),
                                                 Text(
-                                                  'S/ ${precioOriginal.toStringAsFixed(2)}',
+                                                  'S/ ${(hayDescuento ? (precioOriginal * (1 - descuento / 100)) : precioOriginal).toStringAsFixed(2)}',
                                                   style: theme
                                                       .textTheme
                                                       .titleMedium
                                                       ?.copyWith(
-                                                        fontSize: 11,
-                                                        decoration:
-                                                            TextDecoration
-                                                                .lineThrough,
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.bold,
                                                         color: theme
                                                             .textTheme
                                                             .bodyLarge
@@ -604,73 +626,60 @@ class _ComprasPageState extends State<ComprasPageVinosC> {
                                                   context: context,
                                                   redact: _isRedacted,
                                                 ),
+                                              ],
+                                            ),
+                                            SizedBox(width: 30),
+                                            if (hayDescuento)
                                               Text(
-                                                'S/ ${(hayDescuento ? (precioOriginal * (1 - descuento / 100)) : precioOriginal).toStringAsFixed(2)}',
+                                                '${descuento.toStringAsFixed(0)}% OFF',
                                                 style: theme
                                                     .textTheme
                                                     .titleMedium
                                                     ?.copyWith(
-                                                      fontSize: 16,
+                                                      fontSize: 10,
                                                       fontWeight:
                                                           FontWeight.bold,
                                                       color: theme
-                                                          .textTheme
-                                                          .bodyLarge
-                                                          ?.color,
+                                                          .colorScheme
+                                                          .error,
                                                     ),
                                               ).redacted(
                                                 context: context,
                                                 redact: _isRedacted,
                                               ),
-                                            ],
-                                          ),
-                                          SizedBox(width: 30),
-                                          if (hayDescuento)
-                                            Text(
-                                              '${descuento.toStringAsFixed(0)}% OFF',
-                                              style: theme.textTheme.titleMedium
-                                                  ?.copyWith(
-                                                    fontSize: 10,
-                                                    fontWeight: FontWeight.bold,
-                                                    color:
-                                                        theme.colorScheme.error,
-                                                  ),
-                                            ).redacted(
-                                              context: context,
-                                              redact: _isRedacted,
-                                            ),
-                                        ],
-                                      ),
-                                  ],
+                                          ],
+                                        ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  }, childCount: _productosAleatorios.length),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 15,
-                    mainAxisSpacing: 15,
-                    childAspectRatio: _isRedacted ? 0.75 : 0.57,
-                  ),
-                ),
-              ),
-            if (_isCargandoMas)
-              SliverToBoxAdapter(
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: LoadingAnimationWidget.horizontalRotatingDots(
-                      color: const Color(0xFFA30000),
-                      size: 40,
+                      );
+                    }, childCount: _productosAleatorios.length),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 15,
+                      mainAxisSpacing: 15,
+                      childAspectRatio: _isRedacted ? 0.75 : 0.57,
                     ),
                   ),
                 ),
-              ),
-          ],
+              if (_isCargandoMas)
+                SliverToBoxAdapter(
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: LoadingAnimationWidget.horizontalRotatingDots(
+                        color: const Color(0xFFA30000),
+                        size: 40,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

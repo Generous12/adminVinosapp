@@ -17,119 +17,121 @@ class MenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Scaffold(
-      appBar: AppBar(
-        titleSpacing: 0,
-        toolbarHeight: 48,
-        centerTitle: true,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        surfaceTintColor: Colors.transparent,
-        leading: IconButton(
-          icon: Icon(
-            Iconsax.arrow_left,
-            color: theme.iconTheme.color,
-            size: 25,
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          titleSpacing: 0,
+          toolbarHeight: 48,
+          centerTitle: true,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          surfaceTintColor: Colors.transparent,
+          leading: IconButton(
+            icon: Icon(
+              Iconsax.arrow_left,
+              color: theme.iconTheme.color,
+              size: 25,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: Text(
-          'Configuracion',
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontSize: 20,
-            color: theme.textTheme.bodyLarge?.color,
+          title: Text(
+            'Configuracion',
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontSize: 20,
+              color: theme.textTheme.bodyLarge?.color,
+            ),
+          ),
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(1.0),
+            child: Container(
+              height: 1.0,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.grey[800]
+                  : Colors.grey[300],
+            ),
           ),
         ),
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1.0),
-          child: Container(
-            height: 1.0,
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.grey[800]
-                : Colors.grey[300],
-          ),
-        ),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              buildSectionHeader(context, "Datos del usuario"),
-              FullWidthMenuTile(
-                option: MenuOption(
-                  title: 'Editar nombre de usuario',
-                  description: 'Modifica tu nombre público de usuario.',
-                  icon: Iconsax.user_edit,
-                  onTap: () {
-                    navegarConSlideDerecha(context, NombreScreen());
-                  },
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                buildSectionHeader(context, "Datos del usuario"),
+                FullWidthMenuTile(
+                  option: MenuOption(
+                    title: 'Editar nombre de usuario',
+                    description: 'Modifica tu nombre público de usuario.',
+                    icon: Iconsax.user_edit,
+                    onTap: () {
+                      navegarConSlideDerecha(context, NombreScreen());
+                    },
+                  ),
                 ),
-              ),
-              FullWidthMenuTile(
-                option: MenuOption(
-                  title: 'Editar correo electrónico',
-                  description: 'Actualiza tu correo asociado a la cuenta.',
-                  icon: Iconsax.sms,
-                  onTap: () {
-                    navegarConSlideDerecha(context, CorreoScreen());
-                  },
+                FullWidthMenuTile(
+                  option: MenuOption(
+                    title: 'Editar correo electrónico',
+                    description: 'Actualiza tu correo asociado a la cuenta.',
+                    icon: Iconsax.sms,
+                    onTap: () {
+                      navegarConSlideDerecha(context, CorreoScreen());
+                    },
+                  ),
                 ),
-              ),
-              FullWidthMenuTile(
-                option: MenuOption(
-                  title: 'Cambiar contraseña',
-                  description: 'Cambia tu contraseña actual por una nueva.',
-                  icon: Iconsax.password_check,
-                  onTap: () {
-                    navegarConSlideDerecha(context, PasswordScreen1());
-                  },
+                FullWidthMenuTile(
+                  option: MenuOption(
+                    title: 'Cambiar contraseña',
+                    description: 'Cambia tu contraseña actual por una nueva.',
+                    icon: Iconsax.password_check,
+                    onTap: () {
+                      navegarConSlideDerecha(context, PasswordScreen1());
+                    },
+                  ),
                 ),
-              ),
-              FullWidthMenuTile(
-                option: MenuOption(
-                  title: 'Editar DNI',
-                  description: 'Modifica tu documento de identidad.',
-                  icon: Iconsax.card,
-                  onTap: () {
-                    navegarConSlideDerecha(context, IdentidadScreen());
-                  },
+                FullWidthMenuTile(
+                  option: MenuOption(
+                    title: 'Editar DNI',
+                    description: 'Modifica tu documento de identidad.',
+                    icon: Iconsax.card,
+                    onTap: () {
+                      navegarConSlideDerecha(context, IdentidadScreen());
+                    },
+                  ),
                 ),
-              ),
-              FullWidthMenuTile(
-                option: MenuOption(
-                  title: 'Editar dirección',
-                  description: 'Modifica tu dirección de envío o residencia.',
-                  icon: Iconsax.location,
-                  onTap: () {
-                    navegarConSlideDerecha(context, DireccionScreen());
-                  },
+                FullWidthMenuTile(
+                  option: MenuOption(
+                    title: 'Editar dirección',
+                    description: 'Modifica tu dirección de envío o residencia.',
+                    icon: Iconsax.location,
+                    onTap: () {
+                      navegarConSlideDerecha(context, DireccionScreen());
+                    },
+                  ),
                 ),
-              ),
-              FullWidthMenuTile(
-                option: MenuOption(
-                  title: 'Editar número de teléfono',
-                  description: 'Cambia el número de contacto registrado.',
-                  icon: Iconsax.call,
-                  onTap: () {
-                    navegarConSlideDerecha(context, TelefonoScreen());
-                  },
+                FullWidthMenuTile(
+                  option: MenuOption(
+                    title: 'Editar número de teléfono',
+                    description: 'Cambia el número de contacto registrado.',
+                    icon: Iconsax.call,
+                    onTap: () {
+                      navegarConSlideDerecha(context, TelefonoScreen());
+                    },
+                  ),
                 ),
-              ),
-              buildSectionHeader(context, "Eliminar mi cuenta"),
-              FullWidthMenuTile(
-                option: MenuOption(
-                  title: 'Configuración avanzada',
-                  description: 'Ajustes adicionales y opciones de cuenta.',
-                  icon: Iconsax.setting_2,
-                  onTap: () {
-                    navegarConSlideDerecha(context, ConfAvanzada());
-                  },
+                buildSectionHeader(context, "Eliminar mi cuenta"),
+                FullWidthMenuTile(
+                  option: MenuOption(
+                    title: 'Configuración avanzada',
+                    description: 'Ajustes adicionales y opciones de cuenta.',
+                    icon: Iconsax.setting_2,
+                    onTap: () {
+                      navegarConSlideDerecha(context, ConfAvanzada());
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

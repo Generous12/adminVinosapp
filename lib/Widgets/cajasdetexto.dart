@@ -389,9 +389,9 @@ Widget buildLineChartCard(
     shadowColor: Colors.black12,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     color: theme.cardColor,
-    margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+    margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
     child: Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

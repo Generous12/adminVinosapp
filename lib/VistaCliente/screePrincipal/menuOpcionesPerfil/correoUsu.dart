@@ -116,81 +116,83 @@ class _CorreoScreenState extends State<CorreoScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: AppBar(
-        centerTitle: true,
-        titleSpacing: 0,
+    return SafeArea(
+      child: Scaffold(
         backgroundColor: theme.scaffoldBackgroundColor,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        toolbarHeight: 48,
-        surfaceTintColor: Colors.transparent,
-        leading: IconButton(
-          icon: Icon(
-            Iconsax.arrow_left,
-            color: theme.iconTheme.color,
-            size: 25,
+        appBar: AppBar(
+          centerTitle: true,
+          titleSpacing: 0,
+          backgroundColor: theme.scaffoldBackgroundColor,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          toolbarHeight: 48,
+          surfaceTintColor: Colors.transparent,
+          leading: IconButton(
+            icon: Icon(
+              Iconsax.arrow_left,
+              color: theme.iconTheme.color,
+              size: 25,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: Text(
-          'Correo electronico',
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontSize: 20,
-            color: theme.textTheme.bodyLarge?.color,
+          title: Text(
+            'Correo electronico',
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontSize: 20,
+              color: theme.textTheme.bodyLarge?.color,
+            ),
+          ),
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(1.0),
+            child: Container(
+              height: 1.0,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.grey[800]
+                  : Colors.grey[300],
+            ),
           ),
         ),
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1.0),
-          child: Container(
-            height: 1.0,
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.grey[800]
-                : Colors.grey[300],
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(25.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '¿Cuál es su correo electrónico?',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontSize: 30,
-                  color: theme.textTheme.bodyLarge?.color,
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(25.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '¿Cuál es su correo electrónico?',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontSize: 30,
+                    color: theme.textTheme.bodyLarge?.color,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8.0),
-              Text(
-                'Proporcione un nuevo correo electrónico donde podamos contactarlo.',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontSize: 18,
-                  color: theme.textTheme.bodyLarge?.color,
+                const SizedBox(height: 8.0),
+                Text(
+                  'Proporcione un nuevo correo electrónico donde podamos contactarlo.',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontSize: 18,
+                    color: theme.textTheme.bodyLarge?.color,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 24.0),
-              InfoCard(
-                label: ' Correo electronico',
-                value: emailUsuario,
-                isEditable: false,
-              ),
-              const SizedBox(height: 16.0),
-              EditableCard(
-                controller: _emailController,
-                onSave: () async {
-                  final nuevoValor = _emailController.text.trim();
-                  if (nuevoValor.isNotEmpty) {
-                    _updateUserData();
-                  }
-                },
-              ),
-            ],
+                const SizedBox(height: 24.0),
+                InfoCard(
+                  label: ' Correo electronico',
+                  value: emailUsuario,
+                  isEditable: false,
+                ),
+                const SizedBox(height: 16.0),
+                EditableCard(
+                  controller: _emailController,
+                  onSave: () async {
+                    final nuevoValor = _emailController.text.trim();
+                    if (nuevoValor.isNotEmpty) {
+                      _updateUserData();
+                    }
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

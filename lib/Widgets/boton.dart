@@ -183,7 +183,7 @@ class _FullWidthMenuTileState extends State<FullWidthMenuTile> {
                         widget.option.title,
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w600,
-                          fontSize: 14,
+                          fontSize: 16,
                           color: theme.textTheme.bodyLarge?.color,
                         ),
                       ),

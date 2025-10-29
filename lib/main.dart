@@ -19,13 +19,11 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   SystemChrome.setSystemUIOverlayStyle(
-    SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.black,
+      statusBarIconBrightness: Brightness.light,
+      statusBarBrightness: Brightness.dark,
       systemNavigationBarColor: Colors.black,
-      statusBarIconBrightness:
-          WidgetsBinding.instance.window.platformBrightness == Brightness.dark
-          ? Brightness.light
-          : Brightness.dark,
       systemNavigationBarIconBrightness: Brightness.light,
     ),
   );

@@ -35,9 +35,8 @@ class _DireccionScreenState extends State<DireccionScreen> {
             .get();
 
         setState(() {
-          direccionUsuario = userData['direccion'] ?? ''; // Cargar la dirección
-          _direccionController.text =
-              ''; // Dejar vacío para que ingrese una nueva dirección
+          direccionUsuario = userData['direccion'] ?? '';
+          _direccionController.text = '';
         });
       }
     } catch (e) {
@@ -54,7 +53,6 @@ class _DireccionScreenState extends State<DireccionScreen> {
       if (user != null) {
         String nuevaDireccion = _direccionController.text.trim();
 
-        // Validar que la dirección no esté vacía
         if (nuevaDireccion.isEmpty) {
           setState(() {
             showCustomDialog(
@@ -64,15 +62,13 @@ class _DireccionScreenState extends State<DireccionScreen> {
               confirmButtonText: 'Cerrar',
             );
           });
-          return; // Salir si no es válido
+          return;
         }
 
-        // Actualizar los datos del usuario en Firestore
         await _firestore.collection('users').doc(user.uid).update({
           'direccion': nuevaDireccion,
         });
         await _loadUserData();
-        // Mostrar alerta de éxito
         SnackBarUtil.mostrarSnackBarPersonalizado(
           context: context,
           mensaje: 'Registro exitoso',
@@ -97,85 +93,87 @@ class _DireccionScreenState extends State<DireccionScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: AppBar(
-        centerTitle: true,
-        titleSpacing: 0,
+    return SafeArea(
+      child: Scaffold(
         backgroundColor: theme.scaffoldBackgroundColor,
-        elevation: 0,
-        toolbarHeight: 48,
-        scrolledUnderElevation: 0,
-        surfaceTintColor: Colors.transparent,
-        leading: IconButton(
-          icon: Icon(
-            Iconsax.arrow_left,
-            color: theme.iconTheme.color,
-            size: 25,
+        appBar: AppBar(
+          centerTitle: true,
+          titleSpacing: 0,
+          backgroundColor: theme.scaffoldBackgroundColor,
+          elevation: 0,
+          toolbarHeight: 48,
+          scrolledUnderElevation: 0,
+          surfaceTintColor: Colors.transparent,
+          leading: IconButton(
+            icon: Icon(
+              Iconsax.arrow_left,
+              color: theme.iconTheme.color,
+              size: 25,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: Text(
-          'Direccion de domicilio',
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontSize: 20,
-            color: theme.textTheme.bodyLarge?.color,
+          title: Text(
+            'Direccion de domicilio',
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontSize: 20,
+              color: theme.textTheme.bodyLarge?.color,
+            ),
+          ),
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(1.0),
+            child: Container(
+              height: 1.0,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.grey[800]
+                  : Colors.grey[300],
+            ),
           ),
         ),
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1.0),
-          child: Container(
-            height: 1.0,
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.grey[800]
-                : Colors.grey[300],
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(25.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '¿Cuál es su dirección?',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontSize: 30,
-                  color: theme.textTheme.bodyLarge?.color,
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(25.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '¿Cuál es su dirección?',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontSize: 30,
+                    color: theme.textTheme.bodyLarge?.color,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8.0),
-              Text(
-                'Por favor proporcione su nueva dirección.',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontSize: 18,
-                  color: theme.textTheme.bodyLarge?.color,
+                const SizedBox(height: 8.0),
+                Text(
+                  'Por favor proporcione su nueva dirección.',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontSize: 18,
+                    color: theme.textTheme.bodyLarge?.color,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 24.0),
-              InfoCard(
-                label: "Dirección actual",
-                value: direccionUsuario,
-                isEditable: false,
-              ),
-              const SizedBox(height: 16.0),
-              EditableCard(
-                controller: _direccionController,
-                onSave: () async {
-                  final edad = _direccionController.text.trim();
-                  if (edad.isNotEmpty) {
-                    _updateUserData();
-                  }
-                },
-                label: "Direccion",
-                hintText: "Ingresar nueva dirección",
-                isNumeric: false,
-                maxLength: 50,
-              ),
-            ],
+                const SizedBox(height: 24.0),
+                InfoCard(
+                  label: "Dirección actual",
+                  value: direccionUsuario,
+                  isEditable: false,
+                ),
+                const SizedBox(height: 16.0),
+                EditableCard(
+                  controller: _direccionController,
+                  onSave: () async {
+                    final edad = _direccionController.text.trim();
+                    if (edad.isNotEmpty) {
+                      _updateUserData();
+                    }
+                  },
+                  label: "Direccion",
+                  hintText: "Ingresar nueva dirección",
+                  isNumeric: false,
+                  maxLength: 50,
+                ),
+              ],
+            ),
           ),
         ),
       ),
