@@ -488,7 +488,7 @@ class _CategoriaSelectorStateV extends State<CategoriaSelectorVinos> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return SizedBox(
-      height: 35,
+      height: 40,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -529,7 +529,7 @@ class _CategoriaSelectorStateV extends State<CategoriaSelectorVinos> {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               decoration: BoxDecoration(
                 color: backgroundColor,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(8),
 
                 border: Border.all(
                   color: isSelected
@@ -548,7 +548,7 @@ class _CategoriaSelectorStateV extends State<CategoriaSelectorVinos> {
                     style: TextStyle(
                       color: textColor,
                       fontWeight: FontWeight.w600,
-                      fontSize: 11,
+                      fontSize: 13,
                     ),
                   ),
                 ],

@@ -5,6 +5,7 @@ import 'package:app_bootsup/Widgets/cajasdetexto.dart';
 import 'package:app_bootsup/Widgets/navegator.dart';
 import 'package:app_bootsup/Widgets/rating.dart';
 import 'package:app_bootsup/Widgets/selector.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -532,15 +533,15 @@ class _ComprasPageState extends State<ComprasPageVinosC> {
                                                 final desc =
                                                     producto['nombreProducto'] ??
                                                     '';
-                                                final trimmed = desc.length > 18
-                                                    ? desc.substring(0, 18) +
+                                                final trimmed = desc.length > 20
+                                                    ? desc.substring(0, 20) +
                                                           '...'
                                                     : desc;
                                                 return trimmed;
                                               })(),
                                               style: theme.textTheme.titleMedium
                                                   ?.copyWith(
-                                                    fontSize: 13,
+                                                    fontSize: 15,
                                                     color: theme
                                                         .textTheme
                                                         .bodyLarge
@@ -565,7 +566,7 @@ class _ComprasPageState extends State<ComprasPageVinosC> {
                                             ),
                                             style: theme.textTheme.titleMedium
                                                 ?.copyWith(
-                                                  fontSize: 11,
+                                                  fontSize: 12,
                                                   color: theme
                                                       .textTheme
                                                       .bodyLarge
@@ -636,7 +637,7 @@ class _ComprasPageState extends State<ComprasPageVinosC> {
                                                     .textTheme
                                                     .titleMedium
                                                     ?.copyWith(
-                                                      fontSize: 10,
+                                                      fontSize: 11,
                                                       fontWeight:
                                                           FontWeight.bold,
                                                       color: theme
