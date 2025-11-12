@@ -108,7 +108,6 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                               child: Stack(
                                 alignment: Alignment.bottomCenter,
                                 children: [
-                                  // --- Imagen del producto ---
                                   imagenes.isNotEmpty
                                       ? PageView.builder(
                                           controller: _pageController,
