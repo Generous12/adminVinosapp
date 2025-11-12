@@ -81,15 +81,6 @@ app.post("/ipn/mercadopago", express.urlencoded({ extended: false }), async (req
   }
 });
 
-
-
-
-
-// ======================
-// 🔹 RUTA WEBHOOK (firma)
-// ======================
-
-// GET para prueba de conexión
 app.get("/webhook/mercadopago", (req, res) => {
   console.log("🔍 Prueba de Mercado Pago recibida:", req.query);
   res.status(200).send("OK");
@@ -133,27 +124,20 @@ app.post("/webhook/mercadopago", express.raw({ type: "*/*" }), async (req, res) 
       return;
     }
 
-    // Firma válida
     const event = JSON.parse(req.body.toString());
     console.log("✅ Webhook validado:", event);
 
     if (event.type === "payment") {
       console.log(`💰 Pago confirmado (Webhook): ${event.data.id}`);
-      // TODO: Guardar en BD
     }
   } catch (error) {
     console.error("❌ Error procesando webhook:", error);
   }
 });
 
-// ======================
-// 🔹 RESTO ENDPOINTS
-// ======================
 
-// Usar JSON normal para el resto
 app.use(express.json());
 
-// Crear preferencia
 app.post("/crear-preferencia", async (req, res) => {
   try {
     const { items } = req.body;
@@ -169,7 +153,6 @@ app.post("/crear-preferencia", async (req, res) => {
       },
       auto_return: "approved",
       payment_methods: { installments: 1 },
-      // 🔹 Puedes registrar ambos si quieres:
       notification_url: "https://adminvinosapp-production.up.railway.app/ipn/mercadopago",
     };
 
@@ -192,7 +175,6 @@ app.post("/crear-preferencia", async (req, res) => {
   }
 });
 
-// Verificar pago o preferencia
 app.get("/verificar/:id", async (req, res) => {
   const { id } = req.params;
   if (!id) return res.status(400).json({ error: "ID requerido" });

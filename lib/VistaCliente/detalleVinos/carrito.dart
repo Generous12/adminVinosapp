@@ -88,7 +88,6 @@ class _CarritoPageState extends State<CarritoPageVinos> {
     }
   }
 
-  //no se usa por ahora
   Future<void> finalizarCompra(BuildContext context) async {
     try {
       final user = FirebaseAuth.instance.currentUser;
@@ -276,7 +275,7 @@ class _CarritoPageState extends State<CarritoPageVinos> {
       carritoService.obtenerCantidadTotal(),
     );
     final urlBackend = Uri.parse(
-      'https://bootsupapp-production.up.railway.app/crear-preferencia',
+      'https://adminvinosapp-production.up.railway.app/crear-preferencia',
     );
     try {
       final response = await http.post(
@@ -341,7 +340,7 @@ class _CarritoPageState extends State<CarritoPageVinos> {
   Future<String?> verificarPagoBackendVinos(String paymentId) async {
     try {
       final url = Uri.parse(
-        'https://bootsupapp-production.up.railway.app/verificar-pago/$paymentId',
+        'https://adminvinosapp-production.up.railway.app/verificar-pago/$paymentId',
       );
       final response = await http.get(url);
 
@@ -355,7 +354,7 @@ class _CarritoPageState extends State<CarritoPageVinos> {
     }
   }
 
-  //------------------------------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------------------------------------------------------------
 
   @override
   void dispose() {
@@ -366,7 +365,6 @@ class _CarritoPageState extends State<CarritoPageVinos> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    // final isDark = theme.brightness == Brightness.dark;
 
     final carritoService = Provider.of<CarritoServiceVinos>(context);
     List<Map<String, dynamic>> carrito = carritoService.obtenerCarrito();
