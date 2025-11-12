@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:app_bootsup/Vistadmin/autenticacion/SplashScreen.dart';
 import 'package:app_bootsup/Widgets/alertas.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -178,7 +180,7 @@ class _ConfAvanzadaState extends State<ConfAvanzada> {
               ).then((confirmed) {
                 if (confirmed != null && confirmed) {
                   setState(() {
-                    _isLoading = true; // Iniciar la carga
+                    _isLoading = true;
                   });
                   _reauthenticateAndDeleteAccount(context);
                 }
@@ -186,10 +188,7 @@ class _ConfAvanzadaState extends State<ConfAvanzada> {
               });
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: _isLoading
-              ? Colors
-                    .grey // Color gris cuando está en carga
-              : Colors.red, // Color rojo cuando no está en carga
+          backgroundColor: _isLoading ? Colors.grey : Colors.red,
           padding: EdgeInsets.symmetric(vertical: 15, horizontal: 110),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
