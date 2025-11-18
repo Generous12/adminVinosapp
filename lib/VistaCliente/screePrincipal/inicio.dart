@@ -143,9 +143,9 @@ class _InicioState extends State<InicioVinosC> {
               automaticallyImplyLeading: false,
               toolbarHeight: 40,
               title: const Text(
-                'Publicaciones',
+                'Nosotros | La Casita del Pisco',
                 style: TextStyle(
-                  fontSize: 30,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFFA30000),
                 ),

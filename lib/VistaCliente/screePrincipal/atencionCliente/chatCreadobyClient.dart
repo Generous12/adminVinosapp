@@ -36,7 +36,6 @@ class _ContactochatVinosState extends State<ContactochatVinos> {
     super.initState();
     _usuario = types.User(id: widget.userIdVisitante);
 
-    // Construir el texto inicial combinando correo y motivo si existen
     final buffer = StringBuffer();
     if (widget.correoController != null &&
         widget.correoController!.text.isNotEmpty) {
@@ -47,13 +46,11 @@ class _ContactochatVinosState extends State<ContactochatVinos> {
       buffer.writeln('Motivo: ${widget.motivoSeleccionado}');
     }
 
-    // Si hay un mensaje inicial del contacto, agregarlo
     if (widget.mensajeController != null &&
         widget.mensajeController!.text.isNotEmpty) {
       buffer.writeln('Mensaje: ${widget.mensajeController!.text}');
     }
 
-    // Inicializar el controlador con todo el texto
     _controller.text = buffer.toString().trim();
 
     _inicializarChat();
@@ -97,7 +94,6 @@ class _ContactochatVinosState extends State<ContactochatVinos> {
     bool enviar = true;
 
     if (widget.mensajeController != null || widget.motivoSeleccionado != null) {
-      // Mostrar confirmación solo si venimos con datos
       enviar =
           await showDialog<bool>(
             context: context,
@@ -128,162 +124,168 @@ class _ContactochatVinosState extends State<ContactochatVinos> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        backgroundColor: theme.scaffoldBackgroundColor,
-        elevation: 0,
-        titleSpacing: 0,
-        scrolledUnderElevation: 0,
-        surfaceTintColor: Colors.transparent,
-        toolbarHeight: 48,
-        foregroundColor: Colors.black,
-        leading: IconButton(
-          icon: Icon(
-            Iconsax.arrow_left,
-            color: theme.iconTheme.color,
-            size: 25,
+    return SafeArea(
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        appBar: AppBar(
+          backgroundColor: theme.scaffoldBackgroundColor,
+          elevation: 0,
+          titleSpacing: 0,
+          scrolledUnderElevation: 0,
+          surfaceTintColor: Colors.transparent,
+          toolbarHeight: 48,
+          foregroundColor: Colors.black,
+          leading: IconButton(
+            icon: Icon(
+              Iconsax.arrow_left,
+              color: theme.iconTheme.color,
+              size: 25,
+            ),
+            onPressed: () {
+              FocusScope.of(context).unfocus();
+              Navigator.pop(context);
+            },
           ),
-          onPressed: () {
-            FocusScope.of(context).unfocus();
-            Navigator.pop(context);
-          },
-        ),
-        title: Row(
-          children: [
-            if (perfilEmpresaUrl != null)
-              CircleAvatar(
-                radius: 16,
-                backgroundImage: AssetImage('assets/images/logo1.png'),
-                backgroundColor: Colors.transparent,
-              ),
-            const SizedBox(width: 10),
-            if (nombreEmpresa != null)
-              Expanded(
-                child: Text(
-                  'La Casita del Pisco',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: theme.textTheme.bodyLarge?.color,
-                  ),
-                  overflow: TextOverflow.ellipsis,
+          title: Row(
+            children: [
+              if (perfilEmpresaUrl != null)
+                CircleAvatar(
+                  radius: 16,
+                  backgroundImage: AssetImage('assets/images/logo1.png'),
+                  backgroundColor: Colors.transparent,
                 ),
-              ),
-          ],
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Iconsax.more, color: theme.iconTheme.color),
-            onPressed: () {},
-          ),
-        ],
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1.0),
-          child: Container(
-            height: 1.0,
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.grey[800]
-                : Colors.grey[300],
-          ),
-        ),
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: Chat(
-                messages: List<types.Message>.from(_mensajes),
-                onSendPressed: _enviarMensaje,
-                user: _usuario,
-                showUserAvatars: false,
-                showUserNames: false,
-                theme: DefaultChatTheme(
-                  inputBackgroundColor: const Color.fromARGB(255, 15, 116, 89),
-                  primaryColor: const Color(0xFF142143),
-                  secondaryColor: const Color(0xFFA30000),
-                  backgroundColor: theme.scaffoldBackgroundColor,
-                  messageInsetsVertical: 6,
-                  messageInsetsHorizontal: 10,
-                  sentMessageBodyTextStyle: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
+              const SizedBox(width: 10),
+              if (nombreEmpresa != null)
+                Expanded(
+                  child: Text(
+                    'La Casita del Pisco',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: theme.textTheme.bodyLarge?.color,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  receivedMessageBodyTextStyle: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                  ),
-                  inputTextColor: Colors.black,
-                  inputTextCursorColor: Colors.black,
                 ),
-                customBottomWidget: buildCustomInput(),
-                emptyState: const SizedBox.shrink(),
-                bubbleBuilder:
-                    (child, {required message, required nextMessageInGroup}) {
-                      final isMe = message.author.id == _usuario.id;
-                      final hora = DateFormat('HH:mm').format(
-                        DateTime.fromMillisecondsSinceEpoch(
-                          message.createdAt ?? 0,
-                        ),
-                      );
-
-                      return Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: isMe
-                              ? const Color(0xFFA30000)
-                              : const Color.fromARGB(255, 0, 0, 0),
-                          borderRadius: BorderRadius.only(
-                            topLeft: const Radius.circular(10),
-                            topRight: const Radius.circular(10),
-                            bottomLeft: Radius.circular(isMe ? 10 : 0),
-                            bottomRight: Radius.circular(isMe ? 0 : 10),
-                          ),
-                        ),
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            return IntrinsicHeight(
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  // Mensaje
-                                  Flexible(
-                                    child: DefaultTextStyle(
-                                      style: const TextStyle(
-                                        fontSize: 15,
-                                        fontFamily: 'Afacad',
-                                        color: Colors.white,
-                                      ),
-                                      child: child,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 6),
-                                  Align(
-                                    alignment: Alignment.bottomRight,
-                                    child: Text(
-                                      hora,
-                                      style: TextStyle(
-                                        fontSize: 11,
-                                        fontFamily: 'Afacad',
-                                        color: Colors.white.withOpacity(0.6),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      );
-                    },
-              ),
+            ],
+          ),
+          actions: [
+            IconButton(
+              icon: Icon(Iconsax.more, color: theme.iconTheme.color),
+              onPressed: () {},
             ),
           ],
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(1.0),
+            child: Container(
+              height: 1.0,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.grey[800]
+                  : Colors.grey[300],
+            ),
+          ),
+        ),
+        body: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: Chat(
+                  messages: List<types.Message>.from(_mensajes),
+                  onSendPressed: _enviarMensaje,
+                  user: _usuario,
+                  showUserAvatars: false,
+                  showUserNames: false,
+                  theme: DefaultChatTheme(
+                    inputBackgroundColor: const Color.fromARGB(
+                      255,
+                      15,
+                      116,
+                      89,
+                    ),
+                    primaryColor: const Color(0xFF142143),
+                    secondaryColor: const Color(0xFFA30000),
+                    backgroundColor: theme.scaffoldBackgroundColor,
+                    messageInsetsVertical: 6,
+                    messageInsetsHorizontal: 10,
+                    sentMessageBodyTextStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                    ),
+                    receivedMessageBodyTextStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                    ),
+                    inputTextColor: Colors.black,
+                    inputTextCursorColor: Colors.black,
+                  ),
+                  customBottomWidget: buildCustomInput(),
+                  emptyState: const SizedBox.shrink(),
+                  bubbleBuilder:
+                      (child, {required message, required nextMessageInGroup}) {
+                        final isMe = message.author.id == _usuario.id;
+                        final hora = DateFormat('HH:mm').format(
+                          DateTime.fromMillisecondsSinceEpoch(
+                            message.createdAt ?? 0,
+                          ),
+                        );
+
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isMe
+                                ? const Color(0xFFA30000)
+                                : const Color.fromARGB(255, 0, 0, 0),
+                            borderRadius: BorderRadius.only(
+                              topLeft: const Radius.circular(10),
+                              topRight: const Radius.circular(10),
+                              bottomLeft: Radius.circular(isMe ? 10 : 0),
+                              bottomRight: Radius.circular(isMe ? 0 : 10),
+                            ),
+                          ),
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              return IntrinsicHeight(
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    // Mensaje
+                                    Flexible(
+                                      child: DefaultTextStyle(
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                          fontFamily: 'Afacad',
+                                          color: Colors.white,
+                                        ),
+                                        child: child,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: Text(
+                                        hora,
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontFamily: 'Afacad',
+                                          color: Colors.white.withOpacity(0.6),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -22,7 +22,6 @@ class PersonalizacionCuentaScreen extends StatelessWidget {
     ];
 
     ThemeMode currentMode = themeProvider.themeMode;
-
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -30,17 +29,7 @@ class PersonalizacionCuentaScreen extends StatelessWidget {
           elevation: 0.0,
           toolbarHeight: 48,
           centerTitle: true,
-          backgroundColor: theme.scaffoldBackgroundColor,
           foregroundColor: theme.textTheme.bodyMedium?.color,
-          bottom: PreferredSize(
-            preferredSize: Size.fromHeight(1.0),
-            child: Container(
-              height: 1.0,
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.grey[800]
-                  : Colors.grey[300],
-            ),
-          ),
         ),
         body: Padding(
           padding: const EdgeInsets.all(20),
