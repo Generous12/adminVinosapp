@@ -63,7 +63,6 @@ class _ComprasUsuarioPageState extends State<PedidosPage> {
             final nuevoEstado = (compraData['estado'] ?? 'Sin estado')
                 .toString();
 
-            // Verificar cambio de estado
             if (_estadosAnteriores.containsKey(compraId) &&
                 _estadosAnteriores[compraId] != nuevoEstado) {
               final username = await _obtenerNombreUsuario(usuarioId);
@@ -95,7 +94,7 @@ class _ComprasUsuarioPageState extends State<PedidosPage> {
                 'estado': nuevoEstado,
                 'fecha': compraData['fecha'] as Timestamp?,
                 'usuarioId': usuarioId,
-                'compraId': compraId, // <-- esto es el diferenciador
+                'compraId': compraId,
               });
             }
           }

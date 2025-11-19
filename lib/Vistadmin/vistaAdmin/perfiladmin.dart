@@ -89,15 +89,6 @@ class _PerfilState extends State<PerfilPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildProfileContainer(),
-
-                      const SizedBox(height: 5),
-                      Text(
-                        "Estadística general",
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
                       buildLineChartCard(
                         'Compras por día',
                         _comprasPorDia,
@@ -170,7 +161,7 @@ class _PerfilState extends State<PerfilPage> {
             child: Stack(
               children: [
                 CircleAvatar(
-                  radius: 24, // 🔹 Más proporcionado
+                  radius: 24,
                   backgroundColor: theme.colorScheme.primary.withOpacity(0.1),
                   child: ClipOval(
                     child:

@@ -11,7 +11,6 @@ class PersonalizacionCuentaScreen extends StatelessWidget {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final theme = Theme.of(context);
 
-    // Opciones de tema
     final options = [
       {
         'label': 'Predeterminado',
@@ -24,90 +23,92 @@ class PersonalizacionCuentaScreen extends StatelessWidget {
 
     ThemeMode currentMode = themeProvider.themeMode;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Personalización'),
-        elevation: 0.5,
-        toolbarHeight: 48,
-        centerTitle: true,
-        surfaceTintColor: Colors.transparent,
-        backgroundColor: theme.scaffoldBackgroundColor,
-        foregroundColor: theme.textTheme.bodyMedium?.color,
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1.0),
-          child: Container(
-            height: 1.0,
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.grey[800]
-                : Colors.grey[300],
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Personalización'),
+          elevation: 0.5,
+          toolbarHeight: 48,
+          centerTitle: true,
+          surfaceTintColor: Colors.transparent,
+          backgroundColor: theme.scaffoldBackgroundColor,
+          foregroundColor: theme.textTheme.bodyMedium?.color,
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(1.0),
+            child: Container(
+              height: 1.0,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.grey[800]
+                  : Colors.grey[300],
+            ),
           ),
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Tema de la aplicación',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              children: options.map((option) {
-                final isSelected = currentMode == option['value'];
-                return GestureDetector(
-                  onTap: () {
-                    themeProvider.setThemeMode(option['value'] as ThemeMode);
-                  },
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? theme.colorScheme.primary.withOpacity(0.1)
-                          : theme.cardColor,
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(
-                        color: isSelected
-                            ? theme.colorScheme.primary
-                            : Colors.grey.withOpacity(0.3),
-                        width: 1.5,
+        body: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Tema de la aplicación',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 12),
+              Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                children: options.map((option) {
+                  final isSelected = currentMode == option['value'];
+                  return GestureDetector(
+                    onTap: () {
+                      themeProvider.setThemeMode(option['value'] as ThemeMode);
+                    },
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
                       ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          option['icon'] as IconData,
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? theme.colorScheme.primary.withOpacity(0.1)
+                            : theme.cardColor,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
                           color: isSelected
                               ? theme.colorScheme.primary
-                              : theme.iconTheme.color,
-                          size: 20,
+                              : Colors.grey.withOpacity(0.3),
+                          width: 1.5,
                         ),
-                        const SizedBox(width: 8),
-                        Text(
-                          option['label'] as String,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            option['icon'] as IconData,
                             color: isSelected
                                 ? theme.colorScheme.primary
-                                : theme.textTheme.bodyMedium?.color,
+                                : theme.iconTheme.color,
+                            size: 20,
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 8),
+                          Text(
+                            option['label'] as String,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: isSelected
+                                  ? theme.colorScheme.primary
+                                  : theme.textTheme.bodyMedium?.color,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              }).toList(),
-            ),
-          ],
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
         ),
       ),
     );

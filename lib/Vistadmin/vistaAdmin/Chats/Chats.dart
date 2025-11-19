@@ -21,7 +21,7 @@ class _ChatClientesScreenState extends State<ChatClientesScreen> {
   final Color fondo = const Color(0xFFFAFAFA);
   final String empresaId = 'empresa_unica';
   String filtroActivo = 'Todos';
-
+  bool _navegando = false;
   final TextEditingController _searchController = TextEditingController();
   List<ChatResumen> _allChats = [];
   Set<String> _chatsSeleccionados = {};
@@ -292,36 +292,44 @@ class _ChatClientesScreenState extends State<ChatClientesScreen> {
                             }
                           });
                         },
+
                         onTap: (chatId) async {
-                          final mensajesSnapshot = await FirebaseFirestore
-                              .instance
-                              .collection('chatsVinos')
-                              .doc(chat.chatId)
-                              .collection('messages')
-                              .where('authorId', isEqualTo: chat.clienteId)
-                              .get();
+                          if (_navegando) return;
+                          _navegando = true;
 
-                          final batch = FirebaseFirestore.instance.batch();
-                          for (var doc in mensajesSnapshot.docs) {
-                            final readBy = List<String>.from(
-                              doc['readBy'] ?? [],
-                            );
-                            if (!readBy.contains(empresaId)) {
-                              batch.update(doc.reference, {
-                                'readBy': FieldValue.arrayUnion([empresaId]),
-                              });
-                            }
-                          }
-
-                          await batch.commit();
-
-                          if (!context.mounted) return;
                           navegarConSlideDerecha(
                             context,
                             ContactoEmpresaScreen(
                               userIdVisitante: chat.clienteId,
                             ),
                           );
+
+                          FirebaseFirestore.instance
+                              .collection('chatsVinos')
+                              .doc(chat.chatId)
+                              .collection('messages')
+                              .where('authorId', isEqualTo: chat.clienteId)
+                              .get()
+                              .then((snapshot) async {
+                                final batch = FirebaseFirestore.instance
+                                    .batch();
+
+                                for (var doc in snapshot.docs) {
+                                  final readBy = List<String>.from(
+                                    doc['readBy'] ?? [],
+                                  );
+                                  if (!readBy.contains(empresaId)) {
+                                    batch.update(doc.reference, {
+                                      'readBy': FieldValue.arrayUnion([
+                                        empresaId,
+                                      ]),
+                                    });
+                                  }
+                                }
+
+                                await batch.commit();
+                                _navegando = false;
+                              });
                         },
                       );
                     },

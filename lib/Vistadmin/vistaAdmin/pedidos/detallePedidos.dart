@@ -457,78 +457,63 @@ class _EmpresaPedidosScreenState extends State<EmpresaPedidosScreen> {
                         ),
                         const SizedBox(height: 12),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            TextButton.icon(
-                              onPressed: () {
-                                /*  final empresaId = currentUser!.uid;
-                            final clienteId = data['usuarioId'];
-
-                            final fechaPedido = fecha ?? DateTime.now();
-                            final estadoPedido = data['estado'] ?? 'Sin estado';
-                            final totalPedido = (data['total'] ?? 0).toDouble();
-
-                            navegarConSlideDerecha(
-                              context,
-                              ContactoEmpresaScreen(
-                                userIdVisitante: clienteId,
-                                empresaUserId: empresaId,
-                                fechaPedido: fechaPedido,
-                                estadoPedido: estadoPedido,
-                                totalPedido: totalPedido,
-                              ),
-                            );*/
-                              },
-                              icon: Icon(
-                                Iconsax.message,
-                                size: 18,
-                                color: isDark ? Colors.black : Colors.white,
-                              ),
-                              label: Text(
-                                'Contactar cliente',
-                                style: TextStyle(
-                                  color: isDark ? Colors.black : Colors.white,
-                                  fontSize: 12,
+                            Expanded(
+                              child: TextButton.icon(
+                                onPressed: () {},
+                                icon: Icon(
+                                  Iconsax.message5,
+                                  size: 20,
+                                  color: isDark ? Colors.white : Colors.white,
                                 ),
-                              ),
-                              style: TextButton.styleFrom(
-                                backgroundColor: isDark
-                                    ? Colors.amber
-                                    : Colors.black,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 10,
+                                label: Text(
+                                  'Contactar Cliente',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                                style: TextButton.styleFrom(
+                                  backgroundColor: isDark
+                                      ? const Color(0xFFA30000)
+                                      : Colors.black,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 8),
-                            TextButton.icon(
-                              onPressed: () {},
-                              icon: Icon(
-                                Iconsax.document_download,
-                                size: 18,
-                                color: isDark ? Colors.black : Colors.white,
-                              ),
-                              label: Text(
-                                'Descargar PDF',
-                                style: TextStyle(
-                                  color: isDark ? Colors.black : Colors.white,
-                                  fontSize: 12,
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: TextButton.icon(
+                                onPressed: () {},
+                                icon: Icon(
+                                  Iconsax.document_download,
+                                  size: 20,
+                                  color: Colors.white,
                                 ),
-                              ),
-                              style: TextButton.styleFrom(
-                                backgroundColor: isDark
-                                    ? Colors.amber
-                                    : Colors.black,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 10,
+                                label: Text(
+                                  'Descargar PDF',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                                style: TextButton.styleFrom(
+                                  backgroundColor: isDark
+                                      ? const Color(0xFFA30000)
+                                      : Colors.black,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
                                 ),
                               ),
                             ),
@@ -547,7 +532,6 @@ class _EmpresaPedidosScreenState extends State<EmpresaPedidosScreen> {
   }
 }
 
-//estado
 Color colorEstado(String estado) {
   switch (estado) {
     case 'Recibidos':

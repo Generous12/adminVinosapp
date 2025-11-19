@@ -37,7 +37,7 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
   late PageController _pageController;
   bool _mostrarBoton = false;
   int _cantidadSeleccionada = 1;
-
+  bool descripcionExpandida = false;
   bool expandido = false;
   final TextEditingController _comentarioController = TextEditingController();
   double _rating = 0.0;
@@ -182,7 +182,6 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                                     ),
                                   ),
 
-                                  // --- Flecha de retroceso ---
                                   Positioned(
                                     top: 12,
                                     left: 12,
@@ -773,8 +772,15 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    Widget buildCampo(String titulo, String? valor, IconData icon) {
+    Widget buildCampo(
+      String titulo,
+      String? valor,
+      IconData icon, {
+      bool expandable = false,
+    }) {
       if (valor == null || valor.isEmpty) return const SizedBox.shrink();
+
+      final esDescripcion = expandable;
 
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -803,14 +809,43 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
                     ),
                   ),
                   const SizedBox(height: 3),
+
+                  // ---- TEXTO DESPLEGABLE ----
                   Text(
                     valor,
+                    maxLines: esDescripcion && !descripcionExpandida ? 3 : null,
+                    overflow: esDescripcion && !descripcionExpandida
+                        ? TextOverflow.ellipsis
+                        : TextOverflow.visible,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       fontSize: 15,
                       color: theme.textTheme.bodyLarge?.color,
                       height: 1.3,
                     ),
                   ),
+
+                  // ---- BOTÓN MOSTRAR MÁS / MENOS ----
+                  if (esDescripcion && valor.length > 120)
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          descripcionExpandida = !descripcionExpandida;
+                        });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Text(
+                          descripcionExpandida
+                              ? "Mostrar menos"
+                              : "Mostrar más",
+                          style: TextStyle(
+                            color: const Color(0xFFA30000),
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -823,9 +858,8 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
       elevation: 0,
       shadowColor: Colors.black26,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-
       child: Padding(
-        padding: EdgeInsets.fromLTRB(10, 8, 10, 8),
+        padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -851,11 +885,15 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
               ],
             ),
             const Divider(height: 25, thickness: 0.8),
+
+            // DESCRIPCIÓN CON EXPANSIÓN
             buildCampo(
               "Descripción",
               widget.producto['descripcion'],
               Icons.description_outlined,
+              expandable: true,
             ),
+
             buildCampo(
               "Marca",
               widget.producto['marca'],
@@ -866,6 +904,7 @@ class _DetalleProductoPageState extends State<DetalleProductoPageVinos> {
               widget.producto['volumen'],
               Icons.local_drink_outlined,
             ),
+
             const SizedBox(height: 6),
           ],
         ),
